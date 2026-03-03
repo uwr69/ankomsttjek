@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="AnkomstTjek">
+<title>🚗 AnkomstTjek</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { font-family:'Inter','Helvetica Neue',system-ui,sans-serif; background:#F0F3FA; color:#1A2340; max-width:500px; margin:0 auto; min-height:100vh; }
+  :root {
+    --bg:#F0F3FA; --card:#fff; --border:#A0AECF; --inp-border:#7B8FC7;
+    --text:#1A2340; --muted:#6B7A99;
+    --blue:#2563EB; --blue-l:#EBF2FF;
+    --green:#16A34A; --green-l:#DCFCE7;
+    --orange:#EA580C; --orange-l:#FFF0E6;
+    --red:#DC2626; --red-l:#FEE2E2;
+    --purple:#7C3AED; --purple-l:#EDE9FE;
+    --teal:#0D9488; --teal-l:#CCFBF1;
+    --yellow:#D97706; --yellow-l:#FEF3C7;
+  }
+  #header { background:#fff; padding:12px 14px 0; border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
+  #header-top { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  #app-title { flex:1; min-width:0; }
+  #app-title .name { font-size:13px; font-weight:900; color:var(--blue); }
+  #app-title .sub { font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
+  #tab-stripe { height:3px; }
+  #tabs { display:flex; gap:2px; overflow-x:auto; scrollbar-width:none; }
+  #tabs::-webkit-scrollbar { display:none; }
+  .tab-btn { background:transparent; border:none; border-radius:8px 8px 0 0; padding:7px 10px; cursor:pointer; font-size:10px; font-weight:700; white-space:nowrap; color:var(--muted); transition:all 0.15s; font-family:inherit; }
+  .tab-btn.active { color:#fff; }
+  .icon-btn { border-radius:9px; width:34px; height:34px; font-size:20px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1.5px solid; font-family:inherit; }
+  .save-btn { border-radius:9px; padding:7px 11px; cursor:pointer; font-size:11px; font-weight:800; white-space:nowrap; flex-shrink:0; font-family:inherit; transition:all 0.2s; }
+  #search-wrap { position:relative; }
+  #search-box { display:flex; align-items:center; background:var(--bg); border:1.5px solid var(--border); border-radius:9px; overflow:hidden; transition:border-color 0.15s; }
+  #search-box.open { border-color:var(--blue); }
+  #search-input { background:transparent; border:none; color:var(--text); padding:7px 8px; font-size:11px; width:70px; outline:none; transition:width 0.2s; font-family:inherit; }
+  #search-input.open { width:110px; }
+  #search-toggle { background:transparent; border:none; border-left:1px solid var(--border); color:var(--blue); padding:7px 8px; cursor:pointer; font-size:10px; font-family:inherit; }
+  #search-dropdown { position:absolute; top:calc(100% + 6px); right:0; width:270px; background:#fff; border:1.5px solid var(--border); border-radius:14px; box-shadow:0 10px 40px rgba(0,0,0,0.14); z-index:200; max-height:320px; overflow-y:auto; display:none; }
+  #search-dropdown.open { display:block; }
+  .car-list-item { display:flex; align-items:center; justify-content:space-between; width:100%; background:transparent; border:none; border-bottom:1px solid var(--border); padding:11px 14px; cursor:pointer; text-align:left; gap:8px; font-family:inherit; }
+  .car-list-item:last-child { border-bottom:none; }
+  .car-list-item.active { background:var(--blue-l); }
+  .car-list-item .car-name { font-size:12px; color:var(--text); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .car-list-item.active .car-name { color:var(--blue); font-weight:700; }
+  .car-list-item .car-date { font-size:10px; color:var(--muted); margin-top:2px; }
+  .car-active-badge { font-size:9px; background:var(--blue); color:#fff; border-radius:20px; padding:2px 8px; font-weight:700; flex-shrink:0; }
+  .new-car-btn { display:flex; align-items:center; gap:10px; width:100%; background:var(--blue-l); border:none; border-bottom:1px solid var(--border); padding:12px 14px; cursor:pointer; color:var(--blue); font-weight:800; font-size:12px; border-radius:12px 12px 0 0; font-family:inherit; }
+  #content { padding:14px; }
+  .tab-pane { display:none; }
+  .tab-pane.active { display:block; }
+  .inp { background:#fff; border:2px solid var(--inp-border); border-radius:10px; color:var(--text); padding:10px 12px; font-size:14px; width:100%; box-sizing:border-box; outline:none; box-shadow:0 1px 3px rgba(0,0,0,0.08); font-family:inherit; }
+  .inp:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,0.15); }
+  .inp.error { background:#FEF2F2; border-color:var(--red); box-shadow:0 0 0 3px rgba(220,38,38,0.15); }
+  .inp-sm { background:#fff; border:2px solid var(--inp-border); border-radius:8px; color:var(--text); padding:8px 10px; font-size:13px; width:100%; box-sizing:border-box; box-shadow:0 1px 3px rgba(0,0,0,0.07); font-family:inherit; outline:none; }
+  .inp-sm:focus { border-color:var(--blue); }
+  select.inp, select.inp-sm { cursor:pointer; }
+  label.field-label { font-size:11px; color:var(--muted); font-weight:700; letter-spacing:0.4px; display:block; margin-top:12px; margin-bottom:3px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .section-title { font-size:11px; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; margin-top:22px; margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid; display:flex; align-items:center; gap:6px; }
+  .banner { border-radius:14px; padding:14px 16px; margin-bottom:16px; border:1px solid; }
+  .card { background:#fff; border-radius:14px; padding:14px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+  .check-row { display:flex; align-items:center; gap:12px; padding:11px 14px; background:#fff; border:2px solid var(--inp-border); border-radius:12px; margin-bottom:8px; cursor:pointer; transition:all 0.15s; box-shadow:0 1px 4px rgba(0,0,0,0.08); user-select:none; }
+  .check-row.checked { background:var(--green-l); border-color:var(--green); box-shadow:0 0 0 1px rgba(22,163,74,0.2); }
+  .check-box { width:24px; height:24px; border-radius:7px; border:2.5px solid var(--inp-border); background:#F0F3FA; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.15s; font-size:14px; line-height:1; }
+  .check-row.checked .check-box { background:var(--green); border-color:var(--green); color:#fff; }
+  .check-label { font-size:14px; color:var(--text); font-weight:500; flex:1; }
+  .check-row.checked .check-label { color:var(--green); font-weight:700; }
+  .check-hint { font-size:10px; color:var(--muted); font-style:italic; margin-left:auto; }
+  .photo-slot { margin-bottom:14px; }
+  .photo-slot-label { font-size:12px; color:var(--muted); margin-bottom:6px; font-weight:600; display:flex; align-items:center; gap:6px; }
+  .photo-slot-label .badge { margin-left:auto; border-radius:20px; padding:1px 8px; font-size:10px; font-weight:700; }
+  .photo-grid { display:flex; flex-wrap:wrap; gap:8px; }
+  .photo-thumb { position:relative; }
+  .photo-thumb img { width:76px; height:76px; object-fit:cover; border-radius:10px; border:2px solid; }
+  .photo-remove { position:absolute; top:-6px; right:-6px; background:var(--red); color:#fff; border:none; border-radius:50%; width:20px; height:20px; font-size:11px; cursor:pointer; line-height:20px; padding:0; font-weight:700; }
+  .photo-add { width:76px; height:76px; border-radius:10px; border:2px dashed; background:rgba(0,0,0,0.03); font-size:26px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:inherit; }
+  .photo-uploading { width:76px; height:76px; border-radius:10px; border:2px solid var(--blue); background:var(--blue-l); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--blue); font-weight:700; text-align:center; }
+  .tire-card { background:#fff; border-radius:14px; padding:14px; margin-bottom:12px; border:2px solid #eee; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+  .tire-header { font-weight:700; margin-bottom:10px; font-size:13px; display:flex; align-items:center; gap:6px; }
+  .tire-badge { margin-left:auto; border-radius:20px; padding:2px 10px; font-size:10px; font-weight:700; }
+  .damage-card { background:#fff; border-radius:14px; padding:14px; margin-bottom:10px; border:1px solid var(--red-l); box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+  .damage-row { display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap; }
+  .leasing-summary-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+  .leasing-card { border-radius:14px; padding:14px; border:1px solid; }
+  .leasing-card .lc-label { font-size:10px; font-weight:700; letter-spacing:0.5px; margin-bottom:4px; }
+  .leasing-card .lc-val { font-weight:900; }
+  .toggle-switch { width:44px; height:24px; border-radius:12px; position:relative; cursor:pointer; transition:background 0.2s; flex-shrink:0; border:none; }
+  .toggle-knob { position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; transition:left 0.2s; box-shadow:0 1px 3px rgba(0,0,0,0.2); }
+  .details-table { background:#fff; border-radius:14px; padding:16px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,0.05); margin-top:10px; }
+  .details-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--border); }
+  .details-row:last-child { border-bottom:none; }
+  .details-code { font-size:11px; font-weight:800; color:var(--blue); font-family:monospace; background:var(--blue-l); border-radius:5px; padding:1px 6px; }
+  .details-desc { font-size:11px; color:var(--muted); margin-left:8px; }
+  .details-val { font-size:12px; font-weight:700; color:var(--text); }
+  .rapport-item { background:#fff; border-radius:12px; padding:12px 16px; border:1px solid; display:flex; align-items:center; gap:12px; box-shadow:0 1px 4px rgba(0,0,0,0.05); margin-bottom:8px; }
+  input[type=range] { width:100%; height:6px; accent-color:var(--green); cursor:pointer; }
+  .flex-row { display:flex; align-items:center; gap:8px; }
+  .mt-8 { margin-top:8px; }
+  .mt-12 { margin-top:12px; }
+  .mt-16 { margin-top:16px; }
+  .error-msg { margin-top:10px; background:var(--red-l); border:1px solid rgba(220,38,38,0.3); border-radius:10px; padding:10px 14px; font-size:12px; color:var(--red); font-weight:600; }
+  textarea.inp-sm { height:60px; resize:vertical; }
+
+  /* Firebase status toast */
+  #fb-toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1A2340; color:#fff; padding:10px 20px; border-radius:20px; font-size:12px; font-weight:600; z-index:9999; opacity:0; transition:opacity 0.3s; pointer-events:none; white-space:nowrap; }
+  #fb-toast.show { opacity:1; }
+
+  /* Loading overlay */
+  #loading-overlay { position:fixed; inset:0; background:rgba(240,243,250,0.92); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9998; }
+  #loading-overlay .spin { width:40px; height:40px; border:4px solid var(--blue-l); border-top-color:var(--blue); border-radius:50%; animation:spin 0.8s linear infinite; }
+  #loading-overlay p { margin-top:14px; font-size:13px; color:var(--muted); font-weight:600; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  @media (max-width:360px) { .tab-btn { padding:6px 7px; font-size:9px; } }
+</style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading-overlay">
+  <div class="spin"></div>
+  <p id="loading-msg">Forbinder til Firebase...</p>
+</div>
+
+<!-- Toast -->
+<div id="fb-toast"></div>
+
+<!-- HEADER -->
+<div id="header">
+  <div id="header-top">
+    <div id="app-title">
+      <div class="name">🚗 AnkomstTjek</div>
+      <div class="sub" id="header-sub">Ingen bil valgt</div>
+    </div>
+    <button class="icon-btn" id="new-car-btn" title="Ny bil" style="background:var(--blue-l);color:var(--blue);border-color:rgba(37,99,235,0.3)">+</button>
+    <div id="search-wrap">
+      <div id="search-box">
+        <input id="search-input" placeholder="Søg bil..." autocomplete="off">
+        <button id="search-toggle">▼</button>
+      </div>
+      <div id="search-dropdown">
+        <button class="new-car-btn" id="dd-new-car"><span style="font-size:18px">+</span> Ny bil</button>
+        <div id="car-list"></div>
+      </div>
+    </div>
+    <button class="save-btn" id="save-btn" style="background:var(--blue-l);color:var(--blue);border-color:rgba(37,99,235,0.3)">💾 Gem</button>
+  </div>
+  <div id="tabs"></div>
+</div>
+<div id="tab-stripe"></div>
+
+<!-- CONTENT -->
+<div id="content">
+
+  <!-- TAB 0: BIL INFO -->
+  <div class="tab-pane active" data-tab="0">
+    <div class="banner" style="background:linear-gradient(135deg,#EBF2FF,#F0F9FF);border-color:rgba(37,99,235,0.12)">
+      <div style="font-size:11px;color:var(--blue);font-weight:800;letter-spacing:1px;margin-bottom:2px">🚗 ANKOMST REGISTRERING</div>
+      <div style="font-size:12px;color:var(--muted)">Udfyld alle felter ved modtagelse af bilen</div>
+    </div>
+    <div class="grid2">
+      <div><label class="field-label">🏷 Mærke</label><input class="inp" id="car-make" placeholder="BMW"></div>
+      <div><label class="field-label">🔤 Model</label><input class="inp" id="car-model" placeholder="3-serie"></div>
+      <div><label class="field-label">🔢 Reg.nr.</label><input class="inp" id="car-reg" placeholder="AA12345"></div>
+      <div><label class="field-label">🆔 VIN/Stelnr.</label><input class="inp" id="car-vin" placeholder="WBA..."></div>
+      <div><label class="field-label">📅 Årgang</label><input class="inp" id="car-year" placeholder="2021"></div>
+      <div><label class="field-label">🎨 Farve</label><input class="inp" id="car-color" placeholder="Sort"></div>
+      <div><label class="field-label">📏 Kilometer</label><input class="inp" type="number" id="car-km" placeholder="45000"></div>
+      <div><label class="field-label">📅 Modtagelse</label><input class="inp" type="date" id="car-received"></div>
+    </div>
+    <div><label class="field-label">⭐ Stand</label>
+      <select class="inp" id="car-condition">
+        <option value="">Vælg stand</option>
+        <option>⭐⭐⭐⭐⭐ Meget god</option>
+        <option>⭐⭐⭐⭐ God</option>
+        <option>⭐⭐⭐ Acceptabel</option>
+        <option>⚠️ Kræver service</option>
+      </select>
+    </div>
+    <div class="section-title" style="color:var(--blue);border-color:rgba(37,99,235,0.2)">🔩 Service historik</div>
+    <div class="grid2">
+      <div><label class="field-label">🔧 Sidste service – dato</label><input class="inp" type="date" id="last-svc-date"></div>
+      <div><label class="field-label">📏 Sidste service – km</label><input class="inp" type="number" id="last-svc-km" placeholder="85000"></div>
+      <div><label class="field-label">📅 Næste service – dato</label><input class="inp" type="date" id="next-svc-date"></div>
+      <div><label class="field-label">📏 Næste service – km</label><input class="inp" type="number" id="next-svc-km" placeholder="95000"></div>
+    </div>
+  </div>
+
+  <!-- TAB 1: FOTOS -->
+  <div class="tab-pane" data-tab="1">
+    <div class="section-title" style="color:var(--purple);border-color:rgba(124,58,237,0.2)">🔵 Fælge</div>
+    <div id="photos-wheels"></div>
+    <div class="section-title" style="color:var(--purple);border-color:rgba(124,58,237,0.2)">🚗 Eksteriør</div>
+    <div id="photos-exterior"></div>
+    <div class="section-title" style="color:var(--purple);border-color:rgba(124,58,237,0.2)">🏠 Interiør & Instrumenter</div>
+    <div id="photos-interior"></div>
+  </div>
+
+  <!-- TAB 2: DÆK -->
+  <div class="tab-pane" data-tab="2">
+    <div id="tires-container"></div>
+    <div class="card mt-16" style="border:1px solid var(--border)">
+      <div style="color:var(--orange);font-weight:700;margin-bottom:12px;font-size:13px">➕ Ekstra sæt fælge</div>
+      <div id="extra-wheels-list"></div>
+      <button onclick="addExtraWheel()" style="background:var(--orange-l);color:var(--orange);border:1px solid rgba(234,88,12,0.3);border-radius:10px;padding:8px 16px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit">+ Tilføj ekstra fælge</button>
+    </div>
+  </div>
+
+  <!-- TAB 3: SKADER -->
+  <div class="tab-pane" data-tab="3">
+    <div id="damages-container">
+      <div id="no-damage-msg" style="text-align:center;padding:28px 0;color:var(--muted)">
+        <div style="font-size:40px;margin-bottom:8px">✅</div>
+        <div style="font-size:14px;font-weight:600">Ingen skader registreret</div>
+      </div>
+    </div>
+    <button onclick="addDamage()" style="background:var(--red-l);color:var(--red);border:1.5px solid rgba(220,38,38,0.3);border-radius:12px;padding:12px 20px;cursor:pointer;font-size:13px;font-weight:700;width:100%;margin-top:4px;font-family:inherit">💥 Tilføj skade / mangel</button>
+  </div>
+
+  <!-- TAB 4: DIVERSE -->
+  <div class="tab-pane" data-tab="4">
+    <div class="banner" style="background:linear-gradient(135deg,#CCFBF1,#E0FDF4);border-color:rgba(13,148,136,0.12)">
+      <div style="font-size:12px;color:var(--teal);font-weight:700" id="docs-count">✅ 0 punkter markeret</div>
+    </div>
+    <div class="section-title" style="color:var(--teal);border-color:rgba(13,148,136,0.2)">📦 Med bilen</div>
+    <div id="docs-med-bilen"></div>
+    <div class="mt-16">
+      <label class="field-label">🔑 Antal nøgler</label>
+      <input class="inp" type="number" id="doc-nogler" min="0" max="10" placeholder="2" style="width:120px">
+    </div>
+    <div class="section-title" style="color:var(--teal);border-color:rgba(13,148,136,0.2)">🗂 Til salgsmappen</div>
+    <div id="docs-salgsmappe"></div>
+  </div>
+
+  <!-- TAB 5: LEASING -->
+  <div class="tab-pane" data-tab="5">
+    <div class="banner" style="background:linear-gradient(135deg,#DCFCE7,#F0FDF4);border-color:rgba(22,163,74,0.12)">
+      <div style="font-size:11px;color:var(--green);font-weight:800;letter-spacing:1px;margin-bottom:2px">💰 LEASING BEREGNER</div>
+      <div style="font-size:12px;color:var(--muted)">Udfyld alle felter for at beregne</div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label class="field-label">💵 Bilens værdi BAP <span id="err-BAP" style="color:var(--red);display:none">⚠️ Krævet</span></label>
+        <input class="inp" type="number" id="l-BAP" placeholder="350000">
+      </div>
+      <div>
+        <label class="field-label">📋 Afgift FA <span id="err-FA" style="color:var(--red);display:none">⚠️ Krævet</span></label>
+        <input class="inp" type="number" id="l-FA" placeholder="120000">
+      </div>
+      <div style="grid-column:1/-1">
+        <label class="field-label">📅 1. registreringsdato BFRD <span id="err-BFRD" style="color:var(--red);display:none">⚠️ Krævet</span></label>
+        <input class="inp" type="date" id="l-BFRD">
+      </div>
+      <div style="grid-column:1/-1">
+        <label class="field-label">⏳ Leasing periode LPM (måneder)</label>
+        <input class="inp" type="number" id="l-LPM" value="12">
+      </div>
+    </div>
+    <div class="mt-12">
+      <label class="field-label">📈 Finansieringsrente FIA: <strong id="fia-val" style="color:var(--green)">5%</strong></label>
+      <input type="range" id="l-FIA" min="3.5" max="10" step="0.1" value="5" oninput="document.getElementById('fia-val').textContent=this.value+'%'">
+      <div class="flex-row" style="justify-content:space-between;font-size:10px;color:var(--muted);margin-top:3px"><span>3,5%</span><span>10%</span></div>
+    </div>
+    <div class="mt-12">
+      <label class="field-label">💳 Udbetaling UD: <strong id="ud-val" style="color:var(--green)">15%</strong></label>
+      <input type="range" id="l-UD" min="5" max="30" step="1" value="15" oninput="document.getElementById('ud-val').textContent=this.value+'%'">
+      <div class="flex-row" style="justify-content:space-between;font-size:10px;color:var(--muted);margin-top:3px"><span>5%</span><span>30%</span></div>
+    </div>
+    <button onclick="calcLeasing()" style="margin-top:18px;background:linear-gradient(135deg,var(--green),#22C55E);color:#fff;border:none;border-radius:12px;padding:14px 24px;width:100%;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(22,163,74,0.35);font-family:inherit">🧮 Beregn Leasing</button>
+    <div id="leasing-error" class="error-msg" style="display:none">⚠️ Udfyld venligst alle markerede felter (BAP, FA og BFRD).</div>
+    <div id="leasing-result" style="display:none;margin-top:20px">
+      <div class="flex-row" style="background:#fff;border-radius:12px;padding:10px 14px;margin-bottom:14px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,0.05)">
+        <span style="font-size:12px;color:var(--text);font-weight:700;flex:1">💰 Leasing oversigt</span>
+        <span style="font-size:11px;font-weight:700" id="excl-label">Ekskl.</span>
+        <button class="toggle-switch" id="moms-toggle" onclick="toggleMoms()" style="background:var(--border)"><div class="toggle-knob" id="moms-knob"></div></button>
+        <span style="font-size:11px;font-weight:700" id="incl-label">Inkl. moms</span>
+      </div>
+      <div class="leasing-summary-grid" id="leasing-cards"></div>
+      <div id="moms-note" style="font-size:11px;color:var(--muted);margin-bottom:12px;text-align:center;display:none"></div>
+      <button onclick="toggleDetails()" id="details-toggle-btn" style="width:100%;background:#fff;color:var(--blue);border:1.5px solid rgba(37,99,235,0.25);border-radius:12px;padding:10px 16px;cursor:pointer;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;font-family:inherit">🔽 Vis beregningsdetaljer</button>
+      <div id="details-table" class="details-table" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- TAB 6: RAPPORT -->
+  <div class="tab-pane" data-tab="6">
+    <div style="text-align:center;padding:20px 0 10px">
+      <div style="font-size:52px;margin-bottom:10px">📋</div>
+      <div style="font-size:20px;font-weight:900;color:var(--text);margin-bottom:6px">Generer Rapport</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6">PDF-klar rapport med alle billeder, dæk, skader, dokumenter og leasing.</div>
+      <button onclick="generateReport()" style="background:linear-gradient(135deg,var(--yellow),#F59E0B);color:#fff;border:none;border-radius:14px;padding:16px 40px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(217,119,6,0.35);font-family:inherit">🖨 Åbn & Print Rapport</button>
+    </div>
+    <div id="rapport-summary" style="margin-top:20px"></div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     FIREBASE + APP SCRIPT
+═══════════════════════════════════════════════════════════════════════════ -->
+<script type="module">
+// ─── Firebase setup ───────────────────────────────────────────────────────────
+import { initializeApp }                          from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc,
+         collection, getDocs, deleteDoc }         from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref, uploadString,
+         getDownloadURL, deleteObject }           from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBnw2n8wYTtyCmKIO22d7Ki-jy-4ZqR9LM",
+  authDomain: "ankomsttjek.firebaseapp.com",
+  projectId: "ankomsttjek",
+  storageBucket: "ankomsttjek.firebasestorage.app",
+  messagingSenderId: "797649580244",
+  appId: "1:797649580244:web:fc853fabb1b24c056a4b41"
+};
+
+const fbApp  = initializeApp(firebaseConfig);
+const db     = getFirestore(fbApp);
+const storage = getStorage(fbApp);
+
+// ─── Toast helper ─────────────────────────────────────────────────────────────
+function toast(msg, ms=2500) {
+  const el = document.getElementById("fb-toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), ms);
+}
+
+function setLoading(msg) {
+  const ol = document.getElementById("loading-overlay");
+  if (msg) { document.getElementById("loading-msg").textContent = msg; ol.style.display="flex"; }
+  else      { ol.style.display="none"; }
+}
+
+// ─── State ────────────────────────────────────────────────────────────────────
+const S = {
+  tab: 0,
+  car: { make:"",model:"",regNumber:"",vin:"",year:"",color:"",km:"",
+         receivedDate:new Date().toISOString().split("T")[0],condition:"",
+         lastServiceDate:"",lastServiceKm:"",nextServiceDate:"",nextServiceKm:"" },
+  // photos: { key: [ {url, storagePath} , ...] }  — URLs are Firebase Storage download URLs
+  photos: { wheel_fl:[],wheel_fr:[],wheel_rl:[],wheel_rr:[],
+            front:[],rear:[],left:[],right:[],
+            odometer:[],dashboard:[],interior_front:[],interior_rear:[],trunk:[] },
+  tires: [{},{},{},{}],
+  extraWheels: [],
+  damages: [],  // damage.photos = [{url, storagePath}]
+  docs: { serviceBog:false,regAttest1:false,regAttest2:false,coc:false,
+          proevekort:false,noegleAntal:"",ladekabel:false,
+          carVertical:false,digitalService:false,udstyrsliste:false,leasingforslag:false },
+  leasing: { BAP:"",FA:"",BFRD:"",LPM:12,FIA:5,UD:15 },
+  leasingResult: null,
+  showMoms: false,
+  showDetails: false,
+  currentCarId: null,
+  carList: [],
+};
+
+// ─── Tab setup ────────────────────────────────────────────────────────────────
+const TABS = [
+  {label:"🚗 Bil Info", color:"#2563EB"},
+  {label:"📷 Fotos",    color:"#7C3AED"},
+  {label:"🔧 Dæk",      color:"#EA580C"},
+  {label:"💥 Skader",   color:"#DC2626"},
+  {label:"📁 Diverse",  color:"#0D9488"},
+  {label:"💰 Leasing",  color:"#16A34A"},
+  {label:"📋 Rapport",  color:"#D97706"},
+];
+
+function initTabs() {
+  const container = document.getElementById("tabs");
+  TABS.forEach((t, i) => {
+    const btn = document.createElement("button");
+    btn.className = "tab-btn" + (i===0?" active":"");
+    btn.textContent = t.label;
+    btn.addEventListener("click", () => switchTab(i));
+    container.appendChild(btn);
+  });
+}
+
+function switchTab(i) {
+  S.tab = i;
+  document.querySelectorAll(".tab-btn").forEach((b,j) => {
+    b.classList.toggle("active", j===i);
+    b.style.background = j===i ? TABS[j].color : "transparent";
+  });
+  document.querySelectorAll(".tab-pane").forEach((p,j) => p.classList.toggle("active", j===i));
+  document.getElementById("tab-stripe").style.background = `linear-gradient(90deg,${TABS[i].color},${TABS[i].color}80)`;
+  if (i===6) renderRapportSummary();
+}
+
+// ─── Firebase Storage: upload one image ──────────────────────────────────────
+async function uploadPhoto(dataUrl, carId, category, index) {
+  const path = `cars/${carId}/${category}_${index}_${Date.now()}.jpg`;
+  const storageRef = ref(storage, path);
+  // compress before uploading
+  const compressed = await compressImage(dataUrl, 1200 * 1024); // 1.2 MB max for storage
+  await uploadString(storageRef, compressed, "data_url");
+  const url = await getDownloadURL(storageRef);
+  return { url, storagePath: path };
+}
+
+async function deletePhoto(storagePath) {
+  try {
+    const storageRef = ref(storage, storagePath);
+    await deleteObject(storageRef);
+  } catch(e) { /* ignore if already deleted */ }
+}
+
+// ─── Photo slots ──────────────────────────────────────────────────────────────
+const PHOTO_DEFS = {
+  wheels:   [["🔵 Fælg – Forhjul Venstre","wheel_fl",1],["🔵 Fælg – Forhjul Højre","wheel_fr",1],
+             ["🔵 Fælg – Baghjul Venstre","wheel_rl",1],["🔵 Fælg – Baghjul Højre","wheel_rr",1]],
+  exterior: [["🔷 Forfra","front",3],["🔶 Bagfra","rear",3],
+             ["◀ Venstre side","left",3],["▶ Højre side","right",3]],
+  interior: [["🔢 Kilometertæller","odometer",1],["📊 Instrumentering","dashboard",3],
+             ["🪑 Interiør forrest","interior_front",4],["🪑 Interiør bagerst","interior_rear",1],
+             ["🧳 Bagagerum","trunk",1]],
+};
+const ALL_PHOTO_DEFS = [...PHOTO_DEFS.wheels,...PHOTO_DEFS.exterior,...PHOTO_DEFS.interior];
+const ACCENT = "#7C3AED";
+
+function renderPhotoSlot(key, label, max, container) {
+  const wrap = document.createElement("div");
+  wrap.className = "photo-slot";
+  wrap.id = "ps-" + key;
+  container.appendChild(wrap);
+  refreshPhotoSlot(key, label, max);
+}
+
+function refreshPhotoSlot(key, label, max) {
+  const photos = S.photos[key] || [];
+  const done = photos.length >= max;
+  const wrap = document.getElementById("ps-"+key);
+  if (!wrap) return;
+  wrap.innerHTML = `
+    <div class="photo-slot-label">
+      ${done?"✅":"📸"} ${label}
+      <span class="badge" style="background:${done?"#DCFCE7":"#EBF2FF"};color:${done?"#16A34A":"#2563EB"}">${photos.length}/${max}</span>
+    </div>
+    <div class="photo-grid" id="pg-${key}">
+      ${photos.map((ph,i)=>`<div class="photo-thumb"><img src="${ph.url}" style="border-color:${ACCENT}">
+        <button class="photo-remove" onclick="window._removePhoto('${key}',${i})">×</button></div>`).join("")}
+      ${!done?`<button class="photo-add" style="border-color:${ACCENT};color:${ACCENT}" onclick="window._triggerPhoto('${key}',${max})">+</button>`:""}
+    </div>
+    <input type="file" id="fi-${key}" accept="image/*" multiple capture="environment" style="display:none"
+      onchange="window._handlePhotoFiles('${key}',${max},this)">`;
+}
+
+function initPhotos() {
+  const wc=document.getElementById("photos-wheels");
+  const ec=document.getElementById("photos-exterior");
+  const ic=document.getElementById("photos-interior");
+  PHOTO_DEFS.wheels.forEach(([l,k,m])=>renderPhotoSlot(k,l,m,wc));
+  PHOTO_DEFS.exterior.forEach(([l,k,m])=>renderPhotoSlot(k,l,m,ec));
+  PHOTO_DEFS.interior.forEach(([l,k,m])=>renderPhotoSlot(k,l,m,ic));
+}
+
+window._triggerPhoto = (key) => document.getElementById("fi-"+key)?.click();
+
+window._removePhoto = async (key, idx) => {
+  const ph = S.photos[key][idx];
+  if (ph?.storagePath) await deletePhoto(ph.storagePath);
+  S.photos[key].splice(idx, 1);
+  const def = ALL_PHOTO_DEFS.find(d=>d[1]===key);
+  if (def) refreshPhotoSlot(key, def[0], def[2]);
+};
+
+window._handlePhotoFiles = async (key, max, input) => {
+  if (!S.currentCarId) { toast("💾 Gem bilen først, så billeder kan uploades"); return; }
+  const files = Array.from(input.files);
+  const current = S.photos[key] || [];
+  const remaining = max - current.length;
+  const toUpload = files.slice(0, remaining);
+  // Show uploading placeholders
+  const pg = document.getElementById("pg-"+key);
+  toUpload.forEach(() => {
+    const ph = document.createElement("div");
+    ph.className = "photo-uploading";
+    ph.textContent = "⏳ Uploader...";
+    pg?.appendChild(ph);
+  });
+  for (let i=0; i<toUpload.length; i++) {
+    const file = toUpload[i];
+    const dataUrl = await new Promise(res => { const r=new FileReader(); r.onload=()=>res(r.result); r.readAsDataURL(file); });
+    try {
+      const result = await uploadPhoto(dataUrl, S.currentCarId, key, current.length+i);
+      S.photos[key].push(result);
+      toast(`📸 Billede uploadet`);
+    } catch(e) {
+      toast("❌ Upload fejlede: "+e.message, 4000);
+    }
+  }
+  const def = ALL_PHOTO_DEFS.find(d=>d[1]===key);
+  if (def) refreshPhotoSlot(key, def[0], def[2]);
+};
+
+// ─── Tires ────────────────────────────────────────────────────────────────────
+const TIRE_LABELS = ["↖️ Forhjul Venstre","↗️ Forhjul Højre","↙️ Baghjul Venstre","↘️ Baghjul Højre"];
+const TIRE_COLORS = { winter:"#3B82F6", summer:"#F59E0B", allseason:"#10B981", "":"#6B7A99" };
+
+function renderTires() {
+  const c = document.getElementById("tires-container");
+  c.innerHTML = "";
+  S.tires.forEach((t,i) => {
+    const col = TIRE_COLORS[t.type||""];
+    const div = document.createElement("div");
+    div.className = "tire-card";
+    div.style.borderColor = col+"30";
+    div.innerHTML = `
+      <div class="tire-header" style="color:${col}">
+        ${TIRE_LABELS[i]}
+        ${t.type?`<span class="tire-badge" style="background:${col}20;color:${col}">${t.type==="winter"?"❄️ Vinter":t.type==="summer"?"☀️ Sommer":"🌀 Helårs"}</span>`:""}
+      </div>
+      <div class="grid2">
+        <div><label class="field-label" style="margin-top:0">Størrelse</label><input class="inp-sm" value="${t.size||""}" placeholder="225/45R18" oninput="window._updateTire(${i},'size',this.value)"></div>
+        <div><label class="field-label" style="margin-top:0">Mærke</label><input class="inp-sm" value="${t.brand||""}" placeholder="Michelin" oninput="window._updateTire(${i},'brand',this.value)"></div>
+        <div><label class="field-label">DOT</label><input class="inp-sm" value="${t.dot||""}" placeholder="DOT1223" oninput="window._updateTire(${i},'dot',this.value)"></div>
+        <div><label class="field-label">Mønster mm</label><input class="inp-sm" type="number" value="${t.tread||""}" placeholder="6" oninput="window._updateTire(${i},'tread',this.value)"></div>
+        <div style="grid-column:1/-1"><label class="field-label">Type</label>
+          <select class="inp-sm" onchange="window._updateTire(${i},'type',this.value)">
+            <option value="" ${!t.type?"selected":""}>Vælg type</option>
+            <option value="summer" ${t.type==="summer"?"selected":""}>☀️ Sommer</option>
+            <option value="winter" ${t.type==="winter"?"selected":""}>❄️ Vinter</option>
+            <option value="allseason" ${t.type==="allseason"?"selected":""}>🌀 Helårs</option>
+          </select>
+        </div>
+      </div>`;
+    c.appendChild(div);
+  });
+}
+window._updateTire = (i,k,v) => { S.tires[i]={...S.tires[i],[k]:v}; if(k==="type") renderTires(); };
+
+function renderExtraWheels() {
+  const c = document.getElementById("extra-wheels-list");
+  c.innerHTML = "";
+  S.extraWheels.forEach((w,i) => {
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;gap:8px;margin-bottom:8px";
+    row.innerHTML = `<input class="inp-sm" style="flex:1" value="${w.description||""}" placeholder="Beskrivelse af ekstra fælge..." oninput="S.extraWheels[${i}].description=this.value">
+      <button onclick="window._removeExtraWheel(${i})" style="background:var(--red-l);color:var(--red);border:1px solid rgba(220,38,38,0.3);border-radius:8px;padding:8px 12px;cursor:pointer;font-family:inherit">🗑</button>`;
+    c.appendChild(row);
+  });
+}
+window._removeExtraWheel = (i) => { S.extraWheels.splice(i,1); renderExtraWheels(); };
+window.addExtraWheel = () => { S.extraWheels.push({description:""}); renderExtraWheels(); };
+
+// ─── Damages ──────────────────────────────────────────────────────────────────
+const AREAS = ["Kofanger for","Kofanger bag","Dør FL","Dør FR","Dør BL","Dør BR","Motorhjelm","Bagklap","Tag","Skærm FL","Skærm FR","Skærm BL","Skærm BR","Interiør"];
+
+function renderDamages() {
+  const c = document.getElementById("damages-container");
+  c.innerHTML = "";
+  if (S.damages.length===0) {
+    c.innerHTML=`<div style="text-align:center;padding:28px 0;color:var(--muted)"><div style="font-size:40px;margin-bottom:8px">✅</div><div style="font-size:14px;font-weight:600">Ingen skader registreret</div></div>`;
+    return;
+  }
+  S.damages.forEach((d,i) => {
+    const div = document.createElement("div");
+    div.className = "damage-card";
+    div.innerHTML = `
+      <div class="damage-row">
+        <select class="inp-sm" style="flex:1;min-width:120px" onchange="S.damages[${i}].area=this.value">
+          <option value="">📍 Placering</option>
+          ${AREAS.map(a=>`<option ${d.area===a?"selected":""}>${a}</option>`).join("")}
+        </select>
+        <select class="inp-sm" style="flex:1;min-width:100px" onchange="S.damages[${i}].type=this.value">
+          <option value="">⚠️ Type</option>
+          <option value="dent" ${d.type==="dent"?"selected":""}>🔴 Bule</option>
+          <option value="scratch" ${d.type==="scratch"?"selected":""}>🟠 Skramme</option>
+          <option value="crack" ${d.type==="crack"?"selected":""}>⚡ Revne</option>
+          <option value="other" ${d.type==="other"?"selected":""}>❓ Andet</option>
+        </select>
+        <button onclick="window._removeDamage(${i})" style="background:var(--red-l);color:var(--red);border:1px solid rgba(220,38,38,0.3);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:inherit">🗑</button>
+      </div>
+      <textarea class="inp-sm" placeholder="📝 Beskrivelse..." oninput="S.damages[${i}].description=this.value">${d.description||""}</textarea>
+      <div class="photo-slot mt-8" id="dmg-ps-${i}"></div>`;
+    c.appendChild(div);
+    renderDamagePhotos(i);
+  });
+}
+
+function renderDamagePhotos(i) {
+  const d = S.damages[i];
+  const photos = d.photos||[];
+  const max=4;
+  const wrap=document.getElementById(`dmg-ps-${i}`);
+  if(!wrap) return;
+  wrap.innerHTML=`
+    <div class="photo-slot-label" style="color:${photos.length>=max?"var(--green)":"var(--muted)"}">
+      ${photos.length>=max?"✅":"📸"} Billeder af skade
+      <span class="badge" style="background:${photos.length>=max?"#DCFCE7":"#EBF2FF"};color:${photos.length>=max?"#16A34A":"#2563EB"}">${photos.length}/${max}</span>
+    </div>
+    <div class="photo-grid" id="dpg-${i}">
+      ${photos.map((ph,j)=>`<div class="photo-thumb"><img src="${ph.url}" style="border-color:var(--red)">
+        <button class="photo-remove" onclick="window._removeDamagePhoto(${i},${j})">×</button></div>`).join("")}
+      ${photos.length<max?`<button class="photo-add" style="border-color:var(--red);color:var(--red)" onclick="document.getElementById('dmg-fi-${i}').click()">+</button>`:""}
+    </div>
+    <input type="file" id="dmg-fi-${i}" accept="image/*" multiple capture="environment" style="display:none"
+      onchange="window._handleDamagePhoto(${i},this)">`;
+}
+
+window._handleDamagePhoto = async (i, input) => {
+  if (!S.currentCarId) { toast("💾 Gem bilen først"); return; }
+  const files = Array.from(input.files);
+  const current = S.damages[i].photos||[];
+  const remaining = 4 - current.length;
+  const dpg = document.getElementById(`dpg-${i}`);
+  files.slice(0,remaining).forEach(()=>{
+    const ph=document.createElement("div"); ph.className="photo-uploading"; ph.textContent="⏳"; dpg?.appendChild(ph);
+  });
+  for (let j=0; j<Math.min(files.length,remaining); j++) {
+    const dataUrl = await new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result);r.readAsDataURL(files[j]);});
+    try {
+      const result = await uploadPhoto(dataUrl, S.currentCarId, `damage_${i}`, current.length+j);
+      S.damages[i].photos = [...(S.damages[i].photos||[]), result];
+      toast("📸 Skadefoto uploadet");
+    } catch(e) { toast("❌ Upload fejl: "+e.message, 4000); }
+  }
+  renderDamagePhotos(i);
+};
+
+window._removeDamagePhoto = async (i,j) => {
+  const ph = S.damages[i].photos[j];
+  if (ph?.storagePath) await deletePhoto(ph.storagePath);
+  S.damages[i].photos.splice(j,1);
+  renderDamagePhotos(i);
+};
+window.addDamage = () => { S.damages.push({area:"",type:"",description:"",photos:[]}); renderDamages(); };
+window._removeDamage = async (i) => {
+  // delete all photos for this damage
+  for (const ph of (S.damages[i].photos||[])) {
+    if (ph?.storagePath) await deletePhoto(ph.storagePath);
+  }
+  S.damages.splice(i,1); renderDamages();
+};
+
+// ─── Docs / Diverse ───────────────────────────────────────────────────────────
+const DOCS_MED  = [["📒 Service bog","serviceBog"],["📄 Reg. attest del 1","regAttest1"],["📄 Reg. attest del 2","regAttest2"],["📜 COC","coc"],["🚗 Prøvekørt","proevekort"],["🔌 Lade kabler","ladekabel"]];
+const DOCS_SALG = [["📊 CarVertical report","carVertical"],["📱 Digital service rapport","digitalService"],["📋 Udstyrs liste","udstyrsliste"],["💰 Leasingforslag","leasingforslag"]];
+
+function renderDocs() {
+  renderDocGroup("docs-med-bilen", DOCS_MED);
+  renderDocGroup("docs-salgsmappe", DOCS_SALG);
+  updateDocsCount();
+}
+function renderDocGroup(cid, defs) {
+  const c=document.getElementById(cid); c.innerHTML="";
+  defs.forEach(([label,key])=>{
+    const row=document.createElement("div");
+    row.className="check-row"+(S.docs[key]?" checked":"");
+    row.innerHTML=`<div class="check-box">${S.docs[key]?"✓":"○"}</div><span class="check-label">${label}</span>${!S.docs[key]?`<span class="check-hint">tryk for at markere</span>`:""}`;
+    row.addEventListener("click",()=>{S.docs[key]=!S.docs[key]; renderDocGroup(cid,defs); updateDocsCount();});
+    c.appendChild(row);
+  });
+}
+function updateDocsCount() {
+  const n=Object.entries(S.docs).filter(([,v])=>v===true).length;
+  document.getElementById("docs-count").textContent=`✅ ${n} punkter markeret`;
+}
+
+// ─── Leasing ──────────────────────────────────────────────────────────────────
+function calcLeasingMath({BAP,FA,BFRD,LPM,FIA,UD}) {
+  const BAM=Math.floor((new Date()-new Date(BFRD))/(1000*60*60*24*30.4375));
+  let AP=BAM>=37?0.005:BAM>=4?0.01:0.02;
+  const AIP=LPM*AP*FA, RA=FA-AIP, RAP=RA*0.038, TAP=AIP+RAP, APM=TAP/LPM;
+  const FIS=BAP-(UD/100)*BAP, FIP=FIS*(FIA/100), MFS=FIP/LPM;
+  const MLY=APM+MFS+90, Udbetaling=(UD/100)*BAP;
+  return {BAM,AP,AIP,RA,RAP,TAP,APM,FIS,FIP,MFS,MLY,Udbetaling,BAP,FA,LPM,FIA,UD};
+}
+window.calcLeasing = () => {
+  const BAP=parseFloat(document.getElementById("l-BAP").value);
+  const FA=parseFloat(document.getElementById("l-FA").value);
+  const BFRD=document.getElementById("l-BFRD").value;
+  let hasErr=false;
+  [["l-BAP","err-BAP",isNaN(BAP)||!BAP],["l-FA","err-FA",isNaN(FA)||!FA],["l-BFRD","err-BFRD",!BFRD]].forEach(([inp,err,bad])=>{
+    document.getElementById(inp).classList.toggle("error",bad);
+    document.getElementById(err).style.display=bad?"inline":"none";
+    if(bad) hasErr=true;
+  });
+  document.getElementById("leasing-error").style.display=hasErr?"block":"none";
+  if(hasErr) return;
+  const LPM=parseInt(document.getElementById("l-LPM").value)||12;
+  const FIA=parseFloat(document.getElementById("l-FIA").value)||5;
+  const UD=parseFloat(document.getElementById("l-UD").value)||15;
+  S.leasingResult=calcLeasingMath({BAP,FA,BFRD,LPM,FIA,UD});
+  S.leasing={BAP,FA,BFRD,LPM,FIA,UD};
+  renderLeasingResult();
+  document.getElementById("leasing-result").style.display="block";
+};
+
+function renderLeasingResult() {
+  const r=S.leasingResult; if(!r) return;
+  const m=S.showMoms?1.25:1;
+  const kr=v=>Math.round(v).toLocaleString("da-DK")+" kr.";
+  const cards=[
+    {label:"Månedlig ydelse MLY",val:Math.round(r.MLY*m),big:true,color:"var(--green)",light:"var(--green-l)"},
+    {label:"Udbetaling UD",val:Math.round(r.Udbetaling*m),color:"var(--blue)",light:"var(--blue-l)"},
+    {label:"Restværdi FIS",val:Math.round(r.FIS),color:"var(--orange)",light:"var(--orange-l)"},
+    {label:"Bilens pris BAP",val:Math.round(r.BAP),color:"var(--purple)",light:"var(--purple-l)"},
+  ];
+  document.getElementById("leasing-cards").innerHTML=cards.map(c=>`
+    <div class="leasing-card" style="background:${c.light};border-color:${c.color}20">
+      <div class="lc-label" style="color:${c.color}">${c.label}</div>
+      <div class="lc-val" style="font-size:${c.big?22:17}px;color:${c.color}">${c.val.toLocaleString("da-DK")} kr.</div>
+    </div>`).join("");
+  const note=document.getElementById("moms-note");
+  if(S.showMoms){note.style.display="block";note.textContent=`Ekskl. moms: MLY ${kr(r.MLY)} · UD ${kr(r.Udbetaling)}`;}
+  else note.style.display="none";
+  document.getElementById("excl-label").style.color=S.showMoms?"var(--muted)":"var(--green)";
+  document.getElementById("incl-label").style.color=S.showMoms?"var(--green)":"var(--muted)";
+  document.getElementById("moms-toggle").style.background=S.showMoms?"var(--green)":"var(--border)";
+  document.getElementById("moms-knob").style.left=S.showMoms?"22px":"3px";
+  const pct=v=>(v*100).toFixed(2)+"%";
+  const rows=[
+    ["FIA","Finansieringsrente",r.FIA+"%"],["UD","Udbetalingsprocent",r.UD+"%"],
+    ["FA","Afgift",kr(r.FA)],["BAP","Bilens værdi",kr(r.BAP)],
+    ["BFRD","1. reg.dato",S.leasing.BFRD],["LPM","Periode",r.LPM+" mdr."],
+    ["BAM","Bilens alder",r.BAM+" mdr."],["AP","Afgiftsprocent",pct(r.AP)],
+    ["AIP","Afgift i perioden",kr(r.AIP)],["RA","Restafgift",kr(r.RA)],
+    ["RAP","Restafgift ×3,8%",kr(r.RAP)],["TAP","Total afgift",kr(r.TAP)],
+    ["APM","Afgift/måned",kr(r.APM)],["FIS","Finansieringssum",kr(r.FIS)],
+    ["FIP","Finansiering i perioden",kr(r.FIP)],["MFS","Månedlig finansiering",kr(r.MFS)],
+    ["MLY","Månedlig ydelse (+90)",kr(r.MLY)],
+  ];
+  document.getElementById("details-table").innerHTML=
+    `<div style="font-size:10px;color:var(--blue);font-weight:800;letter-spacing:1.5px;margin-bottom:12px;text-transform:uppercase">📊 Beregningsdetaljer</div>`+
+    rows.map(([code,desc,val])=>`<div class="details-row"><div><span class="details-code">${code}</span><span class="details-desc">${desc}</span></div><span class="details-val">${val}</span></div>`).join("");
+}
+window.toggleMoms=()=>{S.showMoms=!S.showMoms; if(S.leasingResult) renderLeasingResult();};
+window.toggleDetails=()=>{
+  S.showDetails=!S.showDetails;
+  document.getElementById("details-table").style.display=S.showDetails?"block":"none";
+  document.getElementById("details-toggle-btn").textContent=S.showDetails?"🔼 Skjul beregningsdetaljer":"🔽 Vis beregningsdetaljer";
+};
+
+// ─── Image compression ────────────────────────────────────────────────────────
+function compressImage(dataUrl, maxBytes) {
+  return new Promise(resolve => {
+    const img=new Image();
+    img.onload=()=>{
+      const MAX=maxBytes||300*1024;
+      let scale=1;
+      const MAX_DIM=1400;
+      if(img.width>MAX_DIM||img.height>MAX_DIM) scale=MAX_DIM/Math.max(img.width,img.height);
+      const tryCompress=(q)=>{
+        const canvas=document.createElement("canvas");
+        canvas.width=Math.round(img.width*scale); canvas.height=Math.round(img.height*scale);
+        canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
+        const result=canvas.toDataURL("image/jpeg",q);
+        const bytes=(result.length-result.indexOf(",")-1)*0.75;
+        if(bytes<=MAX||q<=0.15) resolve(result);
+        else tryCompress(Math.max(0.1,q-0.1));
+      };
+      tryCompress(0.85);
+    };
+    img.onerror=()=>resolve(dataUrl);
+    img.src=dataUrl;
+  });
+}
+
+async function compressAllPhotosForPDF() {
+  const map=new Map();
+  const all=[
+    ...Object.values(S.photos).flat().map(ph=>ph.url),
+    ...S.damages.flatMap(d=>(d.photos||[]).map(ph=>ph.url)),
+  ];
+  const unique=[...new Set(all.filter(Boolean))];
+  await Promise.all(unique.map(async url=>{
+    try {
+      const res=await fetch(url);
+      const blob=await res.blob();
+      const dataUrl=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(blob);});
+      map.set(url, await compressImage(dataUrl,300*1024));
+    } catch { map.set(url,url); }
+  }));
+  return map;
+}
+
+// ─── Rapport ──────────────────────────────────────────────────────────────────
+function renderRapportSummary() {
+  const items=[
+    {icon:"🚗",label:"Køretøj",val:[S.car.make,S.car.model,S.car.regNumber].filter(Boolean).join(" ")||"-",color:"var(--blue)"},
+    {icon:"📷",label:"Fotos",val:Object.values(S.photos).flat().length+" billeder uploadet",color:"var(--purple)"},
+    {icon:"🔧",label:"Dæk",val:S.tires.filter(t=>t.size).length+"/4 dæk dokumenteret",color:"var(--orange)"},
+    {icon:"💥",label:"Skader",val:S.damages.length+" registreret",color:"var(--red)"},
+    {icon:"📁",label:"Diverse",val:Object.entries(S.docs).filter(([,v])=>v===true).length+" markeret",color:"var(--teal)"},
+    {icon:"💰",label:"Leasing",val:S.leasingResult?Math.round(S.leasingResult.MLY).toLocaleString("da-DK")+" kr./md.":"Ikke beregnet",color:"var(--green)"},
+  ];
+  document.getElementById("rapport-summary").innerHTML=items.map(it=>`
+    <div class="rapport-item" style="border-color:${it.color}20">
+      <span style="font-size:22px">${it.icon}</span>
+      <div><div style="font-size:10px;color:${it.color};font-weight:700;text-transform:uppercase;letter-spacing:0.5px">${it.label}</div>
+      <div style="font-size:13px;color:var(--text);font-weight:600;margin-top:1px">${it.val}</div></div>
+    </div>`).join("");
+}
+
+window.generateReport = async () => {
+  const btn=document.querySelector('[onclick="generateReport()"]');
+  const orig=btn?.textContent||"";
+  if(btn){btn.textContent="⏳ Henter billeder...";btn.disabled=true;}
+  const photoMap=await compressAllPhotosForPDF();
+  const p=url=>photoMap.get(url)||url;
+  if(btn){btn.textContent=orig;btn.disabled=false;}
+  const lr=S.leasingResult||(S.leasing.BAP&&S.leasing.FA&&S.leasing.BFRD?calcLeasingMath({BAP:parseFloat(S.leasing.BAP),FA:parseFloat(S.leasing.FA),BFRD:S.leasing.BFRD,LPM:parseInt(S.leasing.LPM),FIA:parseFloat(S.leasing.FIA),UD:parseFloat(S.leasing.UD)}):null);
+  const tireTypeMap={summer:"Summer/Sommer",winter:"Winter/Vinter",allseason:"All-Season/Helårs"};
+  const tireLabels=["Front Left / Forhjul venstre","Front Right / Forhjul højre","Rear Left / Baghjul venstre","Rear Right / Baghjul højre"];
+  const moms=S.showMoms?1.25:1;
+  const c=S.car;
+  const win=window.open("","_blank");
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>AnkomstTjek - ${c.regNumber||"N/A"}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:#F7F8FC;color:#1A2340}
+  .cover{background:linear-gradient(135deg,#1A2340,#2563EB);color:#fff;padding:50px 50px 40px;position:relative;overflow:hidden}
+  .cover h1{font-size:38px;font-weight:900;letter-spacing:-1px}.cover h2{font-size:20px;font-weight:400;color:rgba(255,255,255,.7);margin-top:6px}
+  .cover .meta{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:16px}.cover .mi{font-size:12px;color:rgba(255,255,255,.6)}.cover .mi strong{color:#fff;font-size:15px;display:block}
+  .section{background:#fff;margin:20px 40px;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+  .sh{padding:12px 22px;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;display:flex;justify-content:space-between}
+  .sb{padding:22px}.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .field .lbl{font-size:10px;color:#6B7A99;font-weight:600;text-transform:uppercase}.field .val{font-size:14px;font-weight:600;margin-top:3px;padding-bottom:6px;border-bottom:2px solid #EEF2FF}
+  .pg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.pg img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
+  .tc{background:#F8FAFF;border:1px solid #E2E8F4;border-radius:10px;padding:14px}.tc h4{font-size:11px;color:#2563EB;font-weight:700;margin-bottom:10px;text-transform:uppercase}
+  .dc{border:1px solid #FEE2E2;background:#FFF8F8;border-radius:10px;padding:14px;margin-bottom:10px}.dc h4{color:#DC2626;font-size:13px;font-weight:700}
+  .cr{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #F0F4FF;font-size:12px}
+  .dot{width:13px;height:13px;border-radius:3px;display:inline-block;flex-shrink:0}.dy{background:#16A34A}.dn{background:#e5e7eb;border:1px solid #d1d5db}
+  .lb{background:linear-gradient(135deg,#1A2340,#2563EB);color:#fff;border-radius:12px;padding:28px;margin:8px 0}
+  .lm{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px}
+  .li .ll{font-size:10px;color:rgba(255,255,255,.6);text-transform:uppercase}.li .lv{font-size:26px;font-weight:900;color:#93C5FD}.li .lv.big{font-size:36px;color:#fff}
+  .badge{display:inline-block;background:#EBF2FF;color:#2563EB;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+  .footer{text-align:center;padding:28px;color:#6B7A99;font-size:11px}
+  @media print{body{background:#fff}.section{box-shadow:none}}
+</style></head><body>
+<div class="cover">
+  <div style="font-size:11px;color:#93C5FD;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;font-weight:700">🚗 AnkomstTjek &mdash; Køretøjsrapport</div>
+  <h1>${c.make||"-"} ${c.model||""}</h1><h2>${c.regNumber||"-"} &middot; ${c.year||"-"} &middot; ${c.color||"-"}</h2>
+  <div class="meta">
+    <div class="mi"><strong>${c.km?parseInt(c.km).toLocaleString("da-DK")+" km":"-"}</strong>Kilometerstand</div>
+    <div class="mi"><strong>${c.receivedDate||"-"}</strong>Modtagelsesdato</div>
+    <div class="mi"><strong>${c.vin||"-"}</strong>VIN / Stelnummer</div>
+    <div class="mi"><strong>${c.condition||"-"}</strong>Stand</div>
+  </div>
+  <div style="position:absolute;bottom:16px;right:28px;font-size:10px;color:rgba(255,255,255,.4)">Generated ${new Date().toLocaleDateString("da-DK")}</div>
+</div>
+<div class="section"><div class="sh" style="background:#EBF2FF;color:#2563EB">🚗 Køretøjsdata</div>
+<div class="sb"><div class="g2">
+  <div class="field"><div class="lbl">Mærke</div><div class="val">${c.make||"-"}</div></div>
+  <div class="field"><div class="lbl">Model</div><div class="val">${c.model||"-"}</div></div>
+  <div class="field"><div class="lbl">Reg.nr.</div><div class="val">${c.regNumber||"-"}</div></div>
+  <div class="field"><div class="lbl">VIN</div><div class="val">${c.vin||"-"}</div></div>
+  <div class="field"><div class="lbl">År</div><div class="val">${c.year||"-"}</div></div>
+  <div class="field"><div class="lbl">Farve</div><div class="val">${c.color||"-"}</div></div>
+  <div class="field"><div class="lbl">Kilometer</div><div class="val">${c.km?parseInt(c.km).toLocaleString("da-DK")+" km":"-"}</div></div>
+  <div class="field"><div class="lbl">Stand</div><div class="val">${c.condition||"-"}</div></div>
+  <div class="field"><div class="lbl">Sidste service</div><div class="val">${c.lastServiceDate||"-"}${c.lastServiceKm?" &middot; "+parseInt(c.lastServiceKm).toLocaleString("da-DK")+" km":""}</div></div>
+  <div class="field"><div class="lbl">Næste service</div><div class="val">${c.nextServiceDate||"-"}${c.nextServiceKm?" &middot; "+parseInt(c.nextServiceKm).toLocaleString("da-DK")+" km":""}</div></div>
+</div></div></div>
+${Object.entries({"📷 Fælg FL":S.photos.wheel_fl,"📷 Fælg FR":S.photos.wheel_fr,"📷 Fælg RL":S.photos.wheel_rl,"📷 Fælg RR":S.photos.wheel_rr,"📷 Forfra":S.photos.front,"📷 Bagfra":S.photos.rear,"📷 Venstre side":S.photos.left,"📷 Højre side":S.photos.right,"📷 Kilometertæller":S.photos.odometer,"📷 Instrumentering":S.photos.dashboard,"📷 Interiør front":S.photos.interior_front,"📷 Interiør bag":S.photos.interior_rear,"📷 Bagagerum":S.photos.trunk})
+  .filter(([,photos])=>photos.length>0)
+  .map(([t,photos])=>`<div class="section"><div class="sh" style="background:#EDE9FE;color:#7C3AED">${t}</div><div class="sb"><div class="pg">${photos.map(ph=>`<img src="${p(ph.url)}">`).join("")}</div></div></div>`).join("")}
+<div class="section"><div class="sh" style="background:#FFF0E6;color:#EA580C">🔧 Dæk og Fælge</div>
+<div class="sb"><div class="g2">${S.tires.map((t,i)=>`<div class="tc"><h4>${tireLabels[i]}</h4>
+  <div class="field"><div class="lbl">Størrelse</div><div class="val">${t.size||"-"}</div></div>
+  <div class="field"><div class="lbl">Mærke</div><div class="val">${t.brand||"-"}</div></div>
+  <div class="field"><div class="lbl">DOT</div><div class="val">${t.dot||"-"}</div></div>
+  <div class="field"><div class="lbl">Mønster</div><div class="val">${t.tread?t.tread+" mm":"-"}</div></div>
+  <div style="margin-top:8px"><span class="badge">${tireTypeMap[t.type]||t.type||"-"}</span></div>
+</div>`).join("")}</div>
+${S.extraWheels.length>0?`<div style="margin-top:16px;padding-top:14px;border-top:1px solid #eee"><strong>Ekstra fælge:</strong> ${S.extraWheels.map(w=>w.description).join(", ")}</div>`:""}
+</div></div>
+${S.damages.length>0?`<div class="section"><div class="sh" style="background:#FEE2E2;color:#DC2626">💥 Skader og Mangler</div><div class="sb">${S.damages.map(d=>`<div class="dc"><h4>${d.area||"-"} &mdash; ${d.type==="dent"?"Bule":d.type==="scratch"?"Skramme":d.type==="crack"?"Revne":d.type||"-"}</h4><p style="margin-top:6px;font-size:12px;color:#555">${d.description||""}</p>${d.photos?.length?`<div class="pg" style="grid-template-columns:repeat(3,1fr);margin-top:10px">${d.photos.map(ph=>`<img src="${p(ph.url)}">`).join("")}</div>`:""}</div>`).join("")}</div></div>`:""}
+<div class="section"><div class="sh" style="background:#CCFBF1;color:#0D9488">📁 Diverse</div><div class="sb">
+  <div class="g2">${[["📒 Service bog",S.docs.serviceBog],["📄 Reg. attest del 1",S.docs.regAttest1],["📄 Reg. attest del 2",S.docs.regAttest2],["📜 COC",S.docs.coc],["🚗 Prøvekørt",S.docs.proevekort],["🔌 Ladekabel",S.docs.ladekabel]].map(([l,v])=>`<div class="cr"><div class="dot ${v?"dy":"dn"}"></div>${l}: <strong>${v?"Ja":"Nej"}</strong></div>`).join("")}</div>
+  <div class="cr" style="margin-top:8px">🔑 <strong>Antal nøgler:</strong> ${S.docs.noegleAntal||"-"}</div>
+  <div style="margin-top:14px;padding-top:12px;border-top:1px solid #f0f4ff"><strong style="font-size:11px;color:#6B7A99;text-transform:uppercase">Til salgsmappen</strong>
+  <div class="g2" style="margin-top:8px">${[["📊 CarVertical",S.docs.carVertical],["📱 Digital service",S.docs.digitalService],["📋 Udstyrsliste",S.docs.udstyrsliste],["💰 Leasingforslag",S.docs.leasingforslag]].map(([l,v])=>`<div class="cr"><div class="dot ${v?"dy":"dn"}"></div>${l}: <strong>${v?"Ja":"Nej"}</strong></div>`).join("")}</div></div>
+</div></div>
+${lr?`<div class="section"><div class="sh" style="background:#DCFCE7;color:#16A34A">💰 Leasing ${S.showMoms?"(inkl. moms)":"(ekskl. moms)"}</div><div class="sb"><div class="lb">
+  <div style="font-size:10px;color:rgba(255,255,255,.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">Leasing &middot; ${S.showMoms?"Inkl. 25% moms":"Ekskl. moms"}</div>
+  <div class="lm">
+    <div class="li"><div class="ll">MLY</div><div class="lv big">${Math.round(lr.MLY*moms).toLocaleString("da-DK")} kr.</div></div>
+    <div class="li"><div class="ll">Udbetaling UD</div><div class="lv">${Math.round(lr.Udbetaling*moms).toLocaleString("da-DK")} kr.</div></div>
+    <div class="li"><div class="ll">Restværdi FIS</div><div class="lv">${Math.round(lr.FIS).toLocaleString("da-DK")} kr.</div></div>
+    <div class="li"><div class="ll">Bilens pris BAP</div><div class="lv">${Math.round(lr.BAP).toLocaleString("da-DK")} kr.</div></div>
+  </div>
+</div></div></div>`:""}
+<div class="footer">🚗 AnkomstTjek &middot; ${new Date().toLocaleString("da-DK")} &middot; ${c.regNumber||""} ${c.make||""} ${c.model||""}</div>
+</body></html>`);
+  win.document.close();
+  setTimeout(()=>win.print(),800);
+};
+
+// ─── Firebase Firestore: Save / Load ─────────────────────────────────────────
+function buildLabel() {
+  const p=[S.car.make,S.car.model,S.car.regNumber].filter(Boolean);
+  return p.length>0?p.join(" · "):"Unavngiven bil";
+}
+function updateHeaderSub() {
+  const p=[S.car.make,S.car.model].filter(Boolean).join(" ");
+  document.getElementById("header-sub").textContent=p?p+(S.car.regNumber?" · "+S.car.regNumber:""):"Ingen bil valgt";
+}
+
+async function saveData() {
+  readFormToState();
+  const btn=document.getElementById("save-btn");
+  btn.textContent="⏳ Gemmer..."; btn.disabled=true;
+  try {
+    const id=S.currentCarId||("car_"+Date.now());
+    S.currentCarId=id;
+    const snap={
+      car: S.car,
+      // Store photo metadata (url + storagePath) — NOT the raw base64
+      photos: S.photos,
+      tires: S.tires,
+      extraWheels: S.extraWheels,
+      // damages: store area/type/description + photo metadata
+      damages: S.damages,
+      docs: S.docs,
+      leasing: S.leasing,
+      savedAt: Date.now(),
+      label: buildLabel(),
+    };
+    await setDoc(doc(db,"cars",id), snap);
+    // Update index doc
+    await setDoc(doc(db,"meta","car_index"), {
+      cars: S.carList.map(c=>c.id===id?{id,label:snap.label,savedAt:snap.savedAt}:c)
+        .concat(S.carList.find(c=>c.id===id)?[]:[ {id,label:snap.label,savedAt:snap.savedAt} ])
+    });
+    // Refresh local list
+    S.carList = S.carList.find(c=>c.id===id)
+      ? S.carList.map(c=>c.id===id?{id,label:snap.label,savedAt:snap.savedAt}:c)
+      : [...S.carList, {id,label:snap.label,savedAt:snap.savedAt}];
+    btn.textContent="✅"; btn.style.background="var(--green-l)"; btn.style.color="var(--green)"; btn.style.borderColor="rgba(22,163,74,0.3)";
+    setTimeout(()=>{btn.textContent="💾 Gem";btn.style.background="var(--blue-l)";btn.style.color="var(--blue)";btn.style.borderColor="rgba(37,99,235,0.3)";btn.disabled=false;},2000);
+    renderCarList();
+    updateHeaderSub();
+    toast("✅ Gemt i Firebase");
+  } catch(e) {
+    toast("❌ Gem fejlede: "+e.message, 5000);
+    btn.textContent="💾 Gem"; btn.disabled=false;
+  }
+}
+
+async function loadCar(id) {
+  setLoading("Henter bil...");
+  try {
+    const snap=await getDoc(doc(db,"cars",id));
+    if(snap.exists()) { applySnapshot(snap.data()); S.currentCarId=id; }
+    closeSearch(); switchTab(0);
+    toast("🚗 Bil indlæst");
+  } catch(e) { toast("❌ Fejl: "+e.message, 4000); }
+  setLoading(null);
+}
+
+function applySnapshot(d) {
+  if(d.car) S.car={...S.car,...d.car};
+  if(d.photos) S.photos={...S.photos,...d.photos};
+  if(d.tires) S.tires=d.tires;
+  if(d.extraWheels) S.extraWheels=d.extraWheels;
+  if(d.damages) S.damages=d.damages;
+  if(d.docs) S.docs={...S.docs,...d.docs};
+  if(d.leasing) S.leasing=d.leasing;
+  S.leasingResult=null;
+  writeStateToForm();
+  renderAll();
+  updateHeaderSub();
+}
+
+function readFormToState() {
+  S.car.make=document.getElementById("car-make").value;
+  S.car.model=document.getElementById("car-model").value;
+  S.car.regNumber=document.getElementById("car-reg").value;
+  S.car.vin=document.getElementById("car-vin").value;
+  S.car.year=document.getElementById("car-year").value;
+  S.car.color=document.getElementById("car-color").value;
+  S.car.km=document.getElementById("car-km").value;
+  S.car.receivedDate=document.getElementById("car-received").value;
+  S.car.condition=document.getElementById("car-condition").value;
+  S.car.lastServiceDate=document.getElementById("last-svc-date").value;
+  S.car.lastServiceKm=document.getElementById("last-svc-km").value;
+  S.car.nextServiceDate=document.getElementById("next-svc-date").value;
+  S.car.nextServiceKm=document.getElementById("next-svc-km").value;
+  S.docs.noegleAntal=document.getElementById("doc-nogler").value;
+  S.leasing.BAP=document.getElementById("l-BAP").value;
+  S.leasing.FA=document.getElementById("l-FA").value;
+  S.leasing.BFRD=document.getElementById("l-BFRD").value;
+  S.leasing.LPM=document.getElementById("l-LPM").value;
+  S.leasing.FIA=document.getElementById("l-FIA").value;
+  S.leasing.UD=document.getElementById("l-UD").value;
+  updateHeaderSub();
+}
+
+function writeStateToForm() {
+  document.getElementById("car-make").value=S.car.make||"";
+  document.getElementById("car-model").value=S.car.model||"";
+  document.getElementById("car-reg").value=S.car.regNumber||"";
+  document.getElementById("car-vin").value=S.car.vin||"";
+  document.getElementById("car-year").value=S.car.year||"";
+  document.getElementById("car-color").value=S.car.color||"";
+  document.getElementById("car-km").value=S.car.km||"";
+  document.getElementById("car-received").value=S.car.receivedDate||"";
+  document.getElementById("car-condition").value=S.car.condition||"";
+  document.getElementById("last-svc-date").value=S.car.lastServiceDate||"";
+  document.getElementById("last-svc-km").value=S.car.lastServiceKm||"";
+  document.getElementById("next-svc-date").value=S.car.nextServiceDate||"";
+  document.getElementById("next-svc-km").value=S.car.nextServiceKm||"";
+  document.getElementById("doc-nogler").value=S.docs.noegleAntal||"";
+  document.getElementById("l-BAP").value=S.leasing.BAP||"";
+  document.getElementById("l-FA").value=S.leasing.FA||"";
+  document.getElementById("l-BFRD").value=S.leasing.BFRD||"";
+  document.getElementById("l-LPM").value=S.leasing.LPM||12;
+  document.getElementById("l-FIA").value=S.leasing.FIA||5;
+  document.getElementById("l-UD").value=S.leasing.UD||15;
+  document.getElementById("fia-val").textContent=(S.leasing.FIA||5)+"%";
+  document.getElementById("ud-val").textContent=(S.leasing.UD||15)+"%";
+}
+
+window.newCar = () => {
+  S.car={make:"",model:"",regNumber:"",vin:"",year:"",color:"",km:"",receivedDate:new Date().toISOString().split("T")[0],condition:"",lastServiceDate:"",lastServiceKm:"",nextServiceDate:"",nextServiceKm:""};
+  S.photos={wheel_fl:[],wheel_fr:[],wheel_rl:[],wheel_rr:[],front:[],rear:[],left:[],right:[],odometer:[],dashboard:[],interior_front:[],interior_rear:[],trunk:[]};
+  S.tires=[{},{},{},{}]; S.extraWheels=[]; S.damages=[];
+  S.docs={serviceBog:false,regAttest1:false,regAttest2:false,coc:false,proevekort:false,noegleAntal:"",ladekabel:false,carVertical:false,digitalService:false,udstyrsliste:false,leasingforslag:false};
+  S.leasing={BAP:"",FA:"",BFRD:"",LPM:12,FIA:5,UD:15}; S.leasingResult=null; S.currentCarId=null;
+  writeStateToForm(); renderAll(); closeSearch(); switchTab(0); updateHeaderSub();
+};
+
+// ─── Car list / search ────────────────────────────────────────────────────────
+function renderCarList() {
+  const query=document.getElementById("search-input").value.toLowerCase();
+  const filtered=[...S.carList].sort((a,b)=>b.savedAt-a.savedAt).filter(c=>!query||c.label.toLowerCase().includes(query));
+  const c=document.getElementById("car-list");
+  if(filtered.length===0){
+    c.innerHTML=`<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center">${S.carList.length===0?"🚗 Ingen gemte biler endnu":"❌ Ingen resultater"}</div>`;
+    return;
+  }
+  c.innerHTML=filtered.map(car=>`
+    <button class="car-list-item${car.id===S.currentCarId?" active":""}" onclick="window._loadCar('${car.id}')">
+      <div style="flex:1;min-width:0"><div class="car-name">${car.label}</div>
+      <div class="car-date">📅 ${new Date(car.savedAt).toLocaleDateString("da-DK",{day:"2-digit",month:"short",year:"2-digit"})}</div></div>
+      ${car.id===S.currentCarId?`<span class="car-active-badge">Aktiv</span>`:""}
+    </button>`).join("");
+}
+window._loadCar = loadCar;
+
+function openSearch() {
+  document.getElementById("search-box").classList.add("open");
+  document.getElementById("search-input").classList.add("open");
+  document.getElementById("search-dropdown").classList.add("open");
+  document.getElementById("search-toggle").textContent="▲";
+  renderCarList();
+}
+function closeSearch() {
+  document.getElementById("search-box").classList.remove("open");
+  document.getElementById("search-input").classList.remove("open");
+  document.getElementById("search-dropdown").classList.remove("open");
+  document.getElementById("search-toggle").textContent="▼";
+}
+
+function renderAll() {
+  renderTires();
+  renderExtraWheels();
+  renderDamages();
+  renderDocs();
+  ALL_PHOTO_DEFS.forEach(([l,k,m])=>refreshPhotoSlot(k,l,m));
+  document.getElementById("leasing-result").style.display="none";
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+async function init() {
+  initTabs();
+  initPhotos();
+  renderAll();
+  writeStateToForm();
+  switchTab(0);
+  document.getElementById("car-received").value=new Date().toISOString().split("T")[0];
+
+  document.getElementById("search-toggle").addEventListener("click",()=>{
+    document.getElementById("search-dropdown").classList.contains("open")?closeSearch():openSearch();
+  });
+  document.getElementById("search-input").addEventListener("focus",openSearch);
+  document.getElementById("search-input").addEventListener("input",renderCarList);
+  document.getElementById("dd-new-car").addEventListener("click",window.newCar);
+  document.getElementById("new-car-btn").addEventListener("click",window.newCar);
+  document.getElementById("save-btn").addEventListener("click",saveData);
+  document.addEventListener("mousedown",e=>{
+    if(!document.getElementById("search-wrap").contains(e.target)) closeSearch();
+  });
+  ["car-make","car-model","car-reg"].forEach(id=>{
+    document.getElementById(id).addEventListener("input",()=>{
+      S.car[id==="car-make"?"make":id==="car-model"?"model":"regNumber"]=document.getElementById(id).value;
+      updateHeaderSub();
+    });
+  });
+
+  // Load car list from Firestore
+  setLoading("Henter biler fra Firebase...");
+  try {
+    const idxSnap=await getDoc(doc(db,"meta","car_index"));
+    if(idxSnap.exists()) {
+      S.carList=idxSnap.data().cars||[];
+      if(S.carList.length>0) {
+        const latest=[...S.carList].sort((a,b)=>b.savedAt-a.savedAt)[0];
+        const carSnap=await getDoc(doc(db,"cars",latest.id));
+        if(carSnap.exists()) { applySnapshot(carSnap.data()); S.currentCarId=latest.id; }
+      }
+    }
+  } catch(e) { toast("⚠️ Kunne ikke hente data: "+e.message, 5000); }
+  setLoading(null);
+}
+
+init();
+</script>
+</body>
+</html>
