@@ -306,9 +306,8 @@
 // ─── Firebase setup ───────────────────────────────────────────────────────────
 import { initializeApp }                          from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, setDoc, getDoc,
-         collection, getDocs, deleteDoc }         from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getStorage, ref, uploadString,
-         getDownloadURL, deleteObject }           from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+         deleteDoc, writeBatch, collection,
+         query, where, getDocs }                  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBnw2n8wYTtyCmKIO22d7Ki-jy-4ZqR9LM",
@@ -319,9 +318,68 @@ const firebaseConfig = {
   appId: "1:797649580244:web:fc853fabb1b24c056a4b41"
 };
 
-const fbApp  = initializeApp(firebaseConfig);
-const db     = getFirestore(fbApp);
-const storage = getStorage(fbApp);
+const fbApp = initializeApp(firebaseConfig);
+const db    = getFirestore(fbApp);
+
+// ─── Photo storage in Firestore ───────────────────────────────────────────────
+// Each photo is stored as its own document in "photos" collection:
+// { carId, category, index, dataUrl, savedAt }
+// Max doc size = 1 MB → we compress to 200 KB before saving.
+
+async function savePhotoToFirestore(dataUrl, carId, category, photoIndex) {
+  const compressed = await compressImage(dataUrl, 200 * 1024); // 200 KB max
+  const id = `${carId}_${category}_${photoIndex}_${Date.now()}`;
+  await setDoc(doc(db, "photos", id), {
+    carId, category, photoIndex, dataUrl: compressed, savedAt: Date.now()
+  });
+  return { docId: id, dataUrl: compressed };
+}
+
+async function deletePhotoFromFirestore(docId) {
+  try { await deleteDoc(doc(db, "photos", docId)); } catch(e) {}
+}
+
+async function loadPhotosForCar(carId) {
+  // Returns { key: [{docId, dataUrl}, ...] }
+  const result = { wheel_fl:[],wheel_fr:[],wheel_rl:[],wheel_rr:[],
+                   front:[],rear:[],left:[],right:[],
+                   odometer:[],dashboard:[],interior_front:[],interior_rear:[],trunk:[] };
+  try {
+    const q = query(collection(db,"photos"), where("carId","==",carId));
+    const snap = await getDocs(q);
+    snap.forEach(d => {
+      const data = d.data();
+      if (result[data.category]) result[data.category].push({ docId: d.id, dataUrl: data.dataUrl });
+    });
+    // Sort each category by savedAt (stored in docId timestamp part)
+  } catch(e) { console.warn("loadPhotos error", e); }
+  return result;
+}
+
+async function loadDamagePhotosForCar(carId) {
+  // Returns array indexed by damage index: [[{docId,dataUrl},...], ...]
+  const result = {};
+  try {
+    const q = query(collection(db,"photos"), where("carId","==",carId), where("category","==","damage"));
+    const snap = await getDocs(q);
+    snap.forEach(d => {
+      const data = d.data();
+      const idx = data.damageIndex ?? 0;
+      if (!result[idx]) result[idx] = [];
+      result[idx].push({ docId: d.id, dataUrl: data.dataUrl });
+    });
+  } catch(e) {}
+  return result;
+}
+
+async function saveDamagePhotoToFirestore(dataUrl, carId, damageIndex, photoIndex) {
+  const compressed = await compressImage(dataUrl, 200 * 1024);
+  const id = `${carId}_damage_${damageIndex}_${photoIndex}_${Date.now()}`;
+  await setDoc(doc(db,"photos",id), {
+    carId, category:"damage", damageIndex, photoIndex, dataUrl: compressed, savedAt: Date.now()
+  });
+  return { docId: id, dataUrl: compressed };
+}
 
 // ─── Toast helper ─────────────────────────────────────────────────────────────
 function toast(msg, ms=2500) {
@@ -343,13 +401,13 @@ const S = {
   car: { make:"",model:"",regNumber:"",vin:"",year:"",color:"",km:"",
          receivedDate:new Date().toISOString().split("T")[0],condition:"",
          lastServiceDate:"",lastServiceKm:"",nextServiceDate:"",nextServiceKm:"" },
-  // photos: { key: [ {url, storagePath} , ...] }  — URLs are Firebase Storage download URLs
+  // photos: { key: [{docId, dataUrl}, ...] }  — stored in Firestore "photos" collection
   photos: { wheel_fl:[],wheel_fr:[],wheel_rl:[],wheel_rr:[],
             front:[],rear:[],left:[],right:[],
             odometer:[],dashboard:[],interior_front:[],interior_rear:[],trunk:[] },
   tires: [{},{},{},{}],
   extraWheels: [],
-  damages: [],  // damage.photos = [{url, storagePath}]
+  damages: [],  // damage.photos = [{docId, dataUrl}]
   docs: { serviceBog:false,regAttest1:false,regAttest2:false,coc:false,
           proevekort:false,noegleAntal:"",ladekabel:false,
           carVertical:false,digitalService:false,udstyrsliste:false,leasingforslag:false },
@@ -394,24 +452,6 @@ function switchTab(i) {
   if (i===6) renderRapportSummary();
 }
 
-// ─── Firebase Storage: upload one image ──────────────────────────────────────
-async function uploadPhoto(dataUrl, carId, category, index) {
-  const path = `cars/${carId}/${category}_${index}_${Date.now()}.jpg`;
-  const storageRef = ref(storage, path);
-  // compress before uploading
-  const compressed = await compressImage(dataUrl, 1200 * 1024); // 1.2 MB max for storage
-  await uploadString(storageRef, compressed, "data_url");
-  const url = await getDownloadURL(storageRef);
-  return { url, storagePath: path };
-}
-
-async function deletePhoto(storagePath) {
-  try {
-    const storageRef = ref(storage, storagePath);
-    await deleteObject(storageRef);
-  } catch(e) { /* ignore if already deleted */ }
-}
-
 // ─── Photo slots ──────────────────────────────────────────────────────────────
 const PHOTO_DEFS = {
   wheels:   [["🔵 Fælg – Forhjul Venstre","wheel_fl",1],["🔵 Fælg – Forhjul Højre","wheel_fr",1],
@@ -444,7 +484,7 @@ function refreshPhotoSlot(key, label, max) {
       <span class="badge" style="background:${done?"#DCFCE7":"#EBF2FF"};color:${done?"#16A34A":"#2563EB"}">${photos.length}/${max}</span>
     </div>
     <div class="photo-grid" id="pg-${key}">
-      ${photos.map((ph,i)=>`<div class="photo-thumb"><img src="${ph.url}" style="border-color:${ACCENT}">
+      ${photos.map((ph,i)=>`<div class="photo-thumb"><img src="${ph.dataUrl}" style="border-color:${ACCENT}">
         <button class="photo-remove" onclick="window._removePhoto('${key}',${i})">×</button></div>`).join("")}
       ${!done?`<button class="photo-add" style="border-color:${ACCENT};color:${ACCENT}" onclick="window._triggerPhoto('${key}',${max})">+</button>`:""}
     </div>
@@ -465,7 +505,7 @@ window._triggerPhoto = (key) => document.getElementById("fi-"+key)?.click();
 
 window._removePhoto = async (key, idx) => {
   const ph = S.photos[key][idx];
-  if (ph?.storagePath) await deletePhoto(ph.storagePath);
+  if (ph?.docId) await deletePhotoFromFirestore(ph.docId);
   S.photos[key].splice(idx, 1);
   const def = ALL_PHOTO_DEFS.find(d=>d[1]===key);
   if (def) refreshPhotoSlot(key, def[0], def[2]);
@@ -477,23 +517,20 @@ window._handlePhotoFiles = async (key, max, input) => {
   const current = S.photos[key] || [];
   const remaining = max - current.length;
   const toUpload = files.slice(0, remaining);
-  // Show uploading placeholders
   const pg = document.getElementById("pg-"+key);
   toUpload.forEach(() => {
     const ph = document.createElement("div");
-    ph.className = "photo-uploading";
-    ph.textContent = "⏳ Uploader...";
+    ph.className = "photo-uploading"; ph.textContent = "⏳ Gemmer...";
     pg?.appendChild(ph);
   });
   for (let i=0; i<toUpload.length; i++) {
-    const file = toUpload[i];
-    const dataUrl = await new Promise(res => { const r=new FileReader(); r.onload=()=>res(r.result); r.readAsDataURL(file); });
+    const dataUrl = await new Promise(res => { const r=new FileReader(); r.onload=()=>res(r.result); r.readAsDataURL(toUpload[i]); });
     try {
-      const result = await uploadPhoto(dataUrl, S.currentCarId, key, current.length+i);
+      const result = await savePhotoToFirestore(dataUrl, S.currentCarId, key, current.length+i);
       S.photos[key].push(result);
-      toast(`📸 Billede uploadet`);
+      toast(`📸 Billede gemt`);
     } catch(e) {
-      toast("❌ Upload fejlede: "+e.message, 4000);
+      toast("❌ Gem fejlede: "+e.message, 4000);
     }
   }
   const def = ALL_PHOTO_DEFS.find(d=>d[1]===key);
@@ -597,7 +634,7 @@ function renderDamagePhotos(i) {
       <span class="badge" style="background:${photos.length>=max?"#DCFCE7":"#EBF2FF"};color:${photos.length>=max?"#16A34A":"#2563EB"}">${photos.length}/${max}</span>
     </div>
     <div class="photo-grid" id="dpg-${i}">
-      ${photos.map((ph,j)=>`<div class="photo-thumb"><img src="${ph.url}" style="border-color:var(--red)">
+      ${photos.map((ph,j)=>`<div class="photo-thumb"><img src="${ph.dataUrl}" style="border-color:var(--red)">
         <button class="photo-remove" onclick="window._removeDamagePhoto(${i},${j})">×</button></div>`).join("")}
       ${photos.length<max?`<button class="photo-add" style="border-color:var(--red);color:var(--red)" onclick="document.getElementById('dmg-fi-${i}').click()">+</button>`:""}
     </div>
@@ -617,25 +654,24 @@ window._handleDamagePhoto = async (i, input) => {
   for (let j=0; j<Math.min(files.length,remaining); j++) {
     const dataUrl = await new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result);r.readAsDataURL(files[j]);});
     try {
-      const result = await uploadPhoto(dataUrl, S.currentCarId, `damage_${i}`, current.length+j);
+      const result = await saveDamagePhotoToFirestore(dataUrl, S.currentCarId, i, current.length+j);
       S.damages[i].photos = [...(S.damages[i].photos||[]), result];
-      toast("📸 Skadefoto uploadet");
-    } catch(e) { toast("❌ Upload fejl: "+e.message, 4000); }
+      toast("📸 Skadefoto gemt");
+    } catch(e) { toast("❌ Fejl: "+e.message, 4000); }
   }
   renderDamagePhotos(i);
 };
 
 window._removeDamagePhoto = async (i,j) => {
   const ph = S.damages[i].photos[j];
-  if (ph?.storagePath) await deletePhoto(ph.storagePath);
+  if (ph?.docId) await deletePhotoFromFirestore(ph.docId);
   S.damages[i].photos.splice(j,1);
   renderDamagePhotos(i);
 };
 window.addDamage = () => { S.damages.push({area:"",type:"",description:"",photos:[]}); renderDamages(); };
 window._removeDamage = async (i) => {
-  // delete all photos for this damage
   for (const ph of (S.damages[i].photos||[])) {
-    if (ph?.storagePath) await deletePhoto(ph.storagePath);
+    if (ph?.docId) await deletePhotoFromFirestore(ph.docId);
   }
   S.damages.splice(i,1); renderDamages();
 };
@@ -765,19 +801,14 @@ function compressImage(dataUrl, maxBytes) {
 }
 
 async function compressAllPhotosForPDF() {
-  const map=new Map();
-  const all=[
-    ...Object.values(S.photos).flat().map(ph=>ph.url),
-    ...S.damages.flatMap(d=>(d.photos||[]).map(ph=>ph.url)),
+  const map = new Map();
+  const all = [
+    ...Object.values(S.photos).flat().map(ph => ph.dataUrl),
+    ...S.damages.flatMap(d => (d.photos||[]).map(ph => ph.dataUrl)),
   ];
-  const unique=[...new Set(all.filter(Boolean))];
-  await Promise.all(unique.map(async url=>{
-    try {
-      const res=await fetch(url);
-      const blob=await res.blob();
-      const dataUrl=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(blob);});
-      map.set(url, await compressImage(dataUrl,300*1024));
-    } catch { map.set(url,url); }
+  const unique = [...new Set(all.filter(Boolean))];
+  await Promise.all(unique.map(async dataUrl => {
+    map.set(dataUrl, await compressImage(dataUrl, 300*1024));
   }));
   return map;
 }
@@ -862,7 +893,7 @@ window.generateReport = async () => {
 </div></div></div>
 ${Object.entries({"📷 Fælg FL":S.photos.wheel_fl,"📷 Fælg FR":S.photos.wheel_fr,"📷 Fælg RL":S.photos.wheel_rl,"📷 Fælg RR":S.photos.wheel_rr,"📷 Forfra":S.photos.front,"📷 Bagfra":S.photos.rear,"📷 Venstre side":S.photos.left,"📷 Højre side":S.photos.right,"📷 Kilometertæller":S.photos.odometer,"📷 Instrumentering":S.photos.dashboard,"📷 Interiør front":S.photos.interior_front,"📷 Interiør bag":S.photos.interior_rear,"📷 Bagagerum":S.photos.trunk})
   .filter(([,photos])=>photos.length>0)
-  .map(([t,photos])=>`<div class="section"><div class="sh" style="background:#EDE9FE;color:#7C3AED">${t}</div><div class="sb"><div class="pg">${photos.map(ph=>`<img src="${p(ph.url)}">`).join("")}</div></div></div>`).join("")}
+  .map(([t,photos])=>`<div class="section"><div class="sh" style="background:#EDE9FE;color:#7C3AED">${t}</div><div class="sb"><div class="pg">${photos.map(ph=>`<img src="${p(ph.dataUrl)}">`).join("")}</div></div></div>`).join("")}
 <div class="section"><div class="sh" style="background:#FFF0E6;color:#EA580C">🔧 Dæk og Fælge</div>
 <div class="sb"><div class="g2">${S.tires.map((t,i)=>`<div class="tc"><h4>${tireLabels[i]}</h4>
   <div class="field"><div class="lbl">Størrelse</div><div class="val">${t.size||"-"}</div></div>
@@ -873,7 +904,7 @@ ${Object.entries({"📷 Fælg FL":S.photos.wheel_fl,"📷 Fælg FR":S.photos.whe
 </div>`).join("")}</div>
 ${S.extraWheels.length>0?`<div style="margin-top:16px;padding-top:14px;border-top:1px solid #eee"><strong>Ekstra fælge:</strong> ${S.extraWheels.map(w=>w.description).join(", ")}</div>`:""}
 </div></div>
-${S.damages.length>0?`<div class="section"><div class="sh" style="background:#FEE2E2;color:#DC2626">💥 Skader og Mangler</div><div class="sb">${S.damages.map(d=>`<div class="dc"><h4>${d.area||"-"} &mdash; ${d.type==="dent"?"Bule":d.type==="scratch"?"Skramme":d.type==="crack"?"Revne":d.type||"-"}</h4><p style="margin-top:6px;font-size:12px;color:#555">${d.description||""}</p>${d.photos?.length?`<div class="pg" style="grid-template-columns:repeat(3,1fr);margin-top:10px">${d.photos.map(ph=>`<img src="${p(ph.url)}">`).join("")}</div>`:""}</div>`).join("")}</div></div>`:""}
+${S.damages.length>0?`<div class="section"><div class="sh" style="background:#FEE2E2;color:#DC2626">💥 Skader og Mangler</div><div class="sb">${S.damages.map(d=>`<div class="dc"><h4>${d.area||"-"} &mdash; ${d.type==="dent"?"Bule":d.type==="scratch"?"Skramme":d.type==="crack"?"Revne":d.type||"-"}</h4><p style="margin-top:6px;font-size:12px;color:#555">${d.description||""}</p>${d.photos?.length?`<div class="pg" style="grid-template-columns:repeat(3,1fr);margin-top:10px">${d.photos.map(ph=>`<img src="${p(ph.dataUrl)}">`).join("")}</div>`:""}</div>`).join("")}</div></div>`:""}
 <div class="section"><div class="sh" style="background:#CCFBF1;color:#0D9488">📁 Diverse</div><div class="sb">
   <div class="g2">${[["📒 Service bog",S.docs.serviceBog],["📄 Reg. attest del 1",S.docs.regAttest1],["📄 Reg. attest del 2",S.docs.regAttest2],["📜 COC",S.docs.coc],["🚗 Prøvekørt",S.docs.proevekort],["🔌 Ladekabel",S.docs.ladekabel]].map(([l,v])=>`<div class="cr"><div class="dot ${v?"dy":"dn"}"></div>${l}: <strong>${v?"Ja":"Nej"}</strong></div>`).join("")}</div>
   <div class="cr" style="margin-top:8px">🔑 <strong>Antal nøgler:</strong> ${S.docs.noegleAntal||"-"}</div>
@@ -912,29 +943,27 @@ async function saveData() {
   try {
     const id=S.currentCarId||("car_"+Date.now());
     S.currentCarId=id;
+    // Save car data WITHOUT photos (photos stored separately in "photos" collection)
     const snap={
       car: S.car,
-      // Store photo metadata (url + storagePath) — NOT the raw base64
-      photos: S.photos,
       tires: S.tires,
       extraWheels: S.extraWheels,
-      // damages: store area/type/description + photo metadata
-      damages: S.damages,
+      // damages: store without photo data (photos have their own docs)
+      damages: S.damages.map(d=>({area:d.area,type:d.type,description:d.description,
+        photoDocIds:(d.photos||[]).map(p=>p.docId).filter(Boolean)})),
       docs: S.docs,
       leasing: S.leasing,
       savedAt: Date.now(),
       label: buildLabel(),
     };
     await setDoc(doc(db,"cars",id), snap);
-    // Update index doc
-    await setDoc(doc(db,"meta","car_index"), {
-      cars: S.carList.map(c=>c.id===id?{id,label:snap.label,savedAt:snap.savedAt}:c)
-        .concat(S.carList.find(c=>c.id===id)?[]:[ {id,label:snap.label,savedAt:snap.savedAt} ])
-    });
-    // Refresh local list
-    S.carList = S.carList.find(c=>c.id===id)
-      ? S.carList.map(c=>c.id===id?{id,label:snap.label,savedAt:snap.savedAt}:c)
-      : [...S.carList, {id,label:snap.label,savedAt:snap.savedAt}];
+    // Update index
+    const newEntry = {id, label:snap.label, savedAt:snap.savedAt};
+    const existing = S.carList.find(c=>c.id===id);
+    S.carList = existing
+      ? S.carList.map(c=>c.id===id?newEntry:c)
+      : [...S.carList, newEntry];
+    await setDoc(doc(db,"meta","car_index"), { cars: S.carList });
     btn.textContent="✅"; btn.style.background="var(--green-l)"; btn.style.color="var(--green)"; btn.style.borderColor="rgba(22,163,74,0.3)";
     setTimeout(()=>{btn.textContent="💾 Gem";btn.style.background="var(--blue-l)";btn.style.color="var(--blue)";btn.style.borderColor="rgba(37,99,235,0.3)";btn.disabled=false;},2000);
     renderCarList();
@@ -950,7 +979,23 @@ async function loadCar(id) {
   setLoading("Henter bil...");
   try {
     const snap=await getDoc(doc(db,"cars",id));
-    if(snap.exists()) { applySnapshot(snap.data()); S.currentCarId=id; }
+    if(snap.exists()) {
+      const data = snap.data();
+      // Load photos separately
+      setLoading("Henter billeder...");
+      const photoData = await loadPhotosForCar(id);
+      const damagePhotoData = await loadDamagePhotosForCar(id);
+      // Re-attach damage photos
+      if (data.damages) {
+        data.damages = data.damages.map((d,i) => ({
+          ...d,
+          photos: damagePhotoData[i] || []
+        }));
+      }
+      data.photos = photoData;
+      applySnapshot(data);
+      S.currentCarId=id;
+    }
     closeSearch(); switchTab(0);
     toast("🚗 Bil indlæst");
   } catch(e) { toast("❌ Fejl: "+e.message, 4000); }
@@ -1106,7 +1151,14 @@ async function init() {
       if(S.carList.length>0) {
         const latest=[...S.carList].sort((a,b)=>b.savedAt-a.savedAt)[0];
         const carSnap=await getDoc(doc(db,"cars",latest.id));
-        if(carSnap.exists()) { applySnapshot(carSnap.data()); S.currentCarId=latest.id; }
+        if(carSnap.exists()) {
+          const data = carSnap.data();
+          setLoading("Henter billeder...");
+          data.photos = await loadPhotosForCar(latest.id);
+          const dmgPhotos = await loadDamagePhotosForCar(latest.id);
+          if (data.damages) data.damages = data.damages.map((d,i)=>({...d,photos:dmgPhotos[i]||[]}));
+          applySnapshot(data); S.currentCarId=latest.id;
+        }
       }
     }
   } catch(e) { toast("⚠️ Kunne ikke hente data: "+e.message, 5000); }
