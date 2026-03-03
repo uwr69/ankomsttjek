@@ -115,6 +115,12 @@
   #loading-overlay p { margin-top:14px; font-size:13px; color:var(--muted); font-weight:600; }
   @keyframes spin { to { transform:rotate(360deg); } }
 
+  /* Lak målepunkter */
+  .lak-point { position:absolute; width:28px; height:28px; border-radius:50%; background:rgba(217,119,6,0.15); border:2.5px solid var(--yellow); cursor:pointer; transform:translate(-50%,-50%); display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:var(--yellow); transition:all 0.15s; }
+  .lak-point:hover { background:rgba(217,119,6,0.3); transform:translate(-50%,-50%) scale(1.15); }
+  .lak-point.has-value { background:var(--yellow); color:#fff; border-color:var(--yellow); }
+  .lak-point.high-value { background:#DC2626; color:#fff; border-color:#DC2626; }
+
   @media (max-width:360px) { .tab-btn { padding:6px 7px; font-size:9px; } }
 </style>
 </head>
@@ -148,6 +154,7 @@
       </div>
     </div>
     <button class="save-btn" id="save-btn" style="background:var(--blue-l);color:var(--blue);border-color:rgba(37,99,235,0.3)">💾 Gem</button>
+    <button class="icon-btn" id="delete-car-btn" title="Slet bil" onclick="window.deleteCar()" style="background:var(--red-l);color:var(--red);border-color:rgba(220,38,38,0.3);font-size:15px">🗑</button>
   </div>
   <div id="tabs"></div>
 </div>
@@ -160,26 +167,32 @@
   <div class="tab-pane active" data-tab="0">
     <div class="banner" style="background:linear-gradient(135deg,#EBF2FF,#F0F9FF);border-color:rgba(37,99,235,0.12)">
       <div style="font-size:11px;color:var(--blue);font-weight:800;letter-spacing:1px;margin-bottom:2px">🚗 ANKOMST REGISTRERING</div>
-      <div style="font-size:12px;color:var(--muted)">Udfyld alle felter ved modtagelse af bilen</div>
+      <div style="font-size:12px;color:var(--muted)">Start med at taste nummerplade</div>
+    </div>
+    <!-- Nummerplade — fremhævet øverst -->
+    <div style="margin-bottom:14px">
+      <label class="field-label" style="font-size:13px;color:var(--blue);margin-top:0">🔢 Nummerplade</label>
+      <input class="inp" id="car-reg" placeholder="AA 12 345"
+        style="font-size:22px;font-weight:900;letter-spacing:3px;text-transform:uppercase;text-align:center;padding:14px"
+        oninput="this.value=this.value.toUpperCase()">
     </div>
     <div class="grid2">
       <div><label class="field-label">🏷 Mærke</label><input class="inp" id="car-make" placeholder="BMW"></div>
       <div><label class="field-label">🔤 Model</label><input class="inp" id="car-model" placeholder="3-serie"></div>
-      <div><label class="field-label">🔢 Reg.nr.</label><input class="inp" id="car-reg" placeholder="AA12345"></div>
       <div><label class="field-label">🆔 VIN/Stelnr.</label><input class="inp" id="car-vin" placeholder="WBA..."></div>
       <div><label class="field-label">📅 Årgang</label><input class="inp" id="car-year" placeholder="2021"></div>
       <div><label class="field-label">🎨 Farve</label><input class="inp" id="car-color" placeholder="Sort"></div>
       <div><label class="field-label">📏 Kilometer</label><input class="inp" type="number" id="car-km" placeholder="45000"></div>
       <div><label class="field-label">📅 Modtagelse</label><input class="inp" type="date" id="car-received"></div>
-    </div>
-    <div><label class="field-label">⭐ Stand</label>
-      <select class="inp" id="car-condition">
-        <option value="">Vælg stand</option>
-        <option>⭐⭐⭐⭐⭐ Meget god</option>
-        <option>⭐⭐⭐⭐ God</option>
-        <option>⭐⭐⭐ Acceptabel</option>
-        <option>⚠️ Kræver service</option>
-      </select>
+      <div><label class="field-label">⭐ Stand</label>
+        <select class="inp" id="car-condition">
+          <option value="">Vælg stand</option>
+          <option>⭐⭐⭐⭐⭐ Meget god</option>
+          <option>⭐⭐⭐⭐ God</option>
+          <option>⭐⭐⭐ Acceptabel</option>
+          <option>⚠️ Kræver service</option>
+        </select>
+      </div>
     </div>
     <div class="section-title" style="color:var(--blue);border-color:rgba(37,99,235,0.2)">🔩 Service historik</div>
     <div class="grid2">
@@ -286,12 +299,71 @@
     </div>
   </div>
 
-  <!-- TAB 6: RAPPORT -->
+  <!-- TAB 6: LAK -->
   <div class="tab-pane" data-tab="6">
+    <div class="banner" style="background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border-color:rgba(217,119,6,0.12)">
+      <div style="font-size:11px;color:var(--yellow);font-weight:800;letter-spacing:1px;margin-bottom:2px">🎨 LAK MÅLING</div>
+      <div style="font-size:12px;color:var(--muted)">Tast måleværdier i mikrometer (µm) — 4 cifre</div>
+    </div>
+    <div style="position:relative;margin:0 auto;max-width:340px">
+      <img id="lak-car-img" src="" style="width:100%;display:block;border-radius:12px;opacity:0.92">
+      <!-- Målepunkter placeret over billedet -->
+      <!-- FORAN: 2 punkter -->
+      <div class="lak-point" style="top:7%;left:36%" data-key="front_l" title="Foran Venstre"></div>
+      <div class="lak-point" style="top:7%;left:57%" data-key="front_r" title="Foran Højre"></div>
+      <!-- TAG: 1 punkt -->
+      <div class="lak-point" style="top:42%;left:46%" data-key="roof" title="Tag"></div>
+      <!-- BAGVED: 2 punkter -->
+      <div class="lak-point" style="top:78%;left:36%" data-key="rear_l" title="Bag Venstre"></div>
+      <div class="lak-point" style="top:78%;left:57%" data-key="rear_r" title="Bag Højre"></div>
+      <!-- VENSTRE SIDE: 4 punkter -->
+      <div class="lak-point" style="top:22%;left:8%" data-key="left_1" title="Venstre Foran"></div>
+      <div class="lak-point" style="top:36%;left:4%" data-key="left_2" title="Venstre Midt-Foran"></div>
+      <div class="lak-point" style="top:54%;left:4%" data-key="left_3" title="Venstre Midt-Bag"></div>
+      <div class="lak-point" style="top:68%;left:8%" data-key="left_4" title="Venstre Bag"></div>
+      <!-- HØJRE SIDE: 4 punkter -->
+      <div class="lak-point" style="top:22%;left:82%" data-key="right_1" title="Højre Foran"></div>
+      <div class="lak-point" style="top:36%;left:86%" data-key="right_2" title="Højre Midt-Foran"></div>
+      <div class="lak-point" style="top:54%;left:86%" data-key="right_3" title="Højre Midt-Bag"></div>
+      <div class="lak-point" style="top:68%;left:82%" data-key="right_4" title="Højre Bag"></div>
+    </div>
+    <!-- Input modal -->
+    <div id="lak-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;align-items:center;justify-content:center">
+      <div style="background:#fff;border-radius:18px;padding:24px;width:260px;box-shadow:0 20px 60px rgba(0,0,0,0.25)">
+        <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px" id="lak-modal-title">Måling</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Indtast laktykkelse i µm</div>
+        <input class="inp" id="lak-modal-input" type="number" placeholder="0000" maxlength="4"
+          style="font-size:28px;font-weight:900;text-align:center;letter-spacing:4px;padding:12px">
+        <div style="display:flex;gap:8px;margin-top:14px">
+          <button onclick="window.lakModalCancel()" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Annuller</button>
+          <button onclick="window.lakModalSave()" style="flex:1;padding:10px;border-radius:10px;border:none;background:var(--yellow);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Gem ✓</button>
+        </div>
+      </div>
+    </div>
+    <!-- Tabel oversigt -->
+    <div style="margin-top:18px">
+      <div class="section-title" style="color:var(--yellow);border-color:rgba(217,119,6,0.2)">📊 Måleværdier oversigt</div>
+      <div id="lak-table"></div>
+    </div>
+  </div>
+
+  <!-- TAB 7: RAPPORT -->
+  <div class="tab-pane" data-tab="7">
     <div style="text-align:center;padding:20px 0 10px">
       <div style="font-size:52px;margin-bottom:10px">📋</div>
       <div style="font-size:20px;font-weight:900;color:var(--text);margin-bottom:6px">Generer Rapport</div>
-      <div style="font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6">PDF-klar rapport med alle billeder, dæk, skader, dokumenter og leasing.</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6">PDF-klar rapport med alle billeder, dæk, skader, dokumenter og leasing.</div>
+      <!-- Sprog vælger -->
+      <div style="display:flex;gap:10px;justify-content:center;margin-bottom:20px">
+        <button id="lang-da" onclick="setLang('da')"
+          style="flex:1;max-width:140px;padding:10px 0;border-radius:12px;border:2px solid var(--blue);background:var(--blue);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s">
+          🇩🇰 Dansk
+        </button>
+        <button id="lang-en" onclick="setLang('en')"
+          style="flex:1;max-width:140px;padding:10px 0;border-radius:12px;border:2px solid var(--border);background:#fff;color:var(--muted);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s">
+          🇬🇧 English
+        </button>
+      </div>
       <button onclick="generateReport()" style="background:linear-gradient(135deg,var(--yellow),#F59E0B);color:#fff;border:none;border-radius:14px;padding:16px 40px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(217,119,6,0.35);font-family:inherit">🖨 Åbn & Print Rapport</button>
     </div>
     <div id="rapport-summary" style="margin-top:20px"></div>
@@ -303,6 +375,9 @@
      FIREBASE + APP SCRIPT
 ═══════════════════════════════════════════════════════════════════════════ -->
 <script type="module">
+// ─── Lak bil billede ────────────────────────────────────────────────────────────
+const LAK_CAR_IMAGE = "data:image/jpeg;base64,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";
+
 // ─── Firebase setup ───────────────────────────────────────────────────────────
 import { initializeApp }                          from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, setDoc, getDoc,
@@ -412,6 +487,7 @@ const S = {
           proevekort:false,noegleAntal:"",ladekabel:false,
           carVertical:false,digitalService:false,udstyrsliste:false,leasingforslag:false },
   leasing: { BAP:"",FA:"",BFRD:"",LPM:12,FIA:5,UD:15 },
+  lak: {}, // key → value in µm
   leasingResult: null,
   showMoms: false,
   showDetails: false,
@@ -427,7 +503,8 @@ const TABS = [
   {label:"💥 Skader",   color:"#DC2626"},
   {label:"📁 Diverse",  color:"#0D9488"},
   {label:"💰 Leasing",  color:"#16A34A"},
-  {label:"📋 Rapport",  color:"#D97706"},
+  {label:"🎨 Lak",      color:"#D97706"},
+  {label:"📋 Rapport",  color:"#92400E"},
 ];
 
 function initTabs() {
@@ -449,7 +526,8 @@ function switchTab(i) {
   });
   document.querySelectorAll(".tab-pane").forEach((p,j) => p.classList.toggle("active", j===i));
   document.getElementById("tab-stripe").style.background = `linear-gradient(90deg,${TABS[i].color},${TABS[i].color}80)`;
-  if (i===6) renderRapportSummary();
+  if (i===7) renderRapportSummary();
+  if (i===6) renderLakTab();
 }
 
 // ─── Photo slots ──────────────────────────────────────────────────────────────
@@ -821,6 +899,7 @@ function renderRapportSummary() {
     {icon:"🔧",label:"Dæk",val:S.tires.filter(t=>t.size).length+"/4 dæk dokumenteret",color:"var(--orange)"},
     {icon:"💥",label:"Skader",val:S.damages.length+" registreret",color:"var(--red)"},
     {icon:"📁",label:"Diverse",val:Object.entries(S.docs).filter(([,v])=>v===true).length+" markeret",color:"var(--teal)"},
+    {icon:"🎨",label:"Lak",val:Object.keys(S.lak||{}).length+" målepunkter udfyldt",color:"var(--yellow)"},
     {icon:"💰",label:"Leasing",val:S.leasingResult?Math.round(S.leasingResult.MLY).toLocaleString("da-DK")+" kr./md.":"Ikke beregnet",color:"var(--green)"},
   ];
   document.getElementById("rapport-summary").innerHTML=items.map(it=>`
@@ -831,99 +910,221 @@ function renderRapportSummary() {
     </div>`).join("");
 }
 
+// ─── Rapport sprog ────────────────────────────────────────────────────────────
+let reportLang = 'da';
+window.setLang = (lang) => {
+  reportLang = lang;
+  document.getElementById('lang-da').style.background  = lang==='da' ? 'var(--blue)' : '#fff';
+  document.getElementById('lang-da').style.color       = lang==='da' ? '#fff' : 'var(--muted)';
+  document.getElementById('lang-da').style.borderColor = lang==='da' ? 'var(--blue)' : 'var(--border)';
+  document.getElementById('lang-en').style.background  = lang==='en' ? 'var(--blue)' : '#fff';
+  document.getElementById('lang-en').style.color       = lang==='en' ? '#fff' : 'var(--muted)';
+  document.getElementById('lang-en').style.borderColor = lang==='en' ? 'var(--blue)' : 'var(--border)';
+};
+
+const T = {
+  da: {
+    title:'Køretøjsrapport', make:'Mærke', model:'Model', reg:'Reg.nr.', vin:'VIN',
+    year:'År', color:'Farve', km:'Kilometer', cond:'Stand', recv:'Modtagelsesdato',
+    lastsvc:'Sidste service', nextsvc:'Næste service', vehicleData:'Køretøjsdata',
+    tiresSection:'Dæk og Fælge', size:'Størrelse', brand:'Mærke', tread:'Mønster',
+    damageSection:'Skader og Mangler', docsSection:'Diverse', salgsmappe:'Til salgsmappen',
+    keys:'Antal nøgler', leasingSection:'Leasing Beregning', incl:'Inkl. 25% moms', excl:'Ekskl. moms',
+    yes:'Ja', no:'Nej', extraWheels:'Ekstra fælge', generated:'Genereret',
+    tireLabels:['Forhjul Venstre','Forhjul Højre','Baghjul Venstre','Baghjul Højre'],
+    tireTypes:{summer:'Sommer',winter:'Vinter',allseason:'Helårs'},
+    dmgTypes:{dent:'Bule',scratch:'Skramme',crack:'Revne',other:'Andet'},
+    docsLabels:[['📒 Service bog','serviceBog'],['📄 Reg. attest del 1','regAttest1'],['📄 Reg. attest del 2','regAttest2'],['📜 COC','coc'],['🚗 Prøvekørt','proevekort'],['🔌 Ladekabel','ladekabel']],
+    salgLabels:[['📊 CarVertical','carVertical'],['📱 Digital service','digitalService'],['📋 Udstyrsliste','udstyrsliste'],['💰 Leasingforslag','leasingforslag']],
+    photoLabels:{'wheel_fl':'Fælg Forhjul Venstre','wheel_fr':'Fælg Forhjul Højre','wheel_rl':'Fælg Baghjul Venstre','wheel_rr':'Fælg Baghjul Højre','front':'Forfra','rear':'Bagfra','left':'Venstre side','right':'Højre side','odometer':'Kilometertæller','dashboard':'Instrumentering','interior_front':'Interiør forrest','interior_rear':'Interiør bagerst','trunk':'Bagagerum'},
+  },
+  en: {
+    title:'Vehicle Report', make:'Make', model:'Model', reg:'Reg. No.', vin:'VIN',
+    year:'Year', color:'Color', km:'Mileage', cond:'Condition', recv:'Received Date',
+    lastsvc:'Last Service', nextsvc:'Next Service', vehicleData:'Vehicle Data',
+    tiresSection:'Tires & Wheels', size:'Size', brand:'Brand', tread:'Tread Depth',
+    damageSection:'Damage Documentation', docsSection:'Documents', salgsmappe:'For Sales Folder',
+    keys:'Number of Keys', leasingSection:'Leasing Calculation', incl:'Incl. 25% VAT', excl:'Excl. VAT',
+    yes:'Yes', no:'No', extraWheels:'Extra Wheels', generated:'Generated',
+    tireLabels:['Front Left','Front Right','Rear Left','Rear Right'],
+    tireTypes:{summer:'Summer',winter:'Winter',allseason:'All-Season'},
+    dmgTypes:{dent:'Dent',scratch:'Scratch',crack:'Crack',other:'Other'},
+    docsLabels:[['📒 Service Book','serviceBog'],['📄 Reg. Certificate Pt.1','regAttest1'],['📄 Reg. Certificate Pt.2','regAttest2'],['📜 COC','coc'],['🚗 Test Drive','proevekort'],['🔌 Charging Cable','ladekabel']],
+    salgLabels:[['📊 CarVertical','carVertical'],['📱 Digital Service Report','digitalService'],['📋 Equipment List','udstyrsliste'],['💰 Leasing Proposal','leasingforslag']],
+    photoLabels:{'wheel_fl':'Wheel Front Left','wheel_fr':'Wheel Front Right','wheel_rl':'Wheel Rear Left','wheel_rr':'Wheel Rear Right','front':'Front','rear':'Rear','left':'Left Side','right':'Right Side','odometer':'Odometer','dashboard':'Dashboard','interior_front':'Interior Front','interior_rear':'Interior Rear','trunk':'Trunk'},
+  }
+};
+
 window.generateReport = async () => {
-  const btn=document.querySelector('[onclick="generateReport()"]');
-  const orig=btn?.textContent||"";
-  if(btn){btn.textContent="⏳ Henter billeder...";btn.disabled=true;}
-  const photoMap=await compressAllPhotosForPDF();
-  const p=url=>photoMap.get(url)||url;
-  if(btn){btn.textContent=orig;btn.disabled=false;}
-  const lr=S.leasingResult||(S.leasing.BAP&&S.leasing.FA&&S.leasing.BFRD?calcLeasingMath({BAP:parseFloat(S.leasing.BAP),FA:parseFloat(S.leasing.FA),BFRD:S.leasing.BFRD,LPM:parseInt(S.leasing.LPM),FIA:parseFloat(S.leasing.FIA),UD:parseFloat(S.leasing.UD)}):null);
-  const tireTypeMap={summer:"Summer/Sommer",winter:"Winter/Vinter",allseason:"All-Season/Helårs"};
-  const tireLabels=["Front Left / Forhjul venstre","Front Right / Forhjul højre","Rear Left / Baghjul venstre","Rear Right / Baghjul højre"];
-  const moms=S.showMoms?1.25:1;
-  const c=S.car;
-  const win=window.open("","_blank");
-  win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>AnkomstTjek - ${c.regNumber||"N/A"}</title>
+  const btn = document.querySelector('[onclick="generateReport()"]');
+  if (btn) { btn.textContent="⏳ Henter billeder..."; btn.disabled=true; }
+  const photoMap = await compressAllPhotosForPDF();
+  const p = url => photoMap.get(url) || url;
+  if (btn) { btn.textContent="🖨 Åbn & Print Rapport"; btn.disabled=false; }
+
+  const t = T[reportLang];
+  const lr = S.leasingResult || (S.leasing.BAP&&S.leasing.FA&&S.leasing.BFRD
+    ? calcLeasingMath({BAP:parseFloat(S.leasing.BAP),FA:parseFloat(S.leasing.FA),BFRD:S.leasing.BFRD,LPM:parseInt(S.leasing.LPM),FIA:parseFloat(S.leasing.FIA),UD:parseFloat(S.leasing.UD)})
+    : null);
+  const moms = S.showMoms ? 1.25 : 1;
+  const c = S.car;
+
+  const win = window.open("","_blank");
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8">
+<title>AnkomstTjek - ${c.regNumber||"N/A"}</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
-  *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:#F7F8FC;color:#1A2340}
-  .cover{background:linear-gradient(135deg,#1A2340,#2563EB);color:#fff;padding:50px 50px 40px;position:relative;overflow:hidden}
-  .cover h1{font-size:38px;font-weight:900;letter-spacing:-1px}.cover h2{font-size:20px;font-weight:400;color:rgba(255,255,255,.7);margin-top:6px}
-  .cover .meta{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:16px}.cover .mi{font-size:12px;color:rgba(255,255,255,.6)}.cover .mi strong{color:#fff;font-size:15px;display:block}
-  .section{background:#fff;margin:20px 40px;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07)}
-  .sh{padding:12px 22px;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;display:flex;justify-content:space-between}
-  .sb{padding:22px}.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .field .lbl{font-size:10px;color:#6B7A99;font-weight:600;text-transform:uppercase}.field .val{font-size:14px;font-weight:600;margin-top:3px;padding-bottom:6px;border-bottom:2px solid #EEF2FF}
-  .pg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.pg img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
-  .tc{background:#F8FAFF;border:1px solid #E2E8F4;border-radius:10px;padding:14px}.tc h4{font-size:11px;color:#2563EB;font-weight:700;margin-bottom:10px;text-transform:uppercase}
-  .dc{border:1px solid #FEE2E2;background:#FFF8F8;border-radius:10px;padding:14px;margin-bottom:10px}.dc h4{color:#DC2626;font-size:13px;font-weight:700}
-  .cr{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #F0F4FF;font-size:12px}
-  .dot{width:13px;height:13px;border-radius:3px;display:inline-block;flex-shrink:0}.dy{background:#16A34A}.dn{background:#e5e7eb;border:1px solid #d1d5db}
-  .lb{background:linear-gradient(135deg,#1A2340,#2563EB);color:#fff;border-radius:12px;padding:28px;margin:8px 0}
-  .lm{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px}
-  .li .ll{font-size:10px;color:rgba(255,255,255,.6);text-transform:uppercase}.li .lv{font-size:26px;font-weight:900;color:#93C5FD}.li .lv.big{font-size:36px;color:#fff}
-  .badge{display:inline-block;background:#EBF2FF;color:#2563EB;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
-  .footer{text-align:center;padding:28px;color:#6B7A99;font-size:11px}
-  @media print{body{background:#fff}.section{box-shadow:none}}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:Arial,Helvetica,sans-serif;background:#F7F8FC;color:#1A2340;font-size:13px}
+  h1{font-family:Arial,Helvetica,sans-serif;font-size:34px;font-weight:700;letter-spacing:-0.5px}
+  h2{font-family:Arial,Helvetica,sans-serif;font-size:18px;font-weight:400;color:rgba(255,255,255,.75);margin-top:6px}
+  h3{font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:700}
+  h4{font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:700}
+  .cover{background:linear-gradient(135deg,#1A2340,#2563EB);color:#fff;padding:48px 48px 38px;position:relative}
+  .cover-sub{font-size:11px;color:#93C5FD;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;font-weight:700}
+  .cover-meta{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .cover-mi{font-size:11px;color:rgba(255,255,255,.6)}
+  .cover-mi strong{color:#fff;font-size:14px;display:block;margin-bottom:2px}
+  .section{background:#fff;margin:18px 38px;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.07)}
+  .sh{padding:11px 20px;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+  .sb{padding:20px}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .field .lbl{font-size:9px;color:#6B7A99;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+  .field .val{font-size:13px;font-weight:600;margin-top:2px;padding-bottom:5px;border-bottom:2px solid #EEF2FF}
+  .pg{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}
+  .pg img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:7px}
+  .tc{background:#F8FAFF;border:1px solid #E2E8F4;border-radius:9px;padding:13px}
+  .tc h4{font-size:10px;color:#2563EB;font-weight:700;margin-bottom:9px;text-transform:uppercase;letter-spacing:.5px}
+  .dc{border:1px solid #FEE2E2;background:#FFF8F8;border-radius:9px;padding:13px;margin-bottom:9px}
+  .dc h3{color:#DC2626;font-size:13px}
+  .cr{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #F0F4FF;font-size:12px}
+  .dot{width:12px;height:12px;border-radius:3px;display:inline-block;flex-shrink:0}
+  .dy{background:#16A34A}.dn{background:#e5e7eb;border:1px solid #d1d5db}
+  .lb{background:linear-gradient(135deg,#1A2340,#2563EB);color:#fff;border-radius:11px;padding:26px;margin:6px 0}
+  .lm{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px}
+  .li .ll{font-size:9px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.5px}
+  .li .lv{font-size:24px;font-weight:700;color:#93C5FD}
+  .li .lv.big{font-size:32px;color:#fff}
+  .badge{display:inline-block;background:#EBF2FF;color:#2563EB;padding:2px 9px;border-radius:18px;font-size:10px;font-weight:700}
+  .footer{text-align:center;padding:26px;color:#6B7A99;font-size:10px}
+  .gen-date{position:absolute;bottom:14px;right:26px;font-size:9px;color:rgba(255,255,255,.4)}
+  @media print{body{background:#fff}.section{box-shadow:none}button{display:none}}
 </style></head><body>
+
 <div class="cover">
-  <div style="font-size:11px;color:#93C5FD;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;font-weight:700">🚗 AnkomstTjek &mdash; Køretøjsrapport</div>
-  <h1>${c.make||"-"} ${c.model||""}</h1><h2>${c.regNumber||"-"} &middot; ${c.year||"-"} &middot; ${c.color||"-"}</h2>
-  <div class="meta">
-    <div class="mi"><strong>${c.km?parseInt(c.km).toLocaleString("da-DK")+" km":"-"}</strong>Kilometerstand</div>
-    <div class="mi"><strong>${c.receivedDate||"-"}</strong>Modtagelsesdato</div>
-    <div class="mi"><strong>${c.vin||"-"}</strong>VIN / Stelnummer</div>
-    <div class="mi"><strong>${c.condition||"-"}</strong>Stand</div>
+  <div class="cover-sub">🚗 AnkomstTjek &mdash; ${t.title}</div>
+  <h1>${c.make||"-"} ${c.model||""}</h1>
+  <h2>${c.regNumber||"-"} &middot; ${c.year||"-"} &middot; ${c.color||"-"}</h2>
+  <div class="cover-meta">
+    <div class="cover-mi"><strong>${c.km?parseInt(c.km).toLocaleString("da-DK")+" km":"-"}</strong>${t.km}</div>
+    <div class="cover-mi"><strong>${c.receivedDate||"-"}</strong>${t.recv}</div>
+    <div class="cover-mi"><strong>${c.vin||"-"}</strong>${t.vin}</div>
+    <div class="cover-mi"><strong>${c.condition||"-"}</strong>${t.cond}</div>
   </div>
-  <div style="position:absolute;bottom:16px;right:28px;font-size:10px;color:rgba(255,255,255,.4)">Generated ${new Date().toLocaleDateString("da-DK")}</div>
+  <div class="gen-date">${t.generated} ${new Date().toLocaleDateString(reportLang==='da'?'da-DK':'en-GB')}</div>
 </div>
-<div class="section"><div class="sh" style="background:#EBF2FF;color:#2563EB">🚗 Køretøjsdata</div>
-<div class="sb"><div class="g2">
-  <div class="field"><div class="lbl">Mærke</div><div class="val">${c.make||"-"}</div></div>
-  <div class="field"><div class="lbl">Model</div><div class="val">${c.model||"-"}</div></div>
-  <div class="field"><div class="lbl">Reg.nr.</div><div class="val">${c.regNumber||"-"}</div></div>
-  <div class="field"><div class="lbl">VIN</div><div class="val">${c.vin||"-"}</div></div>
-  <div class="field"><div class="lbl">År</div><div class="val">${c.year||"-"}</div></div>
-  <div class="field"><div class="lbl">Farve</div><div class="val">${c.color||"-"}</div></div>
-  <div class="field"><div class="lbl">Kilometer</div><div class="val">${c.km?parseInt(c.km).toLocaleString("da-DK")+" km":"-"}</div></div>
-  <div class="field"><div class="lbl">Stand</div><div class="val">${c.condition||"-"}</div></div>
-  <div class="field"><div class="lbl">Sidste service</div><div class="val">${c.lastServiceDate||"-"}${c.lastServiceKm?" &middot; "+parseInt(c.lastServiceKm).toLocaleString("da-DK")+" km":""}</div></div>
-  <div class="field"><div class="lbl">Næste service</div><div class="val">${c.nextServiceDate||"-"}${c.nextServiceKm?" &middot; "+parseInt(c.nextServiceKm).toLocaleString("da-DK")+" km":""}</div></div>
-</div></div></div>
-${Object.entries({"📷 Fælg FL":S.photos.wheel_fl,"📷 Fælg FR":S.photos.wheel_fr,"📷 Fælg RL":S.photos.wheel_rl,"📷 Fælg RR":S.photos.wheel_rr,"📷 Forfra":S.photos.front,"📷 Bagfra":S.photos.rear,"📷 Venstre side":S.photos.left,"📷 Højre side":S.photos.right,"📷 Kilometertæller":S.photos.odometer,"📷 Instrumentering":S.photos.dashboard,"📷 Interiør front":S.photos.interior_front,"📷 Interiør bag":S.photos.interior_rear,"📷 Bagagerum":S.photos.trunk})
-  .filter(([,photos])=>photos.length>0)
-  .map(([t,photos])=>`<div class="section"><div class="sh" style="background:#EDE9FE;color:#7C3AED">${t}</div><div class="sb"><div class="pg">${photos.map(ph=>`<img src="${p(ph.dataUrl)}">`).join("")}</div></div></div>`).join("")}
-<div class="section"><div class="sh" style="background:#FFF0E6;color:#EA580C">🔧 Dæk og Fælge</div>
-<div class="sb"><div class="g2">${S.tires.map((t,i)=>`<div class="tc"><h4>${tireLabels[i]}</h4>
-  <div class="field"><div class="lbl">Størrelse</div><div class="val">${t.size||"-"}</div></div>
-  <div class="field"><div class="lbl">Mærke</div><div class="val">${t.brand||"-"}</div></div>
-  <div class="field"><div class="lbl">DOT</div><div class="val">${t.dot||"-"}</div></div>
-  <div class="field"><div class="lbl">Mønster</div><div class="val">${t.tread?t.tread+" mm":"-"}</div></div>
-  <div style="margin-top:8px"><span class="badge">${tireTypeMap[t.type]||t.type||"-"}</span></div>
-</div>`).join("")}</div>
-${S.extraWheels.length>0?`<div style="margin-top:16px;padding-top:14px;border-top:1px solid #eee"><strong>Ekstra fælge:</strong> ${S.extraWheels.map(w=>w.description).join(", ")}</div>`:""}
-</div></div>
-${S.damages.length>0?`<div class="section"><div class="sh" style="background:#FEE2E2;color:#DC2626">💥 Skader og Mangler</div><div class="sb">${S.damages.map(d=>`<div class="dc"><h4>${d.area||"-"} &mdash; ${d.type==="dent"?"Bule":d.type==="scratch"?"Skramme":d.type==="crack"?"Revne":d.type||"-"}</h4><p style="margin-top:6px;font-size:12px;color:#555">${d.description||""}</p>${d.photos?.length?`<div class="pg" style="grid-template-columns:repeat(3,1fr);margin-top:10px">${d.photos.map(ph=>`<img src="${p(ph.dataUrl)}">`).join("")}</div>`:""}</div>`).join("")}</div></div>`:""}
-<div class="section"><div class="sh" style="background:#CCFBF1;color:#0D9488">📁 Diverse</div><div class="sb">
-  <div class="g2">${[["📒 Service bog",S.docs.serviceBog],["📄 Reg. attest del 1",S.docs.regAttest1],["📄 Reg. attest del 2",S.docs.regAttest2],["📜 COC",S.docs.coc],["🚗 Prøvekørt",S.docs.proevekort],["🔌 Ladekabel",S.docs.ladekabel]].map(([l,v])=>`<div class="cr"><div class="dot ${v?"dy":"dn"}"></div>${l}: <strong>${v?"Ja":"Nej"}</strong></div>`).join("")}</div>
-  <div class="cr" style="margin-top:8px">🔑 <strong>Antal nøgler:</strong> ${S.docs.noegleAntal||"-"}</div>
-  <div style="margin-top:14px;padding-top:12px;border-top:1px solid #f0f4ff"><strong style="font-size:11px;color:#6B7A99;text-transform:uppercase">Til salgsmappen</strong>
-  <div class="g2" style="margin-top:8px">${[["📊 CarVertical",S.docs.carVertical],["📱 Digital service",S.docs.digitalService],["📋 Udstyrsliste",S.docs.udstyrsliste],["💰 Leasingforslag",S.docs.leasingforslag]].map(([l,v])=>`<div class="cr"><div class="dot ${v?"dy":"dn"}"></div>${l}: <strong>${v?"Ja":"Nej"}</strong></div>`).join("")}</div></div>
-</div></div>
-${lr?`<div class="section"><div class="sh" style="background:#DCFCE7;color:#16A34A">💰 Leasing ${S.showMoms?"(inkl. moms)":"(ekskl. moms)"}</div><div class="sb"><div class="lb">
-  <div style="font-size:10px;color:rgba(255,255,255,.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">Leasing &middot; ${S.showMoms?"Inkl. 25% moms":"Ekskl. moms"}</div>
-  <div class="lm">
-    <div class="li"><div class="ll">MLY</div><div class="lv big">${Math.round(lr.MLY*moms).toLocaleString("da-DK")} kr.</div></div>
-    <div class="li"><div class="ll">Udbetaling UD</div><div class="lv">${Math.round(lr.Udbetaling*moms).toLocaleString("da-DK")} kr.</div></div>
-    <div class="li"><div class="ll">Restværdi FIS</div><div class="lv">${Math.round(lr.FIS).toLocaleString("da-DK")} kr.</div></div>
-    <div class="li"><div class="ll">Bilens pris BAP</div><div class="lv">${Math.round(lr.BAP).toLocaleString("da-DK")} kr.</div></div>
+
+<div class="section">
+  <div class="sh" style="background:#EBF2FF;color:#2563EB">🚗 ${t.vehicleData}</div>
+  <div class="sb"><div class="g2">
+    <div class="field"><div class="lbl">${t.make}</div><div class="val">${c.make||"-"}</div></div>
+    <div class="field"><div class="lbl">${t.model}</div><div class="val">${c.model||"-"}</div></div>
+    <div class="field"><div class="lbl">${t.reg}</div><div class="val">${c.regNumber||"-"}</div></div>
+    <div class="field"><div class="lbl">${t.vin}</div><div class="val">${c.vin||"-"}</div></div>
+    <div class="field"><div class="lbl">${t.year}</div><div class="val">${c.year||"-"}</div></div>
+    <div class="field"><div class="lbl">${t.color}</div><div class="val">${c.color||"-"}</div></div>
+    <div class="field"><div class="lbl">${t.km}</div><div class="val">${c.km?parseInt(c.km).toLocaleString("da-DK")+" km":"-"}</div></div>
+    <div class="field"><div class="lbl">${t.cond}</div><div class="val">${c.condition||"-"}</div></div>
+    <div class="field"><div class="lbl">${t.lastsvc}</div><div class="val">${c.lastServiceDate||"-"}${c.lastServiceKm?" &middot; "+parseInt(c.lastServiceKm).toLocaleString("da-DK")+" km":""}</div></div>
+    <div class="field"><div class="lbl">${t.nextsvc}</div><div class="val">${c.nextServiceDate||"-"}${c.nextServiceKm?" &middot; "+parseInt(c.nextServiceKm).toLocaleString("da-DK")+" km":""}</div></div>
+  </div></div>
+</div>
+
+${Object.entries(S.photos).filter(([,photos])=>photos.length>0).map(([key,photos])=>`
+<div class="section">
+  <div class="sh" style="background:#EDE9FE;color:#7C3AED">📷 ${t.photoLabels[key]||key}</div>
+  <div class="sb"><div class="pg">${photos.map(ph=>`<img src="${p(ph.dataUrl)}">`).join("")}</div></div>
+</div>`).join("")}
+
+<div class="section">
+  <div class="sh" style="background:#FFF0E6;color:#EA580C">🔧 ${t.tiresSection}</div>
+  <div class="sb"><div class="g2">
+    ${S.tires.map((tire,i)=>`<div class="tc">
+      <h4>${t.tireLabels[i]}</h4>
+      <div class="field"><div class="lbl">${t.size}</div><div class="val">${tire.size||"-"}</div></div>
+      <div class="field"><div class="lbl">${t.brand}</div><div class="val">${tire.brand||"-"}</div></div>
+      <div class="field"><div class="lbl">DOT</div><div class="val">${tire.dot||"-"}</div></div>
+      <div class="field"><div class="lbl">${t.tread}</div><div class="val">${tire.tread?tire.tread+" mm":"-"}</div></div>
+      <div style="margin-top:7px"><span class="badge">${t.tireTypes[tire.type]||tire.type||"-"}</span></div>
+    </div>`).join("")}
   </div>
-</div></div></div>`:""}
-<div class="footer">🚗 AnkomstTjek &middot; ${new Date().toLocaleString("da-DK")} &middot; ${c.regNumber||""} ${c.make||""} ${c.model||""}</div>
+  ${S.extraWheels.length>0?`<div style="margin-top:14px;padding-top:12px;border-top:1px solid #eee;font-size:12px"><strong>${t.extraWheels}:</strong> ${S.extraWheels.map(w=>w.description).join(", ")}</div>`:""}
+  </div>
+</div>
+
+${S.damages.length>0?`
+<div class="section">
+  <div class="sh" style="background:#FEE2E2;color:#DC2626">💥 ${t.damageSection}</div>
+  <div class="sb">
+    ${S.damages.map(d=>`<div class="dc">
+      <h3>${d.area||"-"} &mdash; ${t.dmgTypes[d.type]||d.type||"-"}</h3>
+      <p style="margin-top:5px;font-size:12px;color:#555">${d.description||""}</p>
+      ${d.photos?.length?`<div class="pg" style="grid-template-columns:repeat(3,1fr);margin-top:9px">${d.photos.map(ph=>`<img src="${p(ph.dataUrl)}">`).join("")}</div>`:""}
+    </div>`).join("")}
+  </div>
+</div>`:""}
+
+${Object.keys(S.lak||{}).length>0?`
+<div class="section">
+  <div class="sh" style="background:#FEF3C7;color:#D97706">🎨 ${reportLang==='da'?'Lak Måling':'Paint Thickness'}</div>
+  <div class="sb">
+    <div class="g2">
+      ${Object.entries(S.lak||{}).map(([k,v])=>`<div class="field">
+        <div class="lbl">${LAK_LABELS[k]||k}</div>
+        <div class="val" style="color:${v>LAK_HIGH?'#DC2626':'#16A34A'}">${v} µm${v>LAK_HIGH?' ⚠️':''}</div>
+      </div>`).join('')}
+    </div>
+    <p style="margin-top:10px;font-size:10px;color:#6B7A99">⚠️ ${reportLang==='da'?'Værdier over 250 µm kan indikere reparationslak':'Values above 250 µm may indicate repair paint'}</p>
+  </div>
+</div>`:""}
+
+<div class="section">
+  <div class="sh" style="background:#CCFBF1;color:#0D9488">📁 ${t.docsSection}</div>
+  <div class="sb">
+    <div class="g2">
+      ${t.docsLabels.map(([l,k])=>`<div class="cr"><div class="dot ${S.docs[k]?"dy":"dn"}"></div>${l}: <strong>${S.docs[k]?t.yes:t.no}</strong></div>`).join("")}
+    </div>
+    <div class="cr" style="margin-top:7px">🔑 <strong>${t.keys}:</strong>&nbsp;${S.docs.noegleAntal||"-"}</div>
+    <div style="margin-top:12px;padding-top:11px;border-top:1px solid #f0f4ff">
+      <strong style="font-size:10px;color:#6B7A99;text-transform:uppercase;letter-spacing:.5px">${t.salgsmappe}</strong>
+      <div class="g2" style="margin-top:7px">
+        ${t.salgLabels.map(([l,k])=>`<div class="cr"><div class="dot ${S.docs[k]?"dy":"dn"}"></div>${l}: <strong>${S.docs[k]?t.yes:t.no}</strong></div>`).join("")}
+      </div>
+    </div>
+  </div>
+</div>
+
+${lr?`
+<div class="section">
+  <div class="sh" style="background:#DCFCE7;color:#16A34A">💰 ${t.leasingSection} ${S.showMoms?"("+t.incl+")":"("+t.excl+")"}</div>
+  <div class="sb"><div class="lb">
+    <div style="font-size:9px;color:rgba(255,255,255,.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">${t.leasingSection} &middot; ${S.showMoms?t.incl:t.excl}</div>
+    <div class="lm">
+      <div class="li"><div class="ll">MLY</div><div class="lv big">${Math.round(lr.MLY*moms).toLocaleString("da-DK")} kr.</div></div>
+      <div class="li"><div class="ll">UD</div><div class="lv">${Math.round(lr.Udbetaling*moms).toLocaleString("da-DK")} kr.</div></div>
+      <div class="li"><div class="ll">FIS</div><div class="lv">${Math.round(lr.FIS).toLocaleString("da-DK")} kr.</div></div>
+      <div class="li"><div class="ll">BAP</div><div class="lv">${Math.round(lr.BAP).toLocaleString("da-DK")} kr.</div></div>
+    </div>
+    <div style="margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,.15);font-size:10px;color:rgba(255,255,255,.5);line-height:1.9">
+      LPM: ${lr.LPM} mdr. &middot; FIA: ${lr.FIA}% &middot; UD: ${lr.UD}% &middot; AP: ${(lr.AP*100).toFixed(2)}% &middot; BAM: ${lr.BAM} mdr.<br>
+      APM: ${Math.round(lr.APM).toLocaleString("da-DK")} kr. &middot; FIS: ${Math.round(lr.FIS).toLocaleString("da-DK")} kr. &middot; MFS: ${Math.round(lr.MFS).toLocaleString("da-DK")} kr.
+    </div>
+  </div></div>
+</div>`:""}
+
+<div class="footer">🚗 AnkomstTjek &middot; ${t.generated} ${new Date().toLocaleString(reportLang==='da'?'da-DK':'en-GB')} &middot; ${c.regNumber||""} ${c.make||""} ${c.model||""}</div>
 </body></html>`);
   win.document.close();
-  setTimeout(()=>win.print(),800);
+  setTimeout(()=>win.print(), 800);
 };
 
 // ─── Firebase Firestore: Save / Load ─────────────────────────────────────────
@@ -953,6 +1154,7 @@ async function saveData() {
         photoDocIds:(d.photos||[]).map(p=>p.docId).filter(Boolean)})),
       docs: S.docs,
       leasing: S.leasing,
+      lak: S.lak||{},
       savedAt: Date.now(),
       label: buildLabel(),
     };
@@ -1010,6 +1212,7 @@ function applySnapshot(d) {
   if(d.damages) S.damages=d.damages;
   if(d.docs) S.docs={...S.docs,...d.docs};
   if(d.leasing) S.leasing=d.leasing;
+  if(d.lak) S.lak=d.lak||{};
   S.leasingResult=null;
   writeStateToForm();
   renderAll();
@@ -1070,7 +1273,7 @@ window.newCar = () => {
   S.photos={wheel_fl:[],wheel_fr:[],wheel_rl:[],wheel_rr:[],front:[],rear:[],left:[],right:[],odometer:[],dashboard:[],interior_front:[],interior_rear:[],trunk:[]};
   S.tires=[{},{},{},{}]; S.extraWheels=[]; S.damages=[];
   S.docs={serviceBog:false,regAttest1:false,regAttest2:false,coc:false,proevekort:false,noegleAntal:"",ladekabel:false,carVertical:false,digitalService:false,udstyrsliste:false,leasingforslag:false};
-  S.leasing={BAP:"",FA:"",BFRD:"",LPM:12,FIA:5,UD:15}; S.leasingResult=null; S.currentCarId=null;
+  S.leasing={BAP:"",FA:"",BFRD:"",LPM:12,FIA:5,UD:15}; S.leasingResult=null; S.lak={}; S.currentCarId=null;
   writeStateToForm(); renderAll(); closeSearch(); switchTab(0); updateHeaderSub();
 };
 
@@ -1113,7 +1316,123 @@ function renderAll() {
   renderDocs();
   ALL_PHOTO_DEFS.forEach(([l,k,m])=>refreshPhotoSlot(k,l,m));
   document.getElementById("leasing-result").style.display="none";
+  if (S.tab===6) renderLakTab();
 }
+
+// ─── Lak måling ───────────────────────────────────────────────────────────────
+const LAK_LABELS = {
+  front_l:"Foran Venstre", front_r:"Foran Højre",
+  roof:"Tag (midt)",
+  rear_l:"Bag Venstre", rear_r:"Bag Højre",
+  left_1:"Venstre – Foran", left_2:"Venstre – Midt Foran",
+  left_3:"Venstre – Midt Bag", left_4:"Venstre – Bag",
+  right_1:"Højre – Foran",  right_2:"Højre – Midt Foran",
+  right_3:"Højre – Midt Bag", right_4:"Højre – Bag",
+};
+// Normal lak: 80–200 µm. Above 250 = repainted (red)
+const LAK_HIGH = 250;
+
+let _lakActiveKey = null;
+
+function renderLakTab() {
+  // Inject base64 car image once
+  const img = document.getElementById("lak-car-img");
+  if (img && !img.src.startsWith("data:")) {
+    img.src = LAK_CAR_IMAGE;
+  }
+  // Update each dot
+  document.querySelectorAll(".lak-point").forEach(dot => {
+    const key = dot.dataset.key;
+    const val = S.lak[key];
+    dot.textContent = val ? val : "";
+    dot.classList.toggle("has-value", !!val && val <= LAK_HIGH);
+    dot.classList.toggle("high-value", !!val && val > LAK_HIGH);
+    dot.style.fontSize = val ? "8px" : "14px";
+    dot.textContent = val ? val : "+";
+    dot.onclick = () => openLakModal(key);
+  });
+  renderLakTable();
+}
+
+function openLakModal(key) {
+  _lakActiveKey = key;
+  document.getElementById("lak-modal-title").textContent = "📍 " + (LAK_LABELS[key]||key);
+  document.getElementById("lak-modal-input").value = S.lak[key]||"";
+  const modal = document.getElementById("lak-modal");
+  modal.style.display = "flex";
+  setTimeout(()=>document.getElementById("lak-modal-input").focus(),100);
+}
+window.lakModalCancel = () => {
+  document.getElementById("lak-modal").style.display = "none";
+  _lakActiveKey = null;
+};
+window.lakModalSave = () => {
+  const val = parseInt(document.getElementById("lak-modal-input").value);
+  if (!isNaN(val) && val >= 0) S.lak[_lakActiveKey] = val;
+  else delete S.lak[_lakActiveKey];
+  document.getElementById("lak-modal").style.display = "none";
+  _lakActiveKey = null;
+  renderLakTab();
+};
+// Close modal on backdrop click
+document.addEventListener("click", e => {
+  const modal = document.getElementById("lak-modal");
+  if (modal && e.target === modal) window.lakModalCancel();
+});
+// Enter key saves
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && _lakActiveKey) window.lakModalSave();
+  if (e.key === "Escape" && _lakActiveKey) window.lakModalCancel();
+});
+
+function renderLakTable() {
+  const groups = [
+    { title:"Foran", keys:["front_l","front_r"] },
+    { title:"Tag", keys:["roof"] },
+    { title:"Bagved", keys:["rear_l","rear_r"] },
+    { title:"Venstre side", keys:["left_1","left_2","left_3","left_4"] },
+    { title:"Højre side", keys:["right_1","right_2","right_3","right_4"] },
+  ];
+  const c = document.getElementById("lak-table");
+  if (!c) return;
+  c.innerHTML = groups.map(g => {
+    const rows = g.keys.map(k => {
+      const v = S.lak[k];
+      const high = v && v > LAK_HIGH;
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 12px;border-bottom:1px solid #F7F8FC;font-size:13px">
+        <span style="color:var(--muted)">${LAK_LABELS[k]}</span>
+        <span style="font-weight:800;color:${high?"var(--red)":v?"var(--green)":"var(--border)"}">${v ? v+" µm"+(high?" ⚠️":"") : "–"}</span>
+      </div>`;
+    }).join("");
+    return `<div style="background:#fff;border-radius:12px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);border:1px solid var(--border)">
+      <div style="padding:8px 12px;background:var(--yellow-l);font-size:10px;font-weight:800;color:var(--yellow);letter-spacing:.8px;text-transform:uppercase">${g.title}</div>
+      ${rows}
+    </div>`;
+  }).join("");
+}
+
+// ─── Slet bil ─────────────────────────────────────────────────────────────────
+window.deleteCar = async () => {
+  if (!S.currentCarId) { toast("⚠️ Ingen aktiv bil at slette"); return; }
+  const label = S.carList.find(c=>c.id===S.currentCarId)?.label || "denne bil";
+  if (!confirm(`🗑 Slet "${label}"?\n\nDette sletter al data og alle billeder permanent.`)) return;
+  setLoading("Sletter bil...");
+  try {
+    const carId = S.currentCarId;
+    // Delete all photos from Firestore
+    const q = query(collection(db,"photos"), where("carId","==",carId));
+    const photoSnap = await getDocs(q);
+    for (const d of photoSnap.docs) await deleteDoc(doc(db,"photos",d.id));
+    // Delete car document
+    await deleteDoc(doc(db,"cars",carId));
+    // Update index
+    S.carList = S.carList.filter(c=>c.id!==carId);
+    await setDoc(doc(db,"meta","car_index"), { cars: S.carList });
+    toast("🗑 Bil slettet");
+    window.newCar();
+  } catch(e) { toast("❌ Slet fejlede: "+e.message, 5000); }
+  setLoading(null);
+};
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 async function init() {
