@@ -29,7 +29,7 @@
   #tab-stripe { height:3px; }
   #tabs { display:flex; gap:2px; overflow-x:auto; scrollbar-width:none; }
   #tabs::-webkit-scrollbar { display:none; }
-  .tab-btn { background:transparent; border:none; border-radius:8px 8px 0 0; padding:7px 10px; cursor:pointer; font-size:10px; font-weight:700; white-space:nowrap; color:var(--muted); transition:all 0.15s; font-family:inherit; }
+  .tab-btn { background:transparent; border:none; border-radius:8px 8px 0 0; padding:6px 7px; cursor:pointer; font-size:9px; font-weight:700; white-space:nowrap; color:var(--muted); transition:all 0.15s; font-family:inherit; }
   .tab-btn.active { color:#fff; }
   .icon-btn { border-radius:9px; width:34px; height:34px; font-size:20px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1.5px solid; font-family:inherit; }
   .save-btn { border-radius:9px; padding:7px 11px; cursor:pointer; font-size:11px; font-weight:800; white-space:nowrap; flex-shrink:0; font-family:inherit; transition:all 0.2s; }
@@ -121,7 +121,7 @@
   .lak-point.has-value { background:var(--yellow); color:#fff; border-color:var(--yellow); }
   .lak-point.high-value { background:#DC2626; color:#fff; border-color:#DC2626; }
 
-  @media (max-width:360px) { .tab-btn { padding:6px 7px; font-size:9px; } }
+  @media (max-width:360px) { .tab-btn { padding:5px 5px; font-size:8px; } }
 </style>
 </head>
 <body>
@@ -316,16 +316,16 @@
       <!-- BAGVED: 2 punkter -->
       <div class="lak-point" style="top:78%;left:36%" data-key="rear_l" title="Bag Venstre"></div>
       <div class="lak-point" style="top:78%;left:57%" data-key="rear_r" title="Bag Højre"></div>
-      <!-- VENSTRE SIDE: 4 punkter -->
-      <div class="lak-point" style="top:22%;left:8%" data-key="left_1" title="Venstre Foran"></div>
-      <div class="lak-point" style="top:36%;left:4%" data-key="left_2" title="Venstre Midt-Foran"></div>
-      <div class="lak-point" style="top:54%;left:4%" data-key="left_3" title="Venstre Midt-Bag"></div>
-      <div class="lak-point" style="top:68%;left:8%" data-key="left_4" title="Venstre Bag"></div>
-      <!-- HØJRE SIDE: 4 punkter -->
-      <div class="lak-point" style="top:22%;left:82%" data-key="right_1" title="Højre Foran"></div>
-      <div class="lak-point" style="top:36%;left:86%" data-key="right_2" title="Højre Midt-Foran"></div>
-      <div class="lak-point" style="top:54%;left:86%" data-key="right_3" title="Højre Midt-Bag"></div>
-      <div class="lak-point" style="top:68%;left:82%" data-key="right_4" title="Højre Bag"></div>
+      <!-- VENSTRE SIDE: 4 punkter — forskærm og bagskærm yderst til venstre -->
+      <div class="lak-point" style="top:24%;left:3%"  data-key="left_1" title="Venstre Forskærm"></div>
+      <div class="lak-point" style="top:37%;left:8%"  data-key="left_2" title="Venstre Midt-Foran"></div>
+      <div class="lak-point" style="top:54%;left:8%"  data-key="left_3" title="Venstre Midt-Bag"></div>
+      <div class="lak-point" style="top:67%;left:3%"  data-key="left_4" title="Venstre Bagskærm"></div>
+      <!-- HØJRE SIDE: 4 punkter — forskærm og bagskærm yderst til højre -->
+      <div class="lak-point" style="top:24%;left:88%" data-key="right_1" title="Højre Forskærm"></div>
+      <div class="lak-point" style="top:37%;left:83%" data-key="right_2" title="Højre Midt-Foran"></div>
+      <div class="lak-point" style="top:54%;left:83%" data-key="right_3" title="Højre Midt-Bag"></div>
+      <div class="lak-point" style="top:67%;left:88%" data-key="right_4" title="Højre Bagskærm"></div>
     </div>
     <!-- Input modal -->
     <div id="lak-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;align-items:center;justify-content:center">
@@ -497,11 +497,11 @@ const S = {
 
 // ─── Tab setup ────────────────────────────────────────────────────────────────
 const TABS = [
-  {label:"🚗 Bil Info", color:"#2563EB"},
+  {label:"🚗 Bil",      color:"#2563EB"},
   {label:"📷 Fotos",    color:"#7C3AED"},
   {label:"🔧 Dæk",      color:"#EA580C"},
   {label:"💥 Skader",   color:"#DC2626"},
-  {label:"📁 Diverse",  color:"#0D9488"},
+  {label:"📁 DIV",      color:"#0D9488"},
   {label:"💰 Leasing",  color:"#16A34A"},
   {label:"🎨 Lak",      color:"#D97706"},
   {label:"📋 Rapport",  color:"#92400E"},
@@ -1324,10 +1324,10 @@ const LAK_LABELS = {
   front_l:"Foran Venstre", front_r:"Foran Højre",
   roof:"Tag (midt)",
   rear_l:"Bag Venstre", rear_r:"Bag Højre",
-  left_1:"Venstre – Foran", left_2:"Venstre – Midt Foran",
-  left_3:"Venstre – Midt Bag", left_4:"Venstre – Bag",
-  right_1:"Højre – Foran",  right_2:"Højre – Midt Foran",
-  right_3:"Højre – Midt Bag", right_4:"Højre – Bag",
+  left_1:"Venstre Forskærm", left_2:"Venstre Midt Foran",
+  left_3:"Venstre Midt Bag",  left_4:"Venstre Bagskærm",
+  right_1:"Højre Forskærm",   right_2:"Højre Midt Foran",
+  right_3:"Højre Midt Bag",   right_4:"Højre Bagskærm",
 };
 // Normal lak: 80–200 µm. Above 250 = repainted (red)
 const LAK_HIGH = 250;
