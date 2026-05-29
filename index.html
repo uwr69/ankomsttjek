@@ -9,101 +9,136 @@
 <title>🚗 AnkomstTjek</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body { font-family:'Inter','Helvetica Neue',system-ui,sans-serif; background:#F0F3FA; color:#1A2340; max-width:900px; margin:0 auto; min-height:100vh; }
+  body { font-family:'Inter','Helvetica Neue',system-ui,sans-serif; background:#F2F5FB; color:#1A2340; max-width:960px; margin:0 auto; min-height:100vh; }
   :root {
-    --bg:#F0F3FA; --card:#fff; --border:#A0AECF; --inp-border:#7B8FC7;
+    --bg:#F2F5FB; --card:#fff; --border:#D8DFF0; --inp-border:#C0CAE8;
     --text:#1A2340; --muted:#6B7A99;
-    --blue:#2563EB; --blue-l:#EBF2FF;
-    --green:#16A34A; --green-l:#DCFCE7;
+    --blue:#2563EB; --blue-l:#EBF2FF; --blue-m:#185FA5;
+    --green:#16A34A; --green-l:#DCFCE7; --green-m:#0F6E56;
     --orange:#EA580C; --orange-l:#FFF0E6;
     --red:#DC2626; --red-l:#FEE2E2;
     --purple:#7C3AED; --purple-l:#EDE9FE;
-    --teal:#0D9488; --teal-l:#CCFBF1;
+    --teal:#0D9488; --teal-l:#CCFBF1; --teal-m:#085041;
     --yellow:#D97706; --yellow-l:#FEF3C7;
   }
-  #header { background:#fff; padding:12px 14px 0; border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
-  #header-top { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+
+  /* ── HEADER ── */
+  #header { background:var(--blue-m); padding:12px 20px 0; position:sticky; top:0; z-index:100; box-shadow:0 3px 16px rgba(24,95,165,0.25); }
+  #header-top { display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
   #app-title { flex:1; min-width:0; }
-  #app-title .name { font-size:13px; font-weight:900; color:var(--blue); }
-  #app-title .sub { font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
-  #tab-stripe { height:3px; }
-  #tabs { display:flex; gap:2px; overflow-x:auto; scrollbar-width:none; }
-  #tabs::-webkit-scrollbar { display:none; }
-  .tab-btn { background:transparent; border:none; border-radius:8px 8px 0 0; padding:9px 14px; cursor:pointer; font-size:13px; font-weight:700; white-space:nowrap; color:var(--muted); transition:all 0.15s; font-family:inherit; }
-  .tab-btn.active { color:#fff; }
-  .icon-btn { border-radius:9px; width:34px; height:34px; font-size:20px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1.5px solid; font-family:inherit; }
-  .save-btn { border-radius:9px; padding:7px 11px; cursor:pointer; font-size:11px; font-weight:800; white-space:nowrap; flex-shrink:0; font-family:inherit; transition:all 0.2s; }
+  #app-title .name { font-size:14px; font-weight:800; color:#fff; }
+  #app-title .sub { font-size:11px; color:rgba(255,255,255,0.6); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
+  #tab-stripe { height:3px; background:rgba(255,255,255,0.15); }
+
+  /* ── TABS — full width spread ── */
+  #tabs { display:flex; width:100%; }
+  .tab-btn { flex:1; background:transparent; border:none; border-radius:0; padding:10px 4px; cursor:pointer; font-size:12px; font-weight:600; white-space:nowrap; color:rgba(255,255,255,0.55); transition:all 0.15s; font-family:inherit; text-align:center; border-bottom:3px solid transparent; }
+  .tab-btn:hover { color:rgba(255,255,255,0.85); }
+  .tab-btn.active { color:#fff; border-bottom:3px solid #fff; }
+
+  /* ── HEADER BUTTONS ── */
+  .save-btn { border-radius:8px; padding:7px 12px; cursor:pointer; font-size:11px; font-weight:700; white-space:nowrap; flex-shrink:0; font-family:inherit; transition:all 0.2s; border:1.5px solid rgba(255,255,255,0.35); background:rgba(255,255,255,0.12); color:#fff; }
+  .save-btn:hover { background:rgba(255,255,255,0.22); }
+  .save-btn.primary { background:#fff; color:var(--blue-m); border-color:#fff; }
+  .save-btn.danger { background:rgba(220,38,38,0.2); border-color:rgba(220,38,38,0.5); color:#fca5a5; }
+
+  /* ── SEARCH ── */
   #search-wrap { position:relative; }
-  #search-box { display:flex; align-items:center; background:var(--bg); border:1.5px solid var(--border); border-radius:9px; overflow:hidden; transition:border-color 0.15s; }
-  #search-box.open { border-color:var(--blue); }
-  #search-input { background:transparent; border:none; color:var(--text); padding:7px 8px; font-size:11px; width:70px; outline:none; transition:width 0.2s; font-family:inherit; }
-  #search-input.open { width:110px; }
-  #search-toggle { background:transparent; border:none; border-left:1px solid var(--border); color:var(--blue); padding:7px 8px; cursor:pointer; font-size:10px; font-family:inherit; }
-  #search-dropdown { position:absolute; top:calc(100% + 6px); right:0; width:270px; background:#fff; border:1.5px solid var(--border); border-radius:14px; box-shadow:0 10px 40px rgba(0,0,0,0.14); z-index:200; max-height:320px; overflow-y:auto; display:none; }
+  #search-box { display:flex; align-items:center; background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.25); border-radius:8px; overflow:hidden; transition:all 0.15s; }
+  #search-box.open { background:rgba(255,255,255,0.2); border-color:rgba(255,255,255,0.5); }
+  #search-input { background:transparent; border:none; color:#fff; padding:7px 8px; font-size:11px; width:70px; outline:none; transition:width 0.2s; font-family:inherit; }
+  #search-input::placeholder { color:rgba(255,255,255,0.45); }
+  #search-input.open { width:120px; }
+  #search-toggle { background:transparent; border:none; border-left:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.7); padding:7px 9px; cursor:pointer; font-size:10px; font-family:inherit; }
+  #search-dropdown { position:absolute; top:calc(100% + 8px); right:0; width:290px; background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:0 12px 40px rgba(0,0,0,0.15); z-index:200; max-height:340px; overflow-y:auto; display:none; }
   #search-dropdown.open { display:block; }
-  .car-list-item { display:flex; align-items:center; justify-content:space-between; width:100%; background:transparent; border:none; border-bottom:1px solid var(--border); padding:11px 14px; cursor:pointer; text-align:left; gap:8px; font-family:inherit; }
+  .car-list-item { display:flex; align-items:center; justify-content:space-between; width:100%; background:transparent; border:none; border-bottom:1px solid var(--border); padding:12px 16px; cursor:pointer; text-align:left; gap:8px; font-family:inherit; transition:background 0.1s; }
   .car-list-item:last-child { border-bottom:none; }
+  .car-list-item:hover { background:#F8FAFF; }
   .car-list-item.active { background:var(--blue-l); }
-  .car-list-item .car-name { font-size:12px; color:var(--text); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .car-list-item .car-name { font-size:13px; color:var(--text); font-weight:500; }
   .car-list-item.active .car-name { color:var(--blue); font-weight:700; }
   .car-list-item .car-date { font-size:10px; color:var(--muted); margin-top:2px; }
   .car-active-badge { font-size:9px; background:var(--blue); color:#fff; border-radius:20px; padding:2px 8px; font-weight:700; flex-shrink:0; }
-  .new-car-btn { display:flex; align-items:center; gap:10px; width:100%; background:var(--blue-l); border:none; border-bottom:1px solid var(--border); padding:12px 14px; cursor:pointer; color:var(--blue); font-weight:800; font-size:12px; border-radius:12px 12px 0 0; font-family:inherit; }
-  #content { padding:20px 24px; }
+  .new-car-btn { display:flex; align-items:center; gap:10px; width:100%; background:var(--blue-l); border:none; border-bottom:1px solid var(--border); padding:13px 16px; cursor:pointer; color:var(--blue); font-weight:700; font-size:13px; border-radius:14px 14px 0 0; font-family:inherit; }
+
+  /* ── CONTENT ── */
+  #content { padding:24px 28px; }
   .tab-pane { display:none; }
   .tab-pane.active { display:block; }
-  .inp { background:#fff; border:2px solid var(--inp-border); border-radius:10px; color:var(--text); padding:12px 14px; font-size:15px; width:100%; box-sizing:border-box; outline:none; box-shadow:0 1px 3px rgba(0,0,0,0.08); font-family:inherit; }
-  .inp:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,0.15); }
-  .inp.error { background:#FEF2F2; border-color:var(--red); box-shadow:0 0 0 3px rgba(220,38,38,0.15); }
-  .inp-sm { background:#fff; border:2px solid var(--inp-border); border-radius:8px; color:var(--text); padding:10px 12px; font-size:14px; width:100%; box-sizing:border-box; box-shadow:0 1px 3px rgba(0,0,0,0.07); font-family:inherit; outline:none; }
-  .inp-sm:focus { border-color:var(--blue); }
-  select.inp, select.inp-sm { cursor:pointer; }
-  label.field-label { font-size:11px; color:var(--muted); font-weight:700; letter-spacing:0.4px; display:block; margin-top:12px; margin-bottom:3px; }
-  .grid2 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
-  .section-title { font-size:11px; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; margin-top:22px; margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid; display:flex; align-items:center; gap:6px; }
-  .banner { border-radius:14px; padding:14px 16px; margin-bottom:16px; border:1px solid; }
-  .card { background:#fff; border-radius:14px; padding:14px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
-  .check-row { display:flex; align-items:center; gap:12px; padding:11px 14px; background:#fff; border:2px solid var(--inp-border); border-radius:12px; margin-bottom:8px; cursor:pointer; transition:all 0.15s; box-shadow:0 1px 4px rgba(0,0,0,0.08); user-select:none; }
-  .check-row.checked { background:var(--green-l); border-color:var(--green); box-shadow:0 0 0 1px rgba(22,163,74,0.2); }
-  .check-box { width:24px; height:24px; border-radius:7px; border:2.5px solid var(--inp-border); background:#F0F3FA; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.15s; font-size:14px; line-height:1; }
-  .check-row.checked .check-box { background:var(--green); border-color:var(--green); color:#fff; }
-  .check-label { font-size:14px; color:var(--text); font-weight:500; flex:1; }
-  .check-row.checked .check-label { color:var(--green); font-weight:700; }
-  .check-hint { font-size:10px; color:var(--muted); font-style:italic; margin-left:auto; }
-  .photo-slot { margin-bottom:14px; }
-  .photo-slot-label { font-size:12px; color:var(--muted); margin-bottom:6px; font-weight:600; display:flex; align-items:center; gap:6px; }
+
+  /* ── SECTION HEADER — Design B colored bands ── */
+  .section-hdr { border-radius:10px; padding:9px 16px; margin:22px 0 14px; display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; }
+
+  /* ── INPUTS — no border box, flat ── */
+  .field-wrap { margin-bottom:0; }
+  label.field-label { font-size:10px; color:var(--muted); font-weight:700; letter-spacing:.5px; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .inp { background:#fff; border:none; border-bottom:2px solid var(--inp-border); border-radius:0; color:var(--text); padding:10px 2px; font-size:15px; width:100%; box-sizing:border-box; outline:none; font-family:inherit; transition:border-color 0.15s; }
+  .inp:focus { border-bottom-color:var(--blue); }
+  .inp.error { border-bottom-color:var(--red); background:#FEF8F8; }
+  .inp-sm { background:transparent; border:none; border-bottom:1.5px solid var(--inp-border); border-radius:0; color:var(--text); padding:8px 2px; font-size:14px; width:100%; box-sizing:border-box; font-family:inherit; outline:none; transition:border-color 0.15s; }
+  .inp-sm:focus { border-bottom-color:var(--blue); }
+  select.inp { cursor:pointer; background:transparent; }
+  select.inp-sm { cursor:pointer; background:transparent; }
+
+  /* ── GRID ── */
+  .grid2 { display:grid; grid-template-columns:repeat(3,1fr); gap:20px 24px; }
+
+  /* ── BANNER (used for info strips) ── */
+  .banner { border-radius:10px; padding:12px 16px; margin-bottom:16px; border:none; background:var(--blue-l); }
+
+  /* ── CARD (white surface) ── */
+  .card { background:#fff; border-radius:12px; padding:20px; margin-bottom:16px; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+
+  /* ── PHOTOS — horizontal grid layout ── */
+  .photo-group { display:grid; gap:14px; margin-bottom:4px; }
+  .photo-slot { }
+  .photo-slot-label { font-size:11px; color:var(--muted); margin-bottom:6px; font-weight:600; display:flex; align-items:center; gap:6px; text-transform:uppercase; letter-spacing:.4px; }
   .photo-slot-label .badge { margin-left:auto; border-radius:20px; padding:1px 8px; font-size:10px; font-weight:700; }
-  .photo-grid { display:flex; flex-wrap:wrap; gap:8px; }
+  .photo-grid { display:flex; flex-wrap:wrap; gap:6px; }
   .photo-thumb { position:relative; }
-  .photo-thumb img { width:76px; height:76px; object-fit:cover; border-radius:10px; border:2px solid; }
-  .photo-remove { position:absolute; top:-6px; right:-6px; background:var(--red); color:#fff; border:none; border-radius:50%; width:20px; height:20px; font-size:11px; cursor:pointer; line-height:20px; padding:0; font-weight:700; }
-  .photo-add { width:76px; height:76px; border-radius:10px; border:2px dashed; background:rgba(0,0,0,0.03); font-size:26px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:inherit; }
-  .photo-uploading { width:76px; height:76px; border-radius:10px; border:2px solid var(--blue); background:var(--blue-l); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--blue); font-weight:700; text-align:center; }
-  .tire-card { background:#fff; border-radius:14px; padding:14px; margin-bottom:12px; border:2px solid #eee; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
-  .tire-header { font-weight:700; margin-bottom:10px; font-size:13px; display:flex; align-items:center; gap:6px; }
+  .photo-thumb img { width:80px; height:80px; object-fit:cover; border-radius:8px; border:none; box-shadow:0 1px 4px rgba(0,0,0,0.12); }
+  .photo-remove { position:absolute; top:-5px; right:-5px; background:var(--red); color:#fff; border:none; border-radius:50%; width:18px; height:18px; font-size:11px; cursor:pointer; line-height:18px; padding:0; font-weight:700; }
+  .photo-add { width:80px; height:80px; border-radius:8px; border:2px dashed var(--inp-border); background:#fff; font-size:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:inherit; color:var(--muted); transition:all 0.15s; }
+  .photo-add:hover { border-color:var(--blue); color:var(--blue); background:var(--blue-l); }
+  .photo-uploading { width:80px; height:80px; border-radius:8px; border:2px solid var(--blue); background:var(--blue-l); display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--blue); font-weight:700; text-align:center; }
+
+  /* ── TIRES ── */
+  .tire-card { background:#fff; border-radius:12px; padding:16px 20px; margin-bottom:12px; box-shadow:0 1px 4px rgba(0,0,0,0.06); border-top:3px solid transparent; }
+  .tire-header { font-weight:700; margin-bottom:12px; font-size:13px; display:flex; align-items:center; gap:6px; }
   .tire-badge { margin-left:auto; border-radius:20px; padding:2px 10px; font-size:10px; font-weight:700; }
-  .damage-card { background:#fff; border-radius:14px; padding:14px; margin-bottom:10px; border:1px solid var(--red-l); box-shadow:0 2px 8px rgba(0,0,0,0.05); }
-  .damage-row { display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap; }
-  .leasing-summary-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
-  .leasing-card { border-radius:14px; padding:14px; border:1px solid; }
-  .leasing-card .lc-label { font-size:10px; font-weight:700; letter-spacing:0.5px; margin-bottom:4px; }
-  .leasing-card .lc-val { font-weight:900; }
-  .toggle-switch { width:44px; height:24px; border-radius:12px; position:relative; cursor:pointer; transition:background 0.2s; flex-shrink:0; border:none; }
-  .toggle-knob { position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; transition:left 0.2s; box-shadow:0 1px 3px rgba(0,0,0,0.2); }
-  .details-table { background:#fff; border-radius:14px; padding:16px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,0.05); margin-top:10px; }
-  .details-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--border); }
-  .details-row:last-child { border-bottom:none; }
-  .details-code { font-size:11px; font-weight:800; color:var(--blue); font-family:monospace; background:var(--blue-l); border-radius:5px; padding:1px 6px; }
-  .details-desc { font-size:11px; color:var(--muted); margin-left:8px; }
-  .details-val { font-size:12px; font-weight:700; color:var(--text); }
-  .rapport-item { background:#fff; border-radius:12px; padding:12px 16px; border:1px solid; display:flex; align-items:center; gap:12px; box-shadow:0 1px 4px rgba(0,0,0,0.05); margin-bottom:8px; }
-  input[type=range] { width:100%; height:6px; accent-color:var(--green); cursor:pointer; }
+
+  /* ── DAMAGE CARDS ── */
+  .damage-card { background:#fff; border-radius:12px; padding:16px; margin-bottom:10px; border-left:4px solid var(--red); box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+  .damage-row { display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+
+  /* ── RAPPORT ITEMS ── */
+  .rapport-item { background:#fff; border-radius:10px; padding:12px 16px; display:flex; align-items:center; gap:12px; box-shadow:0 1px 3px rgba(0,0,0,0.05); margin-bottom:8px; border-left:3px solid transparent; }
+
+  /* ── MISC ── */
+  .check-row { display:flex; align-items:center; gap:12px; padding:10px 0; cursor:pointer; transition:all 0.15s; border-bottom:1px solid var(--border); }
+  .check-box { width:22px; height:22px; border-radius:6px; border:2px solid var(--inp-border); background:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:13px; }
+  .check-label { font-size:14px; color:var(--text); font-weight:500; flex:1; }
+  input[type=range] { width:100%; height:5px; accent-color:var(--green); cursor:pointer; }
   .flex-row { display:flex; align-items:center; gap:8px; }
   .mt-8 { margin-top:8px; }
   .mt-12 { margin-top:12px; }
   .mt-16 { margin-top:16px; }
-  .error-msg { margin-top:10px; background:var(--red-l); border:1px solid rgba(220,38,38,0.3); border-radius:10px; padding:10px 14px; font-size:12px; color:var(--red); font-weight:600; }
-  textarea.inp-sm { height:60px; resize:vertical; }
+  .error-msg { margin-top:10px; background:var(--red-l); border-left:4px solid var(--red); border-radius:8px; padding:10px 14px; font-size:12px; color:var(--red); font-weight:600; }
+  textarea.inp-sm { height:80px; resize:vertical; border:1px solid var(--inp-border); border-radius:8px; padding:10px; }
+  .details-table { background:#fff; border-radius:12px; padding:16px; box-shadow:0 1px 4px rgba(0,0,0,0.06); margin-top:10px; }
+  .details-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--border); }
+  .details-row:last-child { border-bottom:none; }
+  .details-code { font-size:11px; font-weight:700; color:var(--blue); font-family:monospace; background:var(--blue-l); border-radius:4px; padding:1px 6px; }
+  .details-desc { font-size:11px; color:var(--muted); margin-left:8px; }
+  .details-val { font-size:12px; font-weight:700; color:var(--text); }
+  .section-title { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin:20px 0 10px; display:flex; align-items:center; gap:6px; }
+  .leasing-summary-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+  .leasing-card { border-radius:12px; padding:16px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.06); border-top:3px solid; }
+  .leasing-card .lc-label { font-size:10px; font-weight:700; letter-spacing:.5px; margin-bottom:6px; text-transform:uppercase; }
+  .leasing-card .lc-val { font-weight:800; }
+  .toggle-switch { width:44px; height:24px; border-radius:12px; position:relative; cursor:pointer; transition:background 0.2s; flex-shrink:0; border:none; }
+  .toggle-knob { position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; transition:left 0.2s; box-shadow:0 1px 3px rgba(0,0,0,0.2); }
 
   /* Firebase status toast */
   #fb-toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1A2340; color:#fff; padding:10px 20px; border-radius:20px; font-size:12px; font-weight:600; z-index:9999; opacity:0; transition:opacity 0.3s; pointer-events:none; white-space:nowrap; }
@@ -139,11 +174,11 @@
 <div id="header">
   <div id="header-top">
     <div id="app-title">
-      <div class="name">🚗 AnkomstTjek <span style="font-size:9px;background:var(--blue);color:#fff;border-radius:10px;padding:1px 6px;vertical-align:middle;font-weight:700;letter-spacing:.5px">v1.04</span></div>
+      <div class="name">🚗 AnkomstTjek <span style="font-size:9px;background:rgba(255,255,255,0.2);color:#fff;border-radius:8px;padding:2px 7px;vertical-align:middle;font-weight:600">v1.05</span></div>
       <div class="sub" id="header-sub">Ingen bil valgt</div>
     </div>
-    <button class="save-btn" id="new-car-btn" style="background:var(--blue-l);color:var(--blue);border-color:rgba(37,99,235,0.3)">➕ Ny bil</button>
-    <button class="save-btn" id="save-btn" style="background:var(--blue);color:#fff;border-color:var(--blue)">💾 Gem bil</button>
+    <button class="save-btn primary" id="new-car-btn">➕ Ny bil</button>
+    <button class="save-btn primary" id="save-btn">💾 Gem bil</button>
     <div id="search-wrap">
       <div id="search-box">
         <input id="search-input" placeholder="Søg..." autocomplete="off">
@@ -154,7 +189,7 @@
         <div id="car-list"></div>
       </div>
     </div>
-    <button class="save-btn" id="delete-car-btn" onclick="window.deleteCar()" style="background:var(--red-l);color:var(--red);border-color:rgba(220,38,38,0.3)">🗑 Slet bil</button>
+    <button class="save-btn danger" id="delete-car-btn" onclick="window.deleteCar()">🗑 Slet bil</button>
   </div>
   <div id="tabs"></div>
 </div>
@@ -243,7 +278,7 @@
         </select>
       </div>
     </div>
-    <div class="section-title" style="color:var(--blue);border-color:rgba(37,99,235,0.2)">🔩 Service historik</div>
+    <div class="section-hdr" style="background:#EBF2FF;color:#1E3A8A">🔩 Service historik</div>
     <div class="grid2">
       <div><label class="field-label">🔧 Sidste service – dato</label><input class="inp" type="date" id="last-svc-date"></div>
       <div><label class="field-label">📏 Sidste service – km</label><input class="inp" type="number" id="last-svc-km" placeholder="85000"></div>
@@ -254,23 +289,21 @@
 
   <!-- TAB 1: FOTOS -->
   <div class="tab-pane" data-tab="1">
-    <div class="section-title" style="color:var(--purple);border-color:rgba(124,58,237,0.2)">🔵 Fælge</div>
-    <div id="photos-wheels"></div>
-    <div class="section-title" style="color:var(--purple);border-color:rgba(124,58,237,0.2)">🚗 Eksteriør</div>
-    <div id="photos-exterior"></div>
-    <div class="section-title" style="color:var(--purple);border-color:rgba(124,58,237,0.2)">🏠 Interiør & Instrumenter</div>
-    <div id="photos-interior"></div>
-    <div class="section-title" style="color:var(--purple);border-color:rgba(124,58,237,0.2)">🎬 Video</div>
-    <div class="banner" style="background:var(--purple-l);border-color:rgba(124,58,237,0.15);padding:10px 14px;margin-bottom:10px">
-      <div style="font-size:11px;color:var(--purple);font-weight:700">Videoer gemmes lokalt på enheden — ikke i rapporten</div>
-    </div>
+    <div class="section-hdr" style="background:#EDE9FE;color:#4C1D95">🔵 Fælge</div>
+    <div id="photos-wheels" class="photo-group" style="grid-template-columns:repeat(4,1fr)"></div>
+    <div class="section-hdr" style="background:#EDE9FE;color:#4C1D95;margin-top:20px">🚗 Eksteriør</div>
+    <div id="photos-exterior" class="photo-group" style="grid-template-columns:repeat(4,1fr)"></div>
+    <div class="section-hdr" style="background:#EDE9FE;color:#4C1D95;margin-top:20px">🏠 Interiør & Instrumenter</div>
+    <div id="photos-interior" class="photo-group" style="grid-template-columns:repeat(5,1fr)"></div>
+    <div class="section-hdr" style="background:#EDE9FE;color:#4C1D95;margin-top:20px">🎬 Video</div>
+    <div style="font-size:11px;color:var(--purple);font-weight:600;background:#EDE9FE;border-radius:8px;padding:8px 14px;margin-bottom:12px">Videoer gemmes kun lokalt — ikke i rapporten</div>
     <div id="video-slots"></div>
   </div>
 
   <!-- TAB 2: DÆK -->
   <div class="tab-pane" data-tab="2">
     <div id="tires-container"></div>
-    <div class="card mt-16" style="border:1px solid var(--border)">
+    <div class="card mt-16">
       <div style="color:var(--orange);font-weight:700;margin-bottom:12px;font-size:13px">➕ Ekstra sæt fælge</div>
       <div id="extra-wheels-list"></div>
       <button onclick="addExtraWheel()" style="background:var(--orange-l);color:var(--orange);border:1px solid rgba(234,88,12,0.3);border-radius:10px;padding:8px 16px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit">+ Tilføj ekstra fælge</button>
@@ -279,7 +312,7 @@
 
   <!-- TAB 3: LAK -->
   <div class="tab-pane" data-tab="3">
-    <div class="banner" style="background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border-color:rgba(217,119,6,0.12)">
+    <div style="background:#FEF3C7;border-radius:10px;padding:12px 16px;margin-bottom:16px">
       <div style="font-size:11px;color:var(--yellow);font-weight:800;letter-spacing:1px;margin-bottom:2px">🎨 LAK MÅLING</div>
       <div style="font-size:12px;color:var(--muted)">Tast måleværdier i mikrometer (µm) — 4 cifre</div>
     </div>
@@ -308,7 +341,7 @@
     <div id="lak-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;align-items:center;justify-content:center">
       <div style="background:#fff;border-radius:18px;padding:24px;width:260px;box-shadow:0 20px 60px rgba(0,0,0,0.25)">
         <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px" id="lak-modal-title">Måling</div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Indtast laktykkelse i µm</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Indtast laktykkelse i µm</div>
         <input class="inp" id="lak-modal-input" type="number" placeholder="0000" maxlength="4"
           style="font-size:28px;font-weight:900;text-align:center;letter-spacing:4px;padding:12px">
         <div style="display:flex;gap:8px;margin-top:14px">
@@ -318,7 +351,7 @@
       </div>
     </div>
     <div style="margin-top:18px">
-      <div class="section-title" style="color:var(--yellow);border-color:rgba(217,119,6,0.2)">📊 Måleværdier oversigt</div>
+      <div class="section-hdr" style="background:#FEF3C7;color:#92400E">📊 Måleværdier oversigt</div>
       <div id="lak-table"></div>
     </div>
   </div>
@@ -370,10 +403,10 @@
 
   <!-- TAB 5: CHECKLISTE -->
   <div class="tab-pane" data-tab="5">
-    <div class="banner" style="background:linear-gradient(135deg,#CCFBF1,#E0FDF4);border-color:rgba(13,148,136,0.12)">
+    <div style="background:#CCFBF1;border-radius:10px;padding:12px 16px;margin-bottom:16px">
       <div style="font-size:12px;color:var(--teal);font-weight:700" id="docs-count">✅ 0 punkter markeret</div>
     </div>
-    <div class="section-title" style="color:var(--teal);border-color:rgba(13,148,136,0.2)">✅ Check</div>
+    <div class="section-hdr" style="background:#CCFBF1;color:#085041">✅ Check</div>
     <div id="docs-med-bilen"></div>
     <div class="mt-16" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
       <div>
@@ -386,9 +419,9 @@
         <button onclick="window._setNoglerAfproeved(false)" style="width:44px;height:44px;border-radius:10px;border:2.5px solid ${S.docs.noglerAfproeved===false?'var(--red)':'#ddd'};background:${S.docs.noglerAfproeved===false?'var(--red)':'#fff'};color:${S.docs.noglerAfproeved===false?'#fff':'#ccc'};font-size:22px;cursor:pointer;font-family:inherit;line-height:1">✕</button>
       </div>
     </div>
-    <div class="section-title" style="color:var(--teal);border-color:rgba(13,148,136,0.2)">🗂 Til salgsmappen</div>
+    <div class="section-hdr" style="background:#CCFBF1;color:#085041">🗂 Til salgsmappen</div>
     <div id="docs-salgsmappe"></div>
-    <div class="section-title" style="color:var(--teal);border-color:rgba(13,148,136,0.2)">📝 Noter</div>
+    <div class="section-hdr" style="background:#CCFBF1;color:#085041">📝 Noter</div>
     <div style="position:relative">
       <textarea class="inp" id="doc-notes" placeholder="Generelle noter om bilen..." maxlength="300"
         style="height:110px;resize:none;font-size:14px;line-height:1.5"
@@ -608,15 +641,17 @@ function refreshPhotoSlot(key, label, max) {
   const done = photos.length >= max;
   const wrap = document.getElementById("ps-"+key);
   if (!wrap) return;
+  const accentColor = "#7C3AED";
+  wrap.style.cssText = "background:#fff;border-radius:10px;padding:12px;box-shadow:0 1px 4px rgba(0,0,0,0.07)";
   wrap.innerHTML = `
-    <div class="photo-slot-label">
+    <div style="font-size:10px;color:${done?"#16A34A":"var(--muted)"};font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:4px">
       ${done?"✅":"📸"} ${label}
-      <span class="badge" style="background:${done?"#DCFCE7":"#EBF2FF"};color:${done?"#16A34A":"#2563EB"}">${photos.length}/${max}</span>
+      <span style="margin-left:auto;background:${done?"#DCFCE7":"#F0F0F0"};color:${done?"#16A34A":"var(--muted)"};border-radius:20px;padding:1px 7px;font-size:9px">${photos.length}/${max}</span>
     </div>
     <div class="photo-grid" id="pg-${key}">
-      ${photos.map((ph,i)=>`<div class="photo-thumb"><img src="${ph.dataUrl}" style="border-color:${ACCENT}">
+      ${photos.map((ph,i)=>`<div class="photo-thumb"><img src="${ph.dataUrl}" style="width:${max===1?'100%':'72px'};height:72px;object-fit:cover;border-radius:7px">
         <button class="photo-remove" onclick="window._removePhoto('${key}',${i})">×</button></div>`).join("")}
-      ${!done?`<button class="photo-add" style="border-color:${ACCENT};color:${ACCENT}" onclick="window._triggerPhoto('${key}',${max})">+</button>`:""}
+      ${!done?`<button class="photo-add" onclick="window._triggerPhoto('${key}',${max})" style="width:72px;height:72px;font-size:22px">+</button>`:""}
     </div>
     <input type="file" id="fi-${key}" accept="image/*" multiple capture="environment" style="display:none"
       onchange="window._handlePhotoFiles('${key}',${max},this)">`;
@@ -630,7 +665,6 @@ function initPhotos() {
   PHOTO_DEFS.exterior.forEach(([l,k,m])=>renderPhotoSlot(k,l,m,ec));
   PHOTO_DEFS.interior.forEach(([l,k,m])=>renderPhotoSlot(k,l,m,ic));
 }
-
 window._triggerPhoto = (key) => document.getElementById("fi-"+key)?.click();
 
 window._removePhoto = async (key, idx) => {
@@ -980,7 +1014,7 @@ function renderRapportSummary() {
     {icon:"📝",label:"Noter",val:S.notes?(S.notes.length+" tegn"):"Ingen noter",color:"var(--teal)"},
   ];
   document.getElementById("rapport-summary").innerHTML=items.map(it=>`
-    <div class="rapport-item" style="border-color:${it.color}20">
+    <div class="rapport-item" style="border-left-color:${it.color}; style="border-left:3px solid ${it.color}">
       <span style="font-size:22px">${it.icon}</span>
       <div><div style="font-size:10px;color:${it.color};font-weight:700;text-transform:uppercase;letter-spacing:0.5px">${it.label}</div>
       <div style="font-size:13px;color:var(--text);font-weight:600;margin-top:1px">${it.val}</div></div>
@@ -1088,7 +1122,7 @@ window.generateReport = async () => {
 </style></head><body>
 
 <div class="cover">
-  <div class="cover-sub">🚗 AnkomstTjek v1.04 &mdash; ${t.title}${c.carType?' &middot; '+c.carType:''}${c.inspector?' &middot; '+c.inspector:''}</div>
+  <div class="cover-sub">🚗 AnkomstTjek v1.05 &mdash; ${t.title}${c.carType?' &middot; '+c.carType:''}${c.inspector?' &middot; '+c.inspector:''}</div>
   <h1>${c.make||"-"} ${c.model||""}</h1>
   <h2>${c.regNumber||"-"} &middot; ${c.year||"-"} &middot; ${c.color||"-"}</h2>
   <div class="cover-meta">
@@ -1215,7 +1249,7 @@ ${S.notes?`
   <div class="sb"><p style="font-size:13px;color:#1A2340;line-height:1.6;white-space:pre-wrap">${S.notes}</p></div>
 </div>`:""}
 
-<div class="footer">🚗 AnkomstTjek v1.04 &middot; ${t.generated} ${new Date().toLocaleString(reportLang==='da'?'da-DK':'en-GB')} &middot; ${c.regNumber||""} ${c.make||""} ${c.model||""}</div>
+<div class="footer">🚗 AnkomstTjek v1.05 &middot; ${t.generated} ${new Date().toLocaleString(reportLang==='da'?'da-DK':'en-GB')} &middot; ${c.regNumber||""} ${c.make||""} ${c.model||""}</div>
 </body></html>`);
   win.document.close();
   setTimeout(()=>win.print(), 800);
@@ -1262,8 +1296,8 @@ async function saveData() {
       ? S.carList.map(c=>c.id===id?newEntry:c)
       : [...S.carList, newEntry];
     await setDoc(doc(db,"meta","car_index"), { cars: S.carList });
-    btn.textContent="✅"; btn.style.background="var(--green-l)"; btn.style.color="var(--green)"; btn.style.borderColor="rgba(22,163,74,0.3)";
-    setTimeout(()=>{btn.textContent="💾 Gem";btn.style.background="var(--blue-l)";btn.style.color="var(--blue)";btn.style.borderColor="rgba(37,99,235,0.3)";btn.disabled=false;},2000);
+    btn.textContent="✅ Gemt"; btn.style.background="rgba(22,163,74,0.25)"; btn.style.color="#fff"; btn.style.borderColor="rgba(22,163,74,0.5)";
+    setTimeout(()=>{btn.textContent="💾 Gem bil";btn.style.background="";btn.style.color="";btn.style.borderColor="";btn.disabled=false;},2000);
     renderCarList();
     updateHeaderSub();
     toast("✅ Gemt i Firebase");
