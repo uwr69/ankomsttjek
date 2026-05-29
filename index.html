@@ -508,8 +508,7 @@ const LAK_CAR_IMAGE = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAA
 // ─── Firebase setup ───────────────────────────────────────────────────────────
 import { initializeApp }                          from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, setDoc, getDoc,
-         deleteDoc, writeBatch, collection,
-         query, where, getDocs }                  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+         deleteDoc, collection }                  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBnw2n8wYTtyCmKIO22d7Ki-jy-4ZqR9LM",
@@ -529,8 +528,9 @@ const db    = getFirestore(fbApp);
 // Max doc size = 1 MB → we compress to 200 KB before saving.
 
 async function savePhotoToFirestore(dataUrl, carId, category, photoIndex) {
-  const compressed = await compressImage(dataUrl, 200 * 1024); // 200 KB max
-  const id = `${carId}_${category}_${photoIndex}_${Date.now()}`;
+  const compressed = await compressImage(dataUrl, 200 * 1024);
+  // Use predictable doc ID so we can fetch directly without query
+  const id = `${carId}__${category}__${photoIndex}`;
   await setDoc(doc(db, "photos", id), {
     carId, category, photoIndex, dataUrl: compressed, savedAt: Date.now()
   });
@@ -542,41 +542,42 @@ async function deletePhotoFromFirestore(docId) {
 }
 
 async function loadPhotosForCar(carId) {
-  // Returns { key: [{docId, dataUrl}, ...] }
   const result = { wheel_fl:[],wheel_fr:[],wheel_rl:[],wheel_rr:[],
                    front:[],rear:[],left:[],right:[],
                    odometer:[],dashboard:[],interior_front:[],interior_rear:[],trunk:[] };
-  try {
-    const q = query(collection(db,"photos"), where("carId","==",carId));
-    const snap = await getDocs(q);
-    snap.forEach(d => {
-      const data = d.data();
-      if (result[data.category]) result[data.category].push({ docId: d.id, dataUrl: data.dataUrl });
-    });
-    // Sort each category by savedAt (stored in docId timestamp part)
-  } catch(e) { console.warn("loadPhotos error", e); }
+  // Fetch each known photo slot directly by ID — no query/index needed
+  const categories = Object.keys(result);
+  const maxPerCat = {wheel_fl:1,wheel_fr:1,wheel_rl:1,wheel_rr:1,
+                     front:3,rear:3,left:3,right:3,
+                     odometer:1,dashboard:3,interior_front:4,interior_rear:1,trunk:1};
+  await Promise.all(categories.map(async cat => {
+    const max = maxPerCat[cat]||4;
+    for (let i=0; i<max; i++) {
+      try {
+        const snap = await getDoc(doc(db,"photos",`${carId}__${cat}__${i}`));
+        if (snap.exists()) result[cat].push({ docId: snap.id, dataUrl: snap.data().dataUrl });
+      } catch(e) {}
+    }
+  }));
   return result;
 }
 
 async function loadDamagePhotosForCar(carId) {
-  // Returns array indexed by damage index: [[{docId,dataUrl},...], ...]
   const result = {};
-  try {
-    const q = query(collection(db,"photos"), where("carId","==",carId), where("category","==","damage"));
-    const snap = await getDocs(q);
-    snap.forEach(d => {
-      const data = d.data();
-      const idx = data.damageIndex ?? 0;
-      if (!result[idx]) result[idx] = [];
-      result[idx].push({ docId: d.id, dataUrl: data.dataUrl });
-    });
-  } catch(e) {}
+  // Try up to 10 damages, 4 photos each
+  await Promise.all(Array.from({length:10},(_,di)=>
+    Promise.all(Array.from({length:4},(_,pi)=>
+      getDoc(doc(db,"photos",`${carId}__damage_${di}__${pi}`))
+        .then(snap => { if(snap.exists()){ if(!result[di])result[di]=[]; result[di].push({docId:snap.id,dataUrl:snap.data().dataUrl}); }})
+        .catch(()=>{})
+    ))
+  ));
   return result;
 }
 
 async function saveDamagePhotoToFirestore(dataUrl, carId, damageIndex, photoIndex) {
   const compressed = await compressImage(dataUrl, 200 * 1024);
-  const id = `${carId}_damage_${damageIndex}_${photoIndex}_${Date.now()}`;
+  const id = `${carId}__damage_${damageIndex}__${photoIndex}`;
   await setDoc(doc(db,"photos",id), {
     carId, category:"damage", damageIndex, photoIndex, dataUrl: compressed, savedAt: Date.now()
   });
@@ -1646,13 +1647,18 @@ window.deleteCar = async () => {
   setLoading("Sletter bil...");
   try {
     const carId = S.currentCarId;
-    // Delete all photos from Firestore
-    const q = query(collection(db,"photos"), where("carId","==",carId));
-    const photoSnap = await getDocs(q);
-    for (const d of photoSnap.docs) await deleteDoc(doc(db,"photos",d.id));
-    // Delete car document
+    // Delete all photos by known ID pattern — no query needed
+    const cats = ["wheel_fl","wheel_fr","wheel_rl","wheel_rr","front","rear","left","right",
+                  "odometer","dashboard","interior_front","interior_rear","trunk"];
+    const maxPerCat = {wheel_fl:1,wheel_fr:1,wheel_rl:1,wheel_rr:1,front:3,rear:3,left:3,right:3,
+                       odometer:1,dashboard:3,interior_front:4,interior_rear:1,trunk:1};
+    const delPhotos = cats.flatMap(cat=>Array.from({length:maxPerCat[cat]||4},(_,i)=>
+      deleteDoc(doc(db,"photos",`${carId}__${cat}__${i}`)).catch(()=>{})));
+    // Also delete damage photos
+    for(let di=0;di<10;di++) for(let pi=0;pi<4;pi++)
+      delPhotos.push(deleteDoc(doc(db,"photos",`${carId}__damage_${di}__${pi}`)).catch(()=>{}));
+    await Promise.all(delPhotos);
     await deleteDoc(doc(db,"cars",carId));
-    // Update index
     S.carList = S.carList.filter(c=>c.id!==carId);
     await setDoc(doc(db,"meta","car_index"), { cars: S.carList });
     toast("🗑 Bil slettet");
