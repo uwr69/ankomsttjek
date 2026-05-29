@@ -29,7 +29,7 @@
   #tab-stripe { height:3px; }
   #tabs { display:flex; gap:2px; overflow-x:auto; scrollbar-width:none; }
   #tabs::-webkit-scrollbar { display:none; }
-  .tab-btn { background:transparent; border:none; border-radius:8px 8px 0 0; padding:8px 14px; cursor:pointer; font-size:11px; font-weight:700; white-space:nowrap; color:var(--muted); transition:all 0.15s; font-family:inherit; }
+  .tab-btn { background:transparent; border:none; border-radius:8px 8px 0 0; padding:8px 13px; cursor:pointer; font-size:11px; font-weight:700; white-space:nowrap; color:var(--muted); transition:all 0.15s; font-family:inherit; }
   .tab-btn.active { color:#fff; }
   .icon-btn { border-radius:9px; width:34px; height:34px; font-size:20px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1.5px solid; font-family:inherit; }
   .save-btn { border-radius:9px; padding:7px 11px; cursor:pointer; font-size:11px; font-weight:800; white-space:nowrap; flex-shrink:0; font-family:inherit; transition:all 0.2s; }
@@ -139,22 +139,22 @@
 <div id="header">
   <div id="header-top">
     <div id="app-title">
-      <div class="name">🚗 AnkomstTjek <span style="font-size:9px;background:var(--blue);color:#fff;border-radius:10px;padding:1px 6px;vertical-align:middle;font-weight:700;letter-spacing:.5px">v1.02</span></div>
+      <div class="name">🚗 AnkomstTjek <span style="font-size:9px;background:var(--blue);color:#fff;border-radius:10px;padding:1px 6px;vertical-align:middle;font-weight:700;letter-spacing:.5px">v1.03</span></div>
       <div class="sub" id="header-sub">Ingen bil valgt</div>
     </div>
-    <button class="icon-btn" id="new-car-btn" title="Ny bil" style="background:var(--blue-l);color:var(--blue);border-color:rgba(37,99,235,0.3)">+</button>
+    <button class="save-btn" id="new-car-btn" style="background:var(--blue-l);color:var(--blue);border-color:rgba(37,99,235,0.3)">➕ Ny bil</button>
+    <button class="save-btn" id="save-btn" style="background:var(--blue);color:#fff;border-color:var(--blue)">💾 Gem bil</button>
     <div id="search-wrap">
       <div id="search-box">
-        <input id="search-input" placeholder="Søg bil..." autocomplete="off">
-        <button id="search-toggle">▼</button>
+        <input id="search-input" placeholder="Søg..." autocomplete="off">
+        <button id="search-toggle">🔍▼</button>
       </div>
       <div id="search-dropdown">
         <button class="new-car-btn" id="dd-new-car"><span style="font-size:18px">+</span> Ny bil</button>
         <div id="car-list"></div>
       </div>
     </div>
-    <button class="save-btn" id="save-btn" style="background:var(--blue-l);color:var(--blue);border-color:rgba(37,99,235,0.3)">💾 Gem</button>
-    <button class="icon-btn" id="delete-car-btn" title="Slet bil" onclick="window.deleteCar()" style="background:var(--red-l);color:var(--red);border-color:rgba(220,38,38,0.3);font-size:15px">🗑</button>
+    <button class="save-btn" id="delete-car-btn" onclick="window.deleteCar()" style="background:var(--red-l);color:var(--red);border-color:rgba(220,38,38,0.3)">🗑 Slet bil</button>
   </div>
   <div id="tabs"></div>
 </div>
@@ -178,6 +178,7 @@
           <option value="Oliver">Oliver</option>
           <option value="Kristoffer">Kristoffer</option>
           <option value="Ulrik">Ulrik</option>
+          <option value="Thomas">Thomas</option>
         </select>
       </div>
       <div>
@@ -191,6 +192,7 @@
           <option value="Oliver">Oliver</option>
           <option value="Kristoffer">Kristoffer</option>
           <option value="Ulrik">Ulrik</option>
+          <option value="Thomas">Thomas</option>
         </select>
       </div>
     </div>
@@ -314,123 +316,207 @@
   <div class="tab-pane" data-tab="4">
     <!-- Skade diagram -->
     <div style="background:#fff;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid var(--border)">
-      <div style="font-size:11px;font-weight:800;color:var(--red);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">🗺 Skade Diagram — tryk på område for at tilføje</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-        <!-- Top view -->
-        <div style="position:relative">
-          <div style="font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:4px">🔼 Oppefra</div>
-          <svg viewBox="0 0 160 260" style="width:100%;max-width:200px;display:block;margin:0 auto" id="dmg-svg-top">
-            <!-- Car body top view -->
-            <ellipse cx="80" cy="130" rx="58" ry="110" fill="#F0F3FA" stroke="#A0AECF" stroke-width="2"/>
-            <ellipse cx="80" cy="130" rx="42" ry="80" fill="#E8ECF4" stroke="#A0AECF" stroke-width="1"/>
-            <!-- Hood -->
-            <path d="M50,40 Q80,20 110,40 L105,80 Q80,70 55,80 Z" fill="#D4DBF0" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="hood" data-label="Motorhjelm" style="cursor:pointer"/>
-            <!-- Roof -->
-            <path d="M55,90 Q80,82 105,90 L105,170 Q80,178 55,170 Z" fill="#C8D0EC" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="roof-top" data-label="Tag" style="cursor:pointer"/>
-            <!-- Trunk -->
-            <path d="M55,178 Q80,170 105,178 L110,218 Q80,238 50,218 Z" fill="#D4DBF0" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="trunk-top" data-label="Bagklap" style="cursor:pointer"/>
-            <!-- Left fender front -->
-            <path d="M50,40 L32,50 L28,90 L55,90 L55,80 Z" fill="#DCE3F5" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="fl-fender" data-label="Skærm FL" style="cursor:pointer"/>
-            <!-- Right fender front -->
-            <path d="M110,40 L128,50 L132,90 L105,90 L105,80 Z" fill="#DCE3F5" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="fr-fender" data-label="Skærm FR" style="cursor:pointer"/>
-            <!-- Left door -->
-            <path d="M28,90 L22,130 L28,170 L55,170 L55,90 Z" fill="#E4E9F7" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="door-left" data-label="Dør Venstre" style="cursor:pointer"/>
-            <!-- Right door -->
-            <path d="M132,90 L138,130 L132,170 L105,170 L105,90 Z" fill="#E4E9F7" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="door-right" data-label="Dør Højre" style="cursor:pointer"/>
-            <!-- Left rear fender -->
-            <path d="M28,170 L22,205 L50,218 L55,178 Z" fill="#DCE3F5" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="rl-fender" data-label="Skærm BL" style="cursor:pointer"/>
-            <!-- Right rear fender -->
-            <path d="M132,170 L138,205 L110,218 L105,178 Z" fill="#DCE3F5" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="rr-fender" data-label="Skærm BR" style="cursor:pointer"/>
+      <div style="font-size:11px;font-weight:800;color:var(--red);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">🗺 Skade Diagram — tryk på område for at tilføje</div>
+
+      <!-- Top + Side views side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+
+        <!-- TOP VIEW — clean sedan outline -->
+        <div>
+          <div style="font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:4px">⬆ Oppefra</div>
+          <svg viewBox="0 0 200 340" style="width:100%;display:block;margin:0 auto" id="dmg-svg-top">
+            <defs>
+              <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#C8D4F0"/>
+                <stop offset="50%" stop-color="#E4ECF9"/>
+                <stop offset="100%" stop-color="#C8D4F0"/>
+              </linearGradient>
+            </defs>
+            <!-- Main body -->
+            <path d="M60,25 Q100,10 140,25 L148,60 L148,280 Q100,300 52,280 L52,60 Z" fill="url(#bodyGrad)" stroke="#5570A8" stroke-width="2"/>
+            <!-- Hood zone -->
+            <path d="M62,26 Q100,12 138,26 L144,58 L56,58 Z" fill="#B8C8E8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="hood" data-label="Motorhjelm" style="cursor:pointer" opacity="0.9"/>
+            <!-- Windshield -->
+            <path d="M58,62 L142,62 L136,100 L64,100 Z" fill="#A8C4E8" stroke="#5570A8" stroke-width="1" opacity="0.7"/>
+            <!-- Roof zone -->
+            <path d="M64,104 L136,104 L136,200 L64,200 Z" fill="#C0CCEC" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="roof-top" data-label="Tag" style="cursor:pointer" opacity="0.9"/>
+            <!-- Rear window -->
+            <path d="M64,204 L136,204 L142,240 L58,240 Z" fill="#A8C4E8" stroke="#5570A8" stroke-width="1" opacity="0.7"/>
+            <!-- Trunk zone -->
+            <path d="M56,244 L144,244 L140,278 Q100,295 60,278 Z" fill="#B8C8E8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="trunk-top" data-label="Bagklap" style="cursor:pointer" opacity="0.9"/>
             <!-- Front bumper -->
-            <path d="M32,50 L22,62 L22,78 L28,90 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
-            <path d="M128,50 L138,62 L138,78 L132,90 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
-            <path d="M22,62 L22,78" stroke="#7B8FC7" stroke-width="0"/>
+            <path d="M62,26 Q100,12 138,26 L138,18 Q100,4 62,18 Z" fill="#9AAAD4" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
             <!-- Rear bumper -->
-            <path d="M22,205 L22,220 L50,232 L50,218 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
-            <path d="M138,205 L138,220 L110,232 L110,218 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
-            <!-- Damage markers layer -->
+            <path d="M60,278 Q100,296 140,278 L140,286 Q100,304 60,286 Z" fill="#9AAAD4" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
+            <!-- Left front fender -->
+            <path d="M52,60 L60,60 L58,100 L44,95 L42,68 Z" fill="#BACAE8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="fl-fender" data-label="Skærm FL" style="cursor:pointer"/>
+            <!-- Right front fender -->
+            <path d="M148,60 L140,60 L142,100 L156,95 L158,68 Z" fill="#BACAE8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="fr-fender" data-label="Skærm FR" style="cursor:pointer"/>
+            <!-- Left door -->
+            <path d="M44,95 L58,100 L56,240 L44,238 L40,170 Z" fill="#C8D4F0" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="door-left" data-label="Dør Venstre" style="cursor:pointer"/>
+            <!-- Right door -->
+            <path d="M156,95 L142,100 L144,240 L156,238 L160,170 Z" fill="#C8D4F0" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="door-right" data-label="Dør Højre" style="cursor:pointer"/>
+            <!-- Left rear fender -->
+            <path d="M44,238 L56,240 L56,278 L44,272 L42,252 Z" fill="#BACAE8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="rl-fender" data-label="Skærm BL" style="cursor:pointer"/>
+            <!-- Right rear fender -->
+            <path d="M156,238 L144,240 L144,278 L156,272 L158,252 Z" fill="#BACAE8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="rr-fender" data-label="Skærm BR" style="cursor:pointer"/>
+            <!-- Wheels -->
+            <rect x="30" y="72" width="18" height="38" rx="5" fill="#445" stroke="#223" stroke-width="1.5"/>
+            <rect x="152" y="72" width="18" height="38" rx="5" fill="#445" stroke="#223" stroke-width="1.5"/>
+            <rect x="30" y="222" width="18" height="38" rx="5" fill="#445" stroke="#223" stroke-width="1.5"/>
+            <rect x="152" y="222" width="18" height="38" rx="5" fill="#445" stroke="#223" stroke-width="1.5"/>
+            <!-- Direction arrow -->
+            <text x="100" y="340" text-anchor="middle" font-size="10" fill="#8899BB" font-family="Arial">▲ FRONT</text>
             <g id="dmg-markers-top"></g>
           </svg>
         </div>
-        <!-- Side views stacked -->
-        <div>
-          <div style="font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:4px">◀ Venstre side</div>
-          <svg viewBox="0 0 260 100" style="width:100%;display:block;margin-bottom:8px" id="dmg-svg-left">
-            <rect x="20" y="20" width="220" height="65" rx="12" fill="#E4E9F7" stroke="#7B8FC7" stroke-width="1.5"/>
-            <!-- Windows -->
-            <path d="M60,22 L90,22 L90,42 L60,42 Z" fill="#C8D4F0" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="window-fl" data-label="Rude FL" style="cursor:pointer"/>
-            <path d="M95,22 L155,22 L155,42 L95,42 Z" fill="#C8D4F0" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="window-rl" data-label="Rude BL" style="cursor:pointer"/>
-            <!-- Front bumper side -->
-            <path d="M20,35 L8,42 L8,60 L20,65 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
-            <!-- Rear bumper side -->
-            <path d="M240,35 L252,42 L252,60 L240,65 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
-            <!-- Wheels -->
-            <circle cx="65" cy="85" r="12" fill="#8899BB" stroke="#556"/><circle cx="65" cy="85" r="6" fill="#AAB"/>
-            <circle cx="195" cy="85" r="12" fill="#8899BB" stroke="#556"/><circle cx="195" cy="85" r="6" fill="#AAB"/>
-            <!-- Hood side -->
-            <path d="M20,30 L60,22 L60,30 Z" fill="#D4DBF0" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="hood" data-label="Motorhjelm" style="cursor:pointer"/>
-            <g id="dmg-markers-left"></g>
-          </svg>
-          <div style="font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:4px">▶ Højre side</div>
-          <svg viewBox="0 0 260 100" style="width:100%;display:block" id="dmg-svg-right">
-            <rect x="20" y="20" width="220" height="65" rx="12" fill="#E4E9F7" stroke="#7B8FC7" stroke-width="1.5"/>
-            <path d="M170,22 L200,22 L200,42 L170,42 Z" fill="#C8D4F0" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="window-fr" data-label="Rude FR" style="cursor:pointer"/>
-            <path d="M105,22 L165,22 L165,42 L105,42 Z" fill="#C8D4F0" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="window-rr" data-label="Rude BR" style="cursor:pointer"/>
-            <path d="M240,35 L252,42 L252,60 L240,65 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
-            <path d="M20,35 L8,42 L8,60 L20,65 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
-            <circle cx="195" cy="85" r="12" fill="#8899BB" stroke="#556"/><circle cx="195" cy="85" r="6" fill="#AAB"/>
-            <circle cx="65" cy="85" r="12" fill="#8899BB" stroke="#556"/><circle cx="65" cy="85" r="6" fill="#AAB"/>
-            <g id="dmg-markers-right"></g>
-          </svg>
+
+        <!-- SIDE VIEWS stacked -->
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <!-- LEFT SIDE -->
+          <div>
+            <div style="font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:3px">◀ Venstre side</div>
+            <svg viewBox="0 0 320 110" style="width:100%;display:block" id="dmg-svg-left">
+              <!-- Car silhouette side -->
+              <path d="M20,78 L30,78 Q35,78 38,72 L55,42 Q70,18 90,14 L170,12 Q210,12 230,20 L265,34 Q280,40 288,52 L292,65 Q294,72 290,78 L20,78 Z" fill="#D4DFF5" stroke="#5570A8" stroke-width="2"/>
+              <!-- Roof -->
+              <path d="M90,14 L170,12 Q195,12 210,16 L240,26 L230,20 L90,14 Z" fill="#BCC8E8" stroke="#5570A8" stroke-width="1" class="dmg-zone" data-zone="roof-top" data-label="Tag" style="cursor:pointer"/>
+              <!-- Hood -->
+              <path d="M20,78 L30,78 Q35,78 38,72 L55,42 Q65,22 80,16 L90,14 L90,20 L82,18 Q68,24 56,46 L42,74 L28,74 Z" fill="#C0CCEC" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="hood" data-label="Motorhjelm" style="cursor:pointer"/>
+              <!-- Trunk -->
+              <path d="M240,26 L265,34 Q280,40 288,52 L292,65 Q294,72 290,78 L258,78 L260,68 L245,30 Z" fill="#C0CCEC" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="trunk-top" data-label="Bagklap" style="cursor:pointer"/>
+              <!-- Front bumper -->
+              <path d="M20,72 L20,82 L26,82 L28,74 Z" fill="#AAB8D8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
+              <!-- Rear bumper -->
+              <path d="M290,72 L294,78 L294,84 L286,84 L288,72 Z" fill="#AAB8D8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
+              <!-- Front door -->
+              <path d="M86,20 L130,18 L128,74 L88,74 Z" fill="#C8D4F0" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="door-front-l" data-label="Dør For. V" style="cursor:pointer"/>
+              <!-- Rear door -->
+              <path d="M133,18 L175,18 L174,74 L132,74 Z" fill="#C8D4F0" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="door-rear-l" data-label="Dør Bag. V" style="cursor:pointer"/>
+              <!-- Windows -->
+              <path d="M88,22 L128,20 L126,40 L88,42 Z" fill="#A0B8E0" stroke="#5570A8" stroke-width="1" opacity="0.8"/>
+              <path d="M133,20 L173,20 L172,40 L133,40 Z" fill="#A0B8E0" stroke="#5570A8" stroke-width="1" opacity="0.8"/>
+              <!-- Front fender -->
+              <path d="M40,74 L88,74 L86,20 L80,18 Q66,24 56,46 L42,74 Z" fill="#BACAE8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="fl-fender" data-label="Skærm FL" style="cursor:pointer"/>
+              <!-- Rear fender -->
+              <path d="M175,18 L230,20 L245,30 L258,68 L258,78 L174,74 Z" fill="#BACAE8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="rl-fender" data-label="Skærm BL" style="cursor:pointer"/>
+              <!-- Wheels -->
+              <circle cx="72" cy="82" r="20" fill="#333" stroke="#111" stroke-width="2"/>
+              <circle cx="72" cy="82" r="12" fill="#666" stroke="#444" stroke-width="1.5"/>
+              <circle cx="72" cy="82" r="5" fill="#888"/>
+              <circle cx="238" cy="82" r="20" fill="#333" stroke="#111" stroke-width="2"/>
+              <circle cx="238" cy="82" r="12" fill="#666" stroke="#444" stroke-width="1.5"/>
+              <circle cx="238" cy="82" r="5" fill="#888"/>
+              <g id="dmg-markers-left"></g>
+            </svg>
+          </div>
+          <!-- RIGHT SIDE (mirrored) -->
+          <div>
+            <div style="font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:3px">▶ Højre side</div>
+            <svg viewBox="0 0 320 110" style="width:100%;display:block" id="dmg-svg-right">
+              <path d="M300,78 L290,78 Q285,78 282,72 L265,42 Q250,18 230,14 L150,12 Q110,12 90,20 L55,34 Q40,40 32,52 L28,65 Q26,72 30,78 L300,78 Z" fill="#D4DFF5" stroke="#5570A8" stroke-width="2"/>
+              <path d="M230,14 L150,12 Q125,12 110,16 L80,26 L90,20 L230,14 Z" fill="#BCC8E8" stroke="#5570A8" stroke-width="1" class="dmg-zone" data-zone="roof-top" data-label="Tag" style="cursor:pointer"/>
+              <path d="M300,78 L290,78 Q285,78 282,72 L265,42 Q255,22 240,16 L230,14 L230,20 L238,18 Q252,24 264,46 L278,74 L292,74 Z" fill="#C0CCEC" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="hood" data-label="Motorhjelm" style="cursor:pointer"/>
+              <path d="M80,26 L55,34 Q40,40 32,52 L28,65 Q26,72 30,78 L62,78 L60,68 L75,30 Z" fill="#C0CCEC" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="trunk-top" data-label="Bagklap" style="cursor:pointer"/>
+              <path d="M300,72 L300,82 L294,82 L292,74 Z" fill="#AAB8D8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
+              <path d="M30,72 L26,78 L26,84 L34,84 L32,72 Z" fill="#AAB8D8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
+              <path d="M234,20 L190,18 L192,74 L232,74 Z" fill="#C8D4F0" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="door-front-r" data-label="Dør For. H" style="cursor:pointer"/>
+              <path d="M187,18 L145,18 L146,74 L188,74 Z" fill="#C8D4F0" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="door-rear-r" data-label="Dør Bag. H" style="cursor:pointer"/>
+              <path d="M232,22 L192,20 L194,40 L232,42 Z" fill="#A0B8E0" stroke="#5570A8" stroke-width="1" opacity="0.8"/>
+              <path d="M187,20 L147,20 L148,40 L187,40 Z" fill="#A0B8E0" stroke="#5570A8" stroke-width="1" opacity="0.8"/>
+              <path d="M280,74 L232,74 L234,20 L240,18 Q254,24 264,46 L278,74 Z" fill="#BACAE8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="fr-fender" data-label="Skærm FR" style="cursor:pointer"/>
+              <path d="M145,18 L90,20 L75,30 L62,68 L62,78 L146,74 Z" fill="#BACAE8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="rr-fender" data-label="Skærm BR" style="cursor:pointer"/>
+              <circle cx="248" cy="82" r="20" fill="#333" stroke="#111" stroke-width="2"/>
+              <circle cx="248" cy="82" r="12" fill="#666" stroke="#444" stroke-width="1.5"/>
+              <circle cx="248" cy="82" r="5" fill="#888"/>
+              <circle cx="82" cy="82" r="20" fill="#333" stroke="#111" stroke-width="2"/>
+              <circle cx="82" cy="82" r="12" fill="#666" stroke="#444" stroke-width="1.5"/>
+              <circle cx="82" cy="82" r="5" fill="#888"/>
+              <g id="dmg-markers-right"></g>
+            </svg>
+          </div>
         </div>
       </div>
-      <!-- Front + Rear views -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+
+      <!-- FRONT + REAR views -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <!-- FRONT VIEW -->
         <div>
-          <div style="font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:4px">🔼 Forfra</div>
-          <svg viewBox="0 0 140 100" style="width:100%;display:block;margin:0 auto" id="dmg-svg-front">
-            <path d="M15,55 Q70,30 125,55 L125,80 Q70,90 15,80 Z" fill="#E4E9F7" stroke="#7B8FC7" stroke-width="1.5"/>
-            <path d="M35,55 Q70,42 105,55 L105,65 Q70,70 35,65 Z" fill="#C8D4F0" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="windshield-front" data-label="Forrude" style="cursor:pointer"/>
-            <path d="M15,55 L35,55 L35,65 Q15,62 15,55 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="fl-fender" data-label="Skærm FL" style="cursor:pointer"/>
-            <path d="M125,55 L105,55 L105,65 Q125,62 125,55 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="fr-fender" data-label="Skærm FR" style="cursor:pointer"/>
-            <path d="M15,55 Q70,30 125,55 L120,48 Q70,24 20,48 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
-            <circle cx="35" cy="83" r="10" fill="#8899BB" stroke="#556"/><circle cx="105" cy="83" r="10" fill="#8899BB" stroke="#556"/>
+          <div style="font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:3px">🔼 Forfra</div>
+          <svg viewBox="0 0 220 160" style="width:100%;display:block" id="dmg-svg-front">
+            <!-- Body -->
+            <path d="M25,100 Q25,80 40,72 L60,65 L75,30 Q80,18 110,16 Q140,18 145,30 L160,65 L180,72 Q195,80 195,100 L195,130 L25,130 Z" fill="#D4DFF5" stroke="#5570A8" stroke-width="2"/>
+            <!-- Bumper -->
+            <path d="M25,100 Q25,80 40,72 L60,65 L55,95 L30,100 Z" fill="#9AAAD4" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
+            <path d="M195,100 Q195,80 180,72 L160,65 L165,95 L190,100 Z" fill="#9AAAD4" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
+            <path d="M55,95 L165,95 L165,130 L55,130 Z" fill="#9AAAD4" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
+            <!-- Hood -->
+            <path d="M60,65 L75,30 Q80,18 110,16 Q140,18 145,30 L160,65 L60,65 Z" fill="#C0CCEC" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="hood" data-label="Motorhjelm" style="cursor:pointer"/>
+            <!-- Windshield -->
+            <path d="M72,62 L148,62 L140,28 Q136,18 110,16 Q84,18 80,28 Z" fill="#9BBDE0" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="windshield-front" data-label="Forrude" style="cursor:pointer" opacity="0.85"/>
+            <!-- Left fender -->
+            <path d="M25,100 L55,95 L60,65 L40,72 Z" fill="#BACAE8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="fl-fender" data-label="Skærm FL" style="cursor:pointer"/>
+            <!-- Right fender -->
+            <path d="M195,100 L165,95 L160,65 L180,72 Z" fill="#BACAE8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="fr-fender" data-label="Skærm FR" style="cursor:pointer"/>
+            <!-- Headlights -->
+            <ellipse cx="50" cy="80" rx="12" ry="8" fill="#FFE87A" stroke="#CC9900" stroke-width="1.5" opacity="0.9"/>
+            <ellipse cx="170" cy="80" rx="12" ry="8" fill="#FFE87A" stroke="#CC9900" stroke-width="1.5" opacity="0.9"/>
+            <!-- Wheels -->
+            <ellipse cx="52" cy="132" rx="22" ry="10" fill="#333" stroke="#111" stroke-width="1.5"/>
+            <ellipse cx="168" cy="132" rx="22" ry="10" fill="#333" stroke="#111" stroke-width="1.5"/>
+            <!-- Grille -->
+            <rect x="82" y="95" width="56" height="22" rx="6" fill="#8899BB" stroke="#5570A8" stroke-width="1.5"/>
             <g id="dmg-markers-front"></g>
           </svg>
         </div>
+        <!-- REAR VIEW -->
         <div>
-          <div style="font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:4px">🔽 Bagfra</div>
-          <svg viewBox="0 0 140 100" style="width:100%;display:block;margin:0 auto" id="dmg-svg-rear">
-            <path d="M15,55 Q70,30 125,55 L125,80 Q70,90 15,80 Z" fill="#E4E9F7" stroke="#7B8FC7" stroke-width="1.5"/>
-            <path d="M35,55 Q70,42 105,55 L105,65 Q70,70 35,65 Z" fill="#C8D4F0" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="windshield-rear" data-label="Bagrude" style="cursor:pointer"/>
-            <path d="M15,55 L35,55 L35,65 Q15,62 15,55 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="rl-fender" data-label="Skærm BL" style="cursor:pointer"/>
-            <path d="M125,55 L105,55 L105,65 Q125,62 125,55 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="rr-fender" data-label="Skærm BR" style="cursor:pointer"/>
-            <path d="M15,55 Q70,30 125,55 L120,48 Q70,24 20,48 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
-            <circle cx="35" cy="83" r="10" fill="#8899BB" stroke="#556"/><circle cx="105" cy="83" r="10" fill="#8899BB" stroke="#556"/>
+          <div style="font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:3px">🔽 Bagfra</div>
+          <svg viewBox="0 0 220 160" style="width:100%;display:block" id="dmg-svg-rear">
+            <path d="M25,100 Q25,80 40,72 L60,65 L75,30 Q80,18 110,16 Q140,18 145,30 L160,65 L180,72 Q195,80 195,100 L195,130 L25,130 Z" fill="#D4DFF5" stroke="#5570A8" stroke-width="2"/>
+            <path d="M25,100 Q25,80 40,72 L60,65 L55,95 L30,100 Z" fill="#9AAAD4" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
+            <path d="M195,100 Q195,80 180,72 L160,65 L165,95 L190,100 Z" fill="#9AAAD4" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
+            <path d="M55,95 L165,95 L165,130 L55,130 Z" fill="#9AAAD4" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
+            <!-- Trunk -->
+            <path d="M60,65 L75,30 Q80,18 110,16 Q140,18 145,30 L160,65 L60,65 Z" fill="#C0CCEC" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="trunk-top" data-label="Bagklap" style="cursor:pointer"/>
+            <!-- Rear window -->
+            <path d="M72,62 L148,62 L140,28 Q136,18 110,16 Q84,18 80,28 Z" fill="#9BBDE0" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="windshield-rear" data-label="Bagrude" style="cursor:pointer" opacity="0.85"/>
+            <path d="M25,100 L55,95 L60,65 L40,72 Z" fill="#BACAE8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="rl-fender" data-label="Skærm BL" style="cursor:pointer"/>
+            <path d="M195,100 L165,95 L160,65 L180,72 Z" fill="#BACAE8" stroke="#5570A8" stroke-width="1.5" class="dmg-zone" data-zone="rr-fender" data-label="Skærm BR" style="cursor:pointer"/>
+            <!-- Tail lights -->
+            <rect x="30" y="72" width="18" height="16" rx="3" fill="#FF4444" stroke="#CC0000" stroke-width="1.5" opacity="0.9"/>
+            <rect x="172" y="72" width="18" height="16" rx="3" fill="#FF4444" stroke="#CC0000" stroke-width="1.5" opacity="0.9"/>
+            <!-- Number plate -->
+            <rect x="80" y="96" width="60" height="18" rx="3" fill="#FFFFCC" stroke="#999" stroke-width="1.5"/>
+            <!-- Wheels -->
+            <ellipse cx="52" cy="132" rx="22" ry="10" fill="#333" stroke="#111" stroke-width="1.5"/>
+            <ellipse cx="168" cy="132" rx="22" ry="10" fill="#333" stroke="#111" stroke-width="1.5"/>
             <g id="dmg-markers-rear"></g>
           </svg>
         </div>
       </div>
+
       <!-- Legend -->
-      <div style="background:#F8FAFF;border-radius:10px;padding:10px 12px;font-size:11px;display:flex;flex-wrap:wrap;gap:8px">
-        <span style="font-weight:800;color:var(--text);width:100%;margin-bottom:2px">Forklaring:</span>
-        <span style="background:#DC2626;color:#fff;border-radius:5px;padding:2px 7px;font-weight:700">D</span><span style="color:var(--muted)">Dent (Bule)</span>
-        <span style="background:#EA580C;color:#fff;border-radius:5px;padding:2px 7px;font-weight:700">S</span><span style="color:var(--muted)">Scratch (Skramme)</span>
-        <span style="background:#7C3AED;color:#fff;border-radius:5px;padding:2px 7px;font-weight:700">B</span><span style="color:var(--muted)">Broken (Knust)</span>
-        <span style="background:#2563EB;color:#fff;border-radius:5px;padding:2px 7px;font-weight:700">P</span><span style="color:var(--muted)">Paint damage (Lak)</span>
-        <span style="background:#D97706;color:#fff;border-radius:5px;padding:2px 7px;font-weight:700">C</span><span style="color:var(--muted)">Stonechip (Stenslag)</span>
+      <div style="background:#F8FAFF;border-radius:10px;padding:10px 12px;font-size:11px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+        <span style="font-weight:800;color:var(--text);width:100%;margin-bottom:2px">Forklaring — klik på zone, vælg type:</span>
+        <span style="background:#DC2626;color:#fff;border-radius:5px;padding:2px 8px;font-weight:700">D</span><span style="color:var(--muted)">Dent/Bule</span>
+        <span style="background:#EA580C;color:#fff;border-radius:5px;padding:2px 8px;font-weight:700">S</span><span style="color:var(--muted)">Scratch/Skramme</span>
+        <span style="background:#7C3AED;color:#fff;border-radius:5px;padding:2px 8px;font-weight:700">B</span><span style="color:var(--muted)">Broken/Knust</span>
+        <span style="background:#2563EB;color:#fff;border-radius:5px;padding:2px 8px;font-weight:700">P</span><span style="color:var(--muted)">Paint/Lak</span>
+        <span style="background:#D97706;color:#fff;border-radius:5px;padding:2px 8px;font-weight:700">C</span><span style="color:var(--muted)">Stonechip/Stenslag</span>
       </div>
-      <!-- Diagram damage modal -->
+
+      <!-- Modal -->
       <div id="dmg-diag-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;align-items:center;justify-content:center">
         <div style="background:#fff;border-radius:18px;padding:22px;width:290px;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
           <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px" id="dmg-diag-zone-title">Zone</div>
           <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Vælg skadetype</div>
           <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px">
-            <button onclick="window._addDiagDmg('D')" style="background:#DC2626;color:#fff;border:none;border-radius:8px;padding:10px 0;font-size:16px;font-weight:900;cursor:pointer">D</button>
-            <button onclick="window._addDiagDmg('S')" style="background:#EA580C;color:#fff;border:none;border-radius:8px;padding:10px 0;font-size:16px;font-weight:900;cursor:pointer">S</button>
-            <button onclick="window._addDiagDmg('B')" style="background:#7C3AED;color:#fff;border:none;border-radius:8px;padding:10px 0;font-size:16px;font-weight:900;cursor:pointer">B</button>
-            <button onclick="window._addDiagDmg('P')" style="background:#2563EB;color:#fff;border:none;border-radius:8px;padding:10px 0;font-size:16px;font-weight:900;cursor:pointer">P</button>
-            <button onclick="window._addDiagDmg('C')" style="background:#D97706;color:#fff;border:none;border-radius:8px;padding:10px 0;font-size:16px;font-weight:900;cursor:pointer">C</button>
+            <button onclick="window._addDiagDmg('D')" style="background:#DC2626;color:#fff;border:none;border-radius:8px;padding:12px 0;font-size:18px;font-weight:900;cursor:pointer">D</button>
+            <button onclick="window._addDiagDmg('S')" style="background:#EA580C;color:#fff;border:none;border-radius:8px;padding:12px 0;font-size:18px;font-weight:900;cursor:pointer">S</button>
+            <button onclick="window._addDiagDmg('B')" style="background:#7C3AED;color:#fff;border:none;border-radius:8px;padding:12px 0;font-size:18px;font-weight:900;cursor:pointer">B</button>
+            <button onclick="window._addDiagDmg('P')" style="background:#2563EB;color:#fff;border:none;border-radius:8px;padding:12px 0;font-size:18px;font-weight:900;cursor:pointer">P</button>
+            <button onclick="window._addDiagDmg('C')" style="background:#D97706;color:#fff;border:none;border-radius:8px;padding:12px 0;font-size:18px;font-weight:900;cursor:pointer">C</button>
           </div>
           <button onclick="window._closeDiagModal()" style="width:100%;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Annuller</button>
         </div>
@@ -457,10 +543,10 @@
         <label class="field-label" style="margin-top:0">🔑 Antal nøgler</label>
         <input class="inp" type="number" id="doc-nogler" min="0" max="10" placeholder="2" style="width:100px">
       </div>
-      <div class="check-row" id="nogler-afproeved-row" style="margin-bottom:0;flex:1;min-width:160px"
-        onclick="window._toggleNoglerAfproeved()">
-        <div class="check-box" id="nogler-afproeved-box">○</div>
-        <span class="check-label" id="nogler-afproeved-label">Nøgle(r) afprøvet</span>
+      <div id="nogler-afproeved-row" style="flex:1;min-width:200px;display:flex;align-items:center;gap:10px;padding:11px 14px;background:${S.docs.noglerAfproeved===true?'var(--green-l)':S.docs.noglerAfproeved===false?'var(--red-l)':'#fff'};border:2px solid ${S.docs.noglerAfproeved===true?'var(--green)':S.docs.noglerAfproeved===false?'var(--red)':'var(--inp-border)'};border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.07)">
+        <span style="flex:1;font-size:14px;font-weight:600;color:${S.docs.noglerAfproeved===true?'var(--green)':S.docs.noglerAfproeved===false?'var(--red)':'var(--text)'}">Nøgle(r) afprøvet</span>
+        <button onclick="window._setNoglerAfproeved(true)" style="width:40px;height:40px;border-radius:9px;border:2px solid ${S.docs.noglerAfproeved===true?'var(--green)':'#ddd'};background:${S.docs.noglerAfproeved===true?'var(--green)':'#fff'};color:${S.docs.noglerAfproeved===true?'#fff':'#bbb'};font-size:20px;cursor:pointer;font-family:inherit;line-height:1">✓</button>
+        <button onclick="window._setNoglerAfproeved(false)" style="width:40px;height:40px;border-radius:9px;border:2px solid ${S.docs.noglerAfproeved===false?'var(--red)':'#ddd'};background:${S.docs.noglerAfproeved===false?'var(--red)':'#fff'};color:${S.docs.noglerAfproeved===false?'#fff':'#bbb'};font-size:20px;cursor:pointer;font-family:inherit;line-height:1">✕</button>
       </div>
     </div>
     <div class="section-title" style="color:var(--teal);border-color:rgba(13,148,136,0.2)">🗂 Til salgsmappen</div>
@@ -611,9 +697,9 @@ const S = {
   tires: [{},{},{},{}],
   extraWheels: [],
   damages: [],  // damage.photos = [{docId, dataUrl}]
-  docs: { serviceBog:false,regAttest1:false,regAttest2:false,coc:false,
-          proevekort:false,noegleAntal:"",noglerAfproeved:false,ladekabel:false,
-          carVertical:false,digitalService:false,udstyrsliste:false,leasingforslag:false },
+  docs: { serviceBog:null,regAttest1:null,regAttest2:null,coc:null,
+          proevekort:null,noegleAntal:"",noglerAfproeved:null,ladekabel:null,
+          carVertical:null,digitalService:null,udstyrsliste:null,leasingforslag:null },
   leasing: { BAP:"",FA:"",BFRD:"",LPM:12,FIA:5,UD:15 },
   lak: {}, // key → value in µm
   notes: "",
@@ -761,12 +847,12 @@ function renderTires() {
         ${TIRE_LABELS[i]}
         ${t.type?`<span class="tire-badge" style="background:${col}20;color:${col}">${t.type==="winter"?"❄️ Vinter":t.type==="summer"?"☀️ Sommer":"🌀 Helårs"}</span>`:""}
       </div>
-      <div class="grid2">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;align-items:end">
         <div><label class="field-label" style="margin-top:0">Størrelse</label><input class="inp-sm" value="${t.size||""}" placeholder="225/45R18" oninput="window._updateTire(${i},'size',this.value)"></div>
         <div><label class="field-label" style="margin-top:0">Mærke</label><input class="inp-sm" value="${t.brand||""}" placeholder="Michelin" oninput="window._updateTire(${i},'brand',this.value)"></div>
-        <div><label class="field-label">DOT</label><input class="inp-sm" value="${t.dot||""}" placeholder="DOT1223" oninput="window._updateTire(${i},'dot',this.value)"></div>
-        <div><label class="field-label">Mønster mm</label><input class="inp-sm" type="number" value="${t.tread||""}" placeholder="6" oninput="window._updateTire(${i},'tread',this.value)"></div>
-        <div style="grid-column:1/-1"><label class="field-label">Type</label>
+        <div><label class="field-label" style="margin-top:0">DOT</label><input class="inp-sm" value="${t.dot||""}" placeholder="DOT1223" oninput="window._updateTire(${i},'dot',this.value)"></div>
+        <div><label class="field-label" style="margin-top:0">Mønster mm</label><input class="inp-sm" type="number" value="${t.tread||""}" placeholder="6" oninput="window._updateTire(${i},'tread',this.value)"></div>
+        <div style="grid-column:1/-1"><label class="field-label" style="margin-top:0">Type</label>
           <select class="inp-sm" onchange="window._updateTire(${i},'type',this.value)">
             <option value="" ${!t.type?"selected":""}>Vælg type</option>
             <option value="summer" ${t.type==="summer"?"selected":""}>☀️ Sommer</option>
@@ -887,43 +973,45 @@ window._removeDamage = async (i) => {
 const DOCS_MED  = [["📒 Service bog","serviceBog"],["📄 Reg. attest del 1","regAttest1"],["📄 Reg. attest del 2","regAttest2"],["📜 COC","coc"],["🚗 Prøvekørt","proevekort"],["🔌 Lade kabler","ladekabel"]];
 const DOCS_SALG = [["📊 CarVertical report","carVertical"],["📱 Digital service rapport","digitalService"],["📋 Udstyrs liste","udstyrsliste"],["💰 Leasingforslag","leasingforslag"]];
 
-window._toggleNoglerAfproeved = () => {
-  S.docs.noglerAfproeved = !S.docs.noglerAfproeved;
-  const row = document.getElementById("nogler-afproeved-row");
-  const box = document.getElementById("nogler-afproeved-box");
-  const lbl = document.getElementById("nogler-afproeved-label");
-  if (row) row.classList.toggle("checked", S.docs.noglerAfproeved);
-  if (box) box.textContent = S.docs.noglerAfproeved ? "✓" : "○";
-  if (lbl) lbl.style.color = S.docs.noglerAfproeved ? "var(--green)" : "";
-  updateDocsCount();
+window._setNoglerAfproeved = (val) => {
+  S.docs.noglerAfproeved = val;
+  renderDocs();
 };
 function renderDocs() {
   renderDocGroup("docs-med-bilen", DOCS_MED);
   renderDocGroup("docs-salgsmappe", DOCS_SALG);
-  // Sync nøgler afprøvet
-  const row2=document.getElementById("nogler-afproeved-row");
-  const box2=document.getElementById("nogler-afproeved-box");
-  const lbl2=document.getElementById("nogler-afproeved-label");
-  if(row2) row2.classList.toggle("checked",!!S.docs.noglerAfproeved);
-  if(box2) box2.textContent=S.docs.noglerAfproeved?"✓":"○";
-  if(lbl2) lbl2.style.color=S.docs.noglerAfproeved?"var(--green)":"";
+  // Re-render nøgler afprøvet row dynamically
+  const nRow = document.getElementById("nogler-afproeved-row");
+  if (nRow) {
+    const v = S.docs.noglerAfproeved;
+    nRow.style.background = v===true?"var(--green-l)":v===false?"var(--red-l)":"#fff";
+    nRow.style.borderColor = v===true?"var(--green)":v===false?"var(--red)":"var(--inp-border)";
+    const btns = nRow.querySelectorAll("button");
+    if (btns[0]) { btns[0].style.background=v===true?"var(--green)":"#fff"; btns[0].style.color=v===true?"#fff":"#bbb"; btns[0].style.borderColor=v===true?"var(--green)":"#ddd"; }
+    if (btns[1]) { btns[1].style.background=v===false?"var(--red)":"#fff"; btns[1].style.color=v===false?"#fff":"#bbb"; btns[1].style.borderColor=v===false?"var(--red)":"#ddd"; }
+    const lbl = nRow.querySelector("span");
+    if (lbl) lbl.style.color = v===true?"var(--green)":v===false?"var(--red)":"var(--text)";
+  }
   updateDocsCount();
 }
 function renderDocGroup(cid, defs) {
   const c=document.getElementById(cid); if(!c) return; c.innerHTML="";
   defs.forEach(([label,key])=>{
-    const val = S.docs[key]; // true=green, false=red, null/undefined=neutral
+    const val = S.docs[key]; // true=green, false=red, null=new/unset
+    const isNew = (val === null || val === undefined);
     const row=document.createElement("div");
-    row.style.cssText="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border:2px solid "+(val===true?"var(--green)":val===false?"var(--red)":"var(--inp-border)")+";border-radius:12px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,0.07)";
+    row.style.cssText=`display:flex;align-items:center;gap:10px;padding:11px 14px;background:${val===true?"var(--green-l)":val===false?"var(--red-l)":"#fff"};border:2px solid ${val===true?"var(--green)":val===false?"var(--red)":"var(--inp-border)"};border-radius:12px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,0.07)`;
     row.innerHTML=`
       <span style="flex:1;font-size:14px;font-weight:600;color:${val===true?"var(--green)":val===false?"var(--red)":"var(--text)"}">${label}</span>
-      <button onclick="window._setDoc('${key}',true)" style="width:36px;height:36px;border-radius:9px;border:2px solid ${val===true?"var(--green)":"#ddd"};background:${val===true?"var(--green)":"#fff"};color:${val===true?"#fff":"#999"};font-size:18px;cursor:pointer;font-weight:900;font-family:inherit;transition:all 0.15s">✓</button>
-      <button onclick="window._setDoc('${key}',false)" style="width:36px;height:36px;border-radius:9px;border:2px solid ${val===false?"var(--red)":"#ddd"};background:${val===false?"var(--red)":"#fff"};color:${val===false?"#fff":"#999"};font-size:18px;cursor:pointer;font-weight:900;font-family:inherit;transition:all 0.15s">✕</button>`;
+      <button onclick="window._setDoc('${key}',true)" title="OK"
+        style="width:40px;height:40px;border-radius:9px;border:2px solid ${val===true?"var(--green)":"#ddd"};background:${val===true?"var(--green)":"#fff"};color:${val===true?"#fff":"#bbb"};font-size:20px;cursor:pointer;font-family:inherit;transition:all 0.15s;line-height:1">✓</button>
+      <button onclick="window._setDoc('${key}',false)" title="Ikke OK"
+        style="width:40px;height:40px;border-radius:9px;border:2px solid ${val===false?"var(--red)":"#ddd"};background:${val===false?"var(--red)":"#fff"};color:${val===false?"#fff":"#bbb"};font-size:20px;cursor:pointer;font-family:inherit;transition:all 0.15s;line-height:1">✕</button>`;
     c.appendChild(row);
   });
 }
 window._setDoc = (key, val) => {
-  S.docs[key] = (S.docs[key]===val) ? null : val; // toggle off if same
+  S.docs[key] = val; // always set — no toggle off
   renderDocs();
 };
 function updateDocsCount() {
@@ -1166,7 +1254,7 @@ window.generateReport = async () => {
 </style></head><body>
 
 <div class="cover">
-  <div class="cover-sub">🚗 AnkomstTjek v1.02 &mdash; ${t.title}${c.inspector?' &middot; '+c.inspector:''}</div>
+  <div class="cover-sub">🚗 AnkomstTjek v1.03 &mdash; ${t.title}${c.inspector?' &middot; '+c.inspector:''}</div>
   <h1>${c.make||"-"} ${c.model||""}</h1>
   <h2>${c.regNumber||"-"} &middot; ${c.year||"-"} &middot; ${c.color||"-"}</h2>
   <div class="cover-meta">
@@ -1285,7 +1373,7 @@ ${S.notes?`
   <div class="sb"><p style="font-size:13px;color:#1A2340;line-height:1.6;white-space:pre-wrap">${S.notes}</p></div>
 </div>`:""}
 
-<div class="footer">🚗 AnkomstTjek v1.02 &middot; ${t.generated} ${new Date().toLocaleString(reportLang==='da'?'da-DK':'en-GB')} &middot; ${c.regNumber||""} ${c.make||""} ${c.model||""}</div>
+<div class="footer">🚗 AnkomstTjek v1.03 &middot; ${t.generated} ${new Date().toLocaleString(reportLang==='da'?'da-DK':'en-GB')} &middot; ${c.regNumber||""} ${c.make||""} ${c.model||""}</div>
 </body></html>`);
   win.document.close();
   setTimeout(()=>win.print(), 800);
@@ -1433,7 +1521,7 @@ window.newCar = () => {
   S.car={make:"",model:"",regNumber:"",vin:"",year:"",color:"",km:"",receivedDate:new Date().toISOString().split("T")[0],condition:"",lastServiceDate:"",lastServiceKm:"",nextServiceDate:"",nextServiceKm:""};
   S.photos={wheel_fl:[],wheel_fr:[],wheel_rl:[],wheel_rr:[],front:[],rear:[],left:[],right:[],odometer:[],dashboard:[],interior_front:[],interior_rear:[],trunk:[]};
   S.tires=[{},{},{},{}]; S.extraWheels=[]; S.damages=[];
-  S.docs={serviceBog:false,regAttest1:false,regAttest2:false,coc:false,proevekort:false,noegleAntal:"",noglerAfproeved:false,ladekabel:false,carVertical:false,digitalService:false,udstyrsliste:false,leasingforslag:false};
+  S.docs={serviceBog:null,regAttest1:null,regAttest2:null,coc:null,proevekort:null,noegleAntal:"",noglerAfproeved:null,ladekabel:null,carVertical:null,digitalService:null,udstyrsliste:null,leasingforslag:null};
   S.leasing={BAP:"",FA:"",BFRD:"",LPM:12,FIA:5,UD:15}; S.leasingResult=null; S.lak={}; S.notes=""; S.diagDamages=[]; S.currentCarId=null;
   writeStateToForm(); renderAll(); closeSearch(); switchTab(0); updateHeaderSub();
 };
