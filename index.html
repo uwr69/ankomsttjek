@@ -1794,31 +1794,39 @@ async function init() {
     });
   });
 
-  // Load car list from Firestore — with 8 second timeout
+  // Load car list from Firestore — max 6 seconds total, then continue offline
   setLoading("Henter biler fra Firebase...");
+  const withTimeout = (promise, ms=6000) =>
+    Promise.race([promise, new Promise((_,r)=>setTimeout(()=>r(new Error("Timeout")),ms))]);
   try {
-    const timeout = new Promise((_,reject) => setTimeout(()=>reject(new Error("Timeout — tjek internetforbindelse")), 8000));
-    const idxSnap = await Promise.race([getDoc(doc(db,"meta","car_index")), timeout]);
+    const idxSnap = await withTimeout(getDoc(doc(db,"meta","car_index")));
     if(idxSnap.exists()) {
-      S.carList=idxSnap.data().cars||[];
+      S.carList = idxSnap.data().cars||[];
       if(S.carList.length>0) {
-        const latest=[...S.carList].sort((a,b)=>b.savedAt-a.savedAt)[0];
-        const carSnap=await Promise.race([getDoc(doc(db,"cars",latest.id)), new Promise((_,r)=>setTimeout(()=>r(new Error("Timeout")),8000))]);
+        const latest = [...S.carList].sort((a,b)=>b.savedAt-a.savedAt)[0];
+        const carSnap = await withTimeout(getDoc(doc(db,"cars",latest.id)));
         if(carSnap.exists()) {
           const data = carSnap.data();
           setLoading("Henter billeder...");
-          data.photos = await loadPhotosForCar(latest.id);
-          const dmgPhotos = await loadDamagePhotosForCar(latest.id);
-          if (data.damages) data.damages = data.damages.map((d,i)=>({...d,photos:dmgPhotos[i]||[]}));
-          applySnapshot(data); S.currentCarId=latest.id;
+          try {
+            data.photos = await withTimeout(loadPhotosForCar(latest.id), 8000);
+            const dmgPhotos = await withTimeout(loadDamagePhotosForCar(latest.id), 5000);
+            if(data.damages) data.damages = data.damages.map((d,i)=>({...d,photos:dmgPhotos[i]||[]}));
+          } catch(photoErr) {
+            console.warn("Billeder kunne ikke hentes:", photoErr);
+            data.photos = data.photos||{};
+          }
+          applySnapshot(data);
+          S.currentCarId = latest.id;
         }
       }
     }
   } catch(e) {
     console.error("Firebase init error:", e);
-    toast("⚠️ Firebase: "+e.message+". Appen kører offline.", 6000);
+    toast("⚠️ "+e.message+" — appen kører uden data.", 5000);
+  } finally {
+    setLoading(null); // ALWAYS hide loading
   }
-  setLoading(null); // Always hide loading — even on error
 }
 
 init();
