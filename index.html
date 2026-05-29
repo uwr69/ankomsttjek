@@ -63,32 +63,32 @@
   .new-car-btn { display:flex; align-items:center; gap:10px; width:100%; background:var(--blue-l); border:none; border-bottom:1px solid var(--border); padding:13px 16px; cursor:pointer; color:var(--blue); font-weight:700; font-size:13px; border-radius:14px 14px 0 0; font-family:inherit; }
 
   /* ── CONTENT ── */
-  #content { padding:24px 28px; }
+  #content { padding:24px 28px; background:#fff; }
   .tab-pane { display:none; }
   .tab-pane.active { display:block; }
 
-  /* ── SECTION HEADER — Design B colored bands ── */
-  .section-hdr { border-radius:10px; padding:9px 16px; margin:22px 0 14px; display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; }
+  /* ── SECTION HEADER — colored bands ── */
+  .section-hdr { border-radius:8px; padding:9px 16px; margin:24px 0 16px; display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; }
 
-  /* ── INPUTS — no border box, flat ── */
-  .field-wrap { margin-bottom:0; }
-  label.field-label { font-size:10px; color:var(--muted); font-weight:700; letter-spacing:.5px; text-transform:uppercase; display:block; margin-bottom:4px; }
-  .inp { background:#fff; border:none; border-bottom:2px solid var(--inp-border); border-radius:0; color:var(--text); padding:10px 2px; font-size:15px; width:100%; box-sizing:border-box; outline:none; font-family:inherit; transition:border-color 0.15s; }
-  .inp:focus { border-bottom-color:var(--blue); }
-  .inp.error { border-bottom-color:var(--red); background:#FEF8F8; }
-  .inp-sm { background:transparent; border:none; border-bottom:1.5px solid var(--inp-border); border-radius:0; color:var(--text); padding:8px 2px; font-size:14px; width:100%; box-sizing:border-box; font-family:inherit; outline:none; transition:border-color 0.15s; }
-  .inp-sm:focus { border-bottom-color:var(--blue); }
-  select.inp { cursor:pointer; background:transparent; }
-  select.inp-sm { cursor:pointer; background:transparent; }
+  /* ── INPUTS — Design 3: bold outline, strong label, white bg ── */
+  label.field-label { font-size:12px; color:#1A2340; font-weight:600; display:block; margin-bottom:6px; }
+  .inp { background:#fff; border:2px solid #C4CDE0; border-radius:8px; color:#1A2340; padding:11px 13px; font-size:15px; width:100%; box-sizing:border-box; outline:none; font-family:inherit; transition:border-color 0.15s, box-shadow 0.15s; }
+  .inp:focus { border-color:#185FA5; box-shadow:0 0 0 3px rgba(24,95,165,0.12); }
+  .inp:not(:placeholder-shown) { border-color:#185FA5; }
+  .inp.error { border-color:#DC2626; background:#FEF8F8; }
+  .inp-sm { background:#fff; border:2px solid #C4CDE0; border-radius:8px; color:#1A2340; padding:9px 11px; font-size:14px; width:100%; box-sizing:border-box; font-family:inherit; outline:none; transition:border-color 0.15s; }
+  .inp-sm:focus { border-color:#185FA5; box-shadow:0 0 0 3px rgba(24,95,165,0.1); }
+  .inp-sm:not(:placeholder-shown) { border-color:#185FA5; }
+  select.inp, select.inp-sm { cursor:pointer; }
 
   /* ── GRID ── */
-  .grid2 { display:grid; grid-template-columns:repeat(3,1fr); gap:20px 24px; }
+  .grid2 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px 20px; }
 
   /* ── BANNER (used for info strips) ── */
   .banner { border-radius:10px; padding:12px 16px; margin-bottom:16px; border:none; background:var(--blue-l); }
 
   /* ── CARD (white surface) ── */
-  .card { background:#fff; border-radius:12px; padding:20px; margin-bottom:16px; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+  .card { background:#fff; border-radius:10px; padding:20px; margin-bottom:16px; border:2px solid #E2E8F4; }
 
   /* ── PHOTOS — horizontal grid layout ── */
   .photo-group { display:grid; gap:14px; margin-bottom:4px; }
@@ -104,21 +104,21 @@
   .photo-uploading { width:80px; height:80px; border-radius:8px; border:2px solid var(--blue); background:var(--blue-l); display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--blue); font-weight:700; text-align:center; }
 
   /* ── TIRES ── */
-  .tire-card { background:#fff; border-radius:12px; padding:16px 20px; margin-bottom:12px; box-shadow:0 1px 4px rgba(0,0,0,0.06); border-top:3px solid transparent; }
+  .tire-card { background:#fff; border-radius:10px; padding:16px 20px; margin-bottom:12px; border:2px solid #E2E8F4; border-top:3px solid transparent; }
   .tire-header { font-weight:700; margin-bottom:12px; font-size:13px; display:flex; align-items:center; gap:6px; }
   .tire-badge { margin-left:auto; border-radius:20px; padding:2px 10px; font-size:10px; font-weight:700; }
 
   /* ── DAMAGE CARDS ── */
-  .damage-card { background:#fff; border-radius:12px; padding:16px; margin-bottom:10px; border-left:4px solid var(--red); box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+  .damage-card { background:#fff; border-radius:10px; padding:16px; margin-bottom:10px; border:2px solid #FCA5A5; border-left:4px solid #DC2626; }
   .damage-row { display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
 
   /* ── RAPPORT ITEMS ── */
-  .rapport-item { background:#fff; border-radius:10px; padding:12px 16px; display:flex; align-items:center; gap:12px; box-shadow:0 1px 3px rgba(0,0,0,0.05); margin-bottom:8px; border-left:3px solid transparent; }
+  .rapport-item { background:#fff; border-radius:10px; padding:12px 16px; display:flex; align-items:center; gap:12px; border:2px solid #E2E8F4; margin-bottom:8px; border-left:4px solid transparent; }
 
   /* ── MISC ── */
-  .check-row { display:flex; align-items:center; gap:12px; padding:10px 0; cursor:pointer; transition:all 0.15s; border-bottom:1px solid var(--border); }
-  .check-box { width:22px; height:22px; border-radius:6px; border:2px solid var(--inp-border); background:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:13px; }
-  .check-label { font-size:14px; color:var(--text); font-weight:500; flex:1; }
+  .check-row { display:flex; align-items:center; gap:14px; padding:12px 0; cursor:pointer; transition:all 0.15s; border-bottom:1px solid var(--border); }
+  .check-box { width:26px; height:26px; border-radius:7px; border:2.5px solid #C4CDE0; background:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:14px; }
+  .check-label { font-size:15px; color:var(--text); font-weight:500; flex:1; }
   input[type=range] { width:100%; height:5px; accent-color:var(--green); cursor:pointer; }
   .flex-row { display:flex; align-items:center; gap:8px; }
   .mt-8 { margin-top:8px; }
@@ -174,7 +174,7 @@
 <div id="header">
   <div id="header-top">
     <div id="app-title">
-      <div class="name">🚗 AnkomstTjek <span style="font-size:9px;background:rgba(255,255,255,0.2);color:#fff;border-radius:8px;padding:2px 7px;vertical-align:middle;font-weight:600">v1.05</span></div>
+      <div class="name">🚗 AnkomstTjek <span style="font-size:9px;background:rgba(255,255,255,0.2);color:#fff;border-radius:8px;padding:2px 7px;vertical-align:middle;font-weight:600">v1.06</span></div>
       <div class="sub" id="header-sub">Ingen bil valgt</div>
     </div>
     <button class="save-btn primary" id="new-car-btn">➕ Ny bil</button>
@@ -312,7 +312,7 @@
 
   <!-- TAB 3: LAK -->
   <div class="tab-pane" data-tab="3">
-    <div style="background:#FEF3C7;border-radius:10px;padding:12px 16px;margin-bottom:16px">
+    <div style="background:#FEF3C7;border-radius:8px;padding:10px 16px;margin-bottom:16px;border:1.5px solid #FAC775">
       <div style="font-size:11px;color:var(--yellow);font-weight:800;letter-spacing:1px;margin-bottom:2px">🎨 LAK MÅLING</div>
       <div style="font-size:12px;color:var(--muted)">Tast måleværdier i mikrometer (µm) — 4 cifre</div>
     </div>
@@ -403,7 +403,7 @@
 
   <!-- TAB 5: CHECKLISTE -->
   <div class="tab-pane" data-tab="5">
-    <div style="background:#CCFBF1;border-radius:10px;padding:12px 16px;margin-bottom:16px">
+    <div style="background:#CCFBF1;border-radius:8px;padding:10px 16px;margin-bottom:16px;border:1.5px solid #5DCAA5">
       <div style="font-size:12px;color:var(--teal);font-weight:700" id="docs-count">✅ 0 punkter markeret</div>
     </div>
     <div class="section-hdr" style="background:#CCFBF1;color:#085041">✅ Check</div>
@@ -413,10 +413,10 @@
         <label class="field-label" style="margin-top:0">🔑 Antal nøgler</label>
         <input class="inp" type="number" id="doc-nogler" min="0" max="10" placeholder="2" style="width:100px">
       </div>
-      <div id="nogler-afproeved-row" style="flex:1;min-width:200px;display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid #F0F4FF">
-        <span style="flex:1;font-size:15px;font-weight:600;color:${S.docs.noglerAfproeved===true?'var(--green)':S.docs.noglerAfproeved===false?'var(--red)':'var(--text)'}">Nøgle(r) afprøvet</span>
-        <button onclick="window._setNoglerAfproeved(true)" style="width:44px;height:44px;border-radius:10px;border:2.5px solid ${S.docs.noglerAfproeved===true?'var(--green)':'#ddd'};background:${S.docs.noglerAfproeved===true?'var(--green)':'#fff'};color:${S.docs.noglerAfproeved===true?'#fff':'#ccc'};font-size:22px;cursor:pointer;font-family:inherit;line-height:1">✓</button>
-        <button onclick="window._setNoglerAfproeved(false)" style="width:44px;height:44px;border-radius:10px;border:2.5px solid ${S.docs.noglerAfproeved===false?'var(--red)':'#ddd'};background:${S.docs.noglerAfproeved===false?'var(--red)':'#fff'};color:${S.docs.noglerAfproeved===false?'#fff':'#ccc'};font-size:22px;cursor:pointer;font-family:inherit;line-height:1">✕</button>
+      <div id="nogler-afproeved-row" style="flex:1;min-width:220px;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:10px;background:${S.docs.noglerAfproeved===true?'#F0FDF4':S.docs.noglerAfproeved===false?'#FEF2F2':'#F8FAFF'};border:2px solid ${S.docs.noglerAfproeved===true?'#16A34A':S.docs.noglerAfproeved===false?'#DC2626':'#E2E8F4'}">
+        <span style="flex:1;font-size:15px;font-weight:500;color:${S.docs.noglerAfproeved===true?'#14532D':S.docs.noglerAfproeved===false?'#7F1D1D':'#1A2340'}">Nøgle(r) afprøvet</span>
+        <button onclick="window._setNoglerAfproeved(true)" style="min-width:52px;height:52px;border-radius:10px;border:2.5px solid ${S.docs.noglerAfproeved===true?'#16A34A':'#C4CDE0'};background:${S.docs.noglerAfproeved===true?'#16A34A':'#fff'};color:${S.docs.noglerAfproeved===true?'#fff':'#94A3B8'};font-size:26px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center">✓</button>
+        <button onclick="window._setNoglerAfproeved(false)" style="min-width:52px;height:52px;border-radius:10px;border:2.5px solid ${S.docs.noglerAfproeved===false?'#DC2626':'#C4CDE0'};background:${S.docs.noglerAfproeved===false?'#DC2626':'#fff'};color:${S.docs.noglerAfproeved===false?'#fff':'#94A3B8'};font-size:26px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center">✕</button>
       </div>
     </div>
     <div class="section-hdr" style="background:#CCFBF1;color:#085041">🗂 Til salgsmappen</div>
@@ -855,11 +855,13 @@ function renderDocs() {
   const nRow = document.getElementById("nogler-afproeved-row");
   if (nRow) {
     const v = S.docs.noglerAfproeved;
+    nRow.style.background = v===true?"#F0FDF4":v===false?"#FEF2F2":"#F8FAFF";
+    nRow.style.borderColor = v===true?"#16A34A":v===false?"#DC2626":"#E2E8F4";
     const lbl = nRow.querySelector("span");
-    if (lbl) lbl.style.color = v===true?"var(--green)":v===false?"var(--red)":"var(--text)";
+    if (lbl) lbl.style.color = v===true?"#14532D":v===false?"#7F1D1D":"#1A2340";
     const btns = nRow.querySelectorAll("button");
-    if (btns[0]) { btns[0].style.background=v===true?"var(--green)":"#fff"; btns[0].style.color=v===true?"#fff":"#ccc"; btns[0].style.borderColor=v===true?"var(--green)":"#ddd"; }
-    if (btns[1]) { btns[1].style.background=v===false?"var(--red)":"#fff"; btns[1].style.color=v===false?"#fff":"#ccc"; btns[1].style.borderColor=v===false?"var(--red)":"#ddd"; }
+    if (btns[0]) { btns[0].style.background=v===true?"#16A34A":"#fff"; btns[0].style.color=v===true?"#fff":"#94A3B8"; btns[0].style.borderColor=v===true?"#16A34A":"#C4CDE0"; }
+    if (btns[1]) { btns[1].style.background=v===false?"#DC2626":"#fff"; btns[1].style.color=v===false?"#fff":"#94A3B8"; btns[1].style.borderColor=v===false?"#DC2626":"#C4CDE0"; }
   }
   updateDocsCount();
 }
@@ -867,14 +869,19 @@ function renderDocGroup(cid, defs) {
   const c=document.getElementById(cid); if(!c) return; c.innerHTML="";
   defs.forEach(([label,key])=>{
     const val = S.docs[key];
+    const isGreen = val===true, isRed = val===false;
     const row=document.createElement("div");
-    row.style.cssText=`display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid #F0F4FF`;
+    row.style.cssText=`display:flex;align-items:center;gap:14px;padding:14px 16px;margin-bottom:8px;border-radius:10px;background:${isGreen?"#F0FDF4":isRed?"#FEF2F2":"#F8FAFF"};border:2px solid ${isGreen?"#16A34A":isRed?"#DC2626":"#E2E8F4"}`;
     row.innerHTML=`
-      <span style="flex:1;font-size:15px;font-weight:600;color:${val===true?"var(--green)":val===false?"var(--red)":"var(--text)"}">${label}</span>
+      <span style="flex:1;font-size:15px;font-weight:500;color:${isGreen?"#14532D":isRed?"#7F1D1D":"#1A2340"}">${label}</span>
       <button onclick="window._setDoc('${key}',true)" title="OK"
-        style="width:44px;height:44px;border-radius:10px;border:2.5px solid ${val===true?"var(--green)":"#ddd"};background:${val===true?"var(--green)":"#fff"};color:${val===true?"#fff":"#ccc"};font-size:22px;cursor:pointer;font-family:inherit;transition:all 0.15s;line-height:1">✓</button>
+        style="min-width:52px;height:52px;border-radius:10px;border:2.5px solid ${isGreen?"#16A34A":"#C4CDE0"};
+        background:${isGreen?"#16A34A":"#fff"};color:${isGreen?"#fff":"#94A3B8"};
+        font-size:26px;cursor:pointer;font-family:inherit;transition:all 0.15s;display:flex;align-items:center;justify-content:center">✓</button>
       <button onclick="window._setDoc('${key}',false)" title="Ikke OK"
-        style="width:44px;height:44px;border-radius:10px;border:2.5px solid ${val===false?"var(--red)":"#ddd"};background:${val===false?"var(--red)":"#fff"};color:${val===false?"#fff":"#ccc"};font-size:22px;cursor:pointer;font-family:inherit;transition:all 0.15s;line-height:1">✕</button>`;
+        style="min-width:52px;height:52px;border-radius:10px;border:2.5px solid ${isRed?"#DC2626":"#C4CDE0"};
+        background:${isRed?"#DC2626":"#fff"};color:${isRed?"#fff":"#94A3B8"};
+        font-size:26px;cursor:pointer;font-family:inherit;transition:all 0.15s;display:flex;align-items:center;justify-content:center">✕</button>`;
     c.appendChild(row);
   });
 }
@@ -1122,7 +1129,7 @@ window.generateReport = async () => {
 </style></head><body>
 
 <div class="cover">
-  <div class="cover-sub">🚗 AnkomstTjek v1.05 &mdash; ${t.title}${c.carType?' &middot; '+c.carType:''}${c.inspector?' &middot; '+c.inspector:''}</div>
+  <div class="cover-sub">🚗 AnkomstTjek v1.06 &mdash; ${t.title}${c.carType?' &middot; '+c.carType:''}${c.inspector?' &middot; '+c.inspector:''}</div>
   <h1>${c.make||"-"} ${c.model||""}</h1>
   <h2>${c.regNumber||"-"} &middot; ${c.year||"-"} &middot; ${c.color||"-"}</h2>
   <div class="cover-meta">
@@ -1249,7 +1256,7 @@ ${S.notes?`
   <div class="sb"><p style="font-size:13px;color:#1A2340;line-height:1.6;white-space:pre-wrap">${S.notes}</p></div>
 </div>`:""}
 
-<div class="footer">🚗 AnkomstTjek v1.05 &middot; ${t.generated} ${new Date().toLocaleString(reportLang==='da'?'da-DK':'en-GB')} &middot; ${c.regNumber||""} ${c.make||""} ${c.model||""}</div>
+<div class="footer">🚗 AnkomstTjek v1.06 &middot; ${t.generated} ${new Date().toLocaleString(reportLang==='da'?'da-DK':'en-GB')} &middot; ${c.regNumber||""} ${c.make||""} ${c.model||""}</div>
 </body></html>`);
   win.document.close();
   setTimeout(()=>win.print(), 800);
