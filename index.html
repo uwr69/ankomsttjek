@@ -1404,13 +1404,7 @@ function readFormToState() {
   S.car.nextServiceDate=document.getElementById("next-svc-date").value;
   S.car.nextServiceKm=document.getElementById("next-svc-km").value;
   S.docs.noegleAntal=document.getElementById("doc-nogler").value;
-  S.notes=document.getElementById("doc-notes").value||"";
-  S.leasing.BAP=document.getElementById("l-BAP").value;
-  S.leasing.FA=document.getElementById("l-FA").value;
-  S.leasing.BFRD=document.getElementById("l-BFRD").value;
-  S.leasing.LPM=document.getElementById("l-LPM").value;
-  S.leasing.FIA=document.getElementById("l-FIA").value;
-  S.leasing.UD=document.getElementById("l-UD").value;
+  S.notes=document.getElementById("doc-notes")?.value||"";
   updateHeaderSub();
 }
 
@@ -1433,14 +1427,6 @@ function writeStateToForm() {
   document.getElementById("doc-nogler").value=S.docs.noegleAntal||"";
   const notesEl=document.getElementById("doc-notes");
   if(notesEl){ notesEl.value=S.notes||""; document.getElementById("notes-count").textContent=(300-(S.notes||"").length)+" tegn tilbage"; }
-  document.getElementById("l-BAP").value=S.leasing.BAP||"";
-  document.getElementById("l-FA").value=S.leasing.FA||"";
-  document.getElementById("l-BFRD").value=S.leasing.BFRD||"";
-  document.getElementById("l-LPM").value=S.leasing.LPM||12;
-  document.getElementById("l-FIA").value=S.leasing.FIA||5;
-  document.getElementById("l-UD").value=S.leasing.UD||15;
-  document.getElementById("fia-val").textContent=(S.leasing.FIA||5)+"%";
-  document.getElementById("ud-val").textContent=(S.leasing.UD||15)+"%";
 }
 
 window.newCar = () => {
