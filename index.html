@@ -9,7 +9,7 @@
 <title>🚗 AnkomstTjek</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body { font-family:'Inter','Helvetica Neue',system-ui,sans-serif; background:#F0F3FA; color:#1A2340; max-width:500px; margin:0 auto; min-height:100vh; }
+  body { font-family:'Inter','Helvetica Neue',system-ui,sans-serif; background:#F0F3FA; color:#1A2340; max-width:900px; margin:0 auto; min-height:100vh; }
   :root {
     --bg:#F0F3FA; --card:#fff; --border:#A0AECF; --inp-border:#7B8FC7;
     --text:#1A2340; --muted:#6B7A99;
@@ -29,7 +29,7 @@
   #tab-stripe { height:3px; }
   #tabs { display:flex; gap:2px; overflow-x:auto; scrollbar-width:none; }
   #tabs::-webkit-scrollbar { display:none; }
-  .tab-btn { background:transparent; border:none; border-radius:8px 8px 0 0; padding:6px 7px; cursor:pointer; font-size:9px; font-weight:700; white-space:nowrap; color:var(--muted); transition:all 0.15s; font-family:inherit; }
+  .tab-btn { background:transparent; border:none; border-radius:8px 8px 0 0; padding:8px 14px; cursor:pointer; font-size:11px; font-weight:700; white-space:nowrap; color:var(--muted); transition:all 0.15s; font-family:inherit; }
   .tab-btn.active { color:#fff; }
   .icon-btn { border-radius:9px; width:34px; height:34px; font-size:20px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1.5px solid; font-family:inherit; }
   .save-btn { border-radius:9px; padding:7px 11px; cursor:pointer; font-size:11px; font-weight:800; white-space:nowrap; flex-shrink:0; font-family:inherit; transition:all 0.2s; }
@@ -49,17 +49,17 @@
   .car-list-item .car-date { font-size:10px; color:var(--muted); margin-top:2px; }
   .car-active-badge { font-size:9px; background:var(--blue); color:#fff; border-radius:20px; padding:2px 8px; font-weight:700; flex-shrink:0; }
   .new-car-btn { display:flex; align-items:center; gap:10px; width:100%; background:var(--blue-l); border:none; border-bottom:1px solid var(--border); padding:12px 14px; cursor:pointer; color:var(--blue); font-weight:800; font-size:12px; border-radius:12px 12px 0 0; font-family:inherit; }
-  #content { padding:14px; }
+  #content { padding:20px 24px; }
   .tab-pane { display:none; }
   .tab-pane.active { display:block; }
-  .inp { background:#fff; border:2px solid var(--inp-border); border-radius:10px; color:var(--text); padding:10px 12px; font-size:14px; width:100%; box-sizing:border-box; outline:none; box-shadow:0 1px 3px rgba(0,0,0,0.08); font-family:inherit; }
+  .inp { background:#fff; border:2px solid var(--inp-border); border-radius:10px; color:var(--text); padding:12px 14px; font-size:15px; width:100%; box-sizing:border-box; outline:none; box-shadow:0 1px 3px rgba(0,0,0,0.08); font-family:inherit; }
   .inp:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,0.15); }
   .inp.error { background:#FEF2F2; border-color:var(--red); box-shadow:0 0 0 3px rgba(220,38,38,0.15); }
-  .inp-sm { background:#fff; border:2px solid var(--inp-border); border-radius:8px; color:var(--text); padding:8px 10px; font-size:13px; width:100%; box-sizing:border-box; box-shadow:0 1px 3px rgba(0,0,0,0.07); font-family:inherit; outline:none; }
+  .inp-sm { background:#fff; border:2px solid var(--inp-border); border-radius:8px; color:var(--text); padding:10px 12px; font-size:14px; width:100%; box-sizing:border-box; box-shadow:0 1px 3px rgba(0,0,0,0.07); font-family:inherit; outline:none; }
   .inp-sm:focus { border-color:var(--blue); }
   select.inp, select.inp-sm { cursor:pointer; }
   label.field-label { font-size:11px; color:var(--muted); font-weight:700; letter-spacing:0.4px; display:block; margin-top:12px; margin-bottom:3px; }
-  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
   .section-title { font-size:11px; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; margin-top:22px; margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid; display:flex; align-items:center; gap:6px; }
   .banner { border-radius:14px; padding:14px 16px; margin-bottom:16px; border:1px solid; }
   .card { background:#fff; border-radius:14px; padding:14px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
@@ -121,7 +121,7 @@
   .lak-point.has-value { background:var(--yellow); color:#fff; border-color:var(--yellow); }
   .lak-point.high-value { background:#DC2626; color:#fff; border-color:#DC2626; }
 
-  @media (max-width:360px) { .tab-btn { padding:5px 5px; font-size:8px; } }
+  @media (max-width:600px) { .tab-btn { padding:6px 9px; font-size:10px; } }
 </style>
 </head>
 <body>
@@ -139,7 +139,7 @@
 <div id="header">
   <div id="header-top">
     <div id="app-title">
-      <div class="name">🚗 AnkomstTjek</div>
+      <div class="name">🚗 AnkomstTjek <span style="font-size:9px;background:var(--blue);color:#fff;border-radius:10px;padding:1px 6px;vertical-align:middle;font-weight:700;letter-spacing:.5px">v1.02</span></div>
       <div class="sub" id="header-sub">Ingen bil valgt</div>
     </div>
     <button class="icon-btn" id="new-car-btn" title="Ny bil" style="background:var(--blue-l);color:var(--blue);border-color:rgba(37,99,235,0.3)">+</button>
@@ -165,11 +165,48 @@
 
   <!-- TAB 0: BIL INFO -->
   <div class="tab-pane active" data-tab="0">
-    <div class="banner" style="background:linear-gradient(135deg,#EBF2FF,#F0F9FF);border-color:rgba(37,99,235,0.12)">
-      <div style="font-size:11px;color:var(--blue);font-weight:800;letter-spacing:1px;margin-bottom:2px">🚗 ANKOMST REGISTRERING</div>
-      <div style="font-size:12px;color:var(--muted)">Start med at taste nummerplade</div>
+    <!-- Two dropdowns side by side -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+      <div>
+        <label class="field-label" style="margin-top:0">👤 Gennemgang af</label>
+        <select id="car-inspector" class="inp" style="font-weight:700;color:var(--blue)"
+          onchange="S.car.inspector=this.value">
+          <option value="">Gennemgang af:</option>
+          <option value="Adam">Adam</option>
+          <option value="Lasse">Lasse</option>
+          <option value="Patrick">Patrick</option>
+          <option value="Oliver">Oliver</option>
+          <option value="Kristoffer">Kristoffer</option>
+          <option value="Ulrik">Ulrik</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label" style="margin-top:0">🤝 Ansvarlig sælger</label>
+        <select id="car-seller" class="inp" style="font-weight:700;color:var(--green)"
+          onchange="S.car.seller=this.value">
+          <option value="">Ansvarlig sælger:</option>
+          <option value="Adam">Adam</option>
+          <option value="Lasse">Lasse</option>
+          <option value="Patrick">Patrick</option>
+          <option value="Oliver">Oliver</option>
+          <option value="Kristoffer">Kristoffer</option>
+          <option value="Ulrik">Ulrik</option>
+        </select>
+      </div>
     </div>
-    <!-- Nummerplade — fremhævet øverst -->
+    <!-- Banner: Stelnummer -->
+    <div class="banner" style="background:linear-gradient(135deg,#EBF2FF,#F0F9FF);border-color:rgba(37,99,235,0.12);margin-bottom:14px">
+      <div style="font-size:11px;color:var(--blue);font-weight:800;letter-spacing:1px;margin-bottom:8px">🔍 INDTAST STELNUMMER</div>
+      <input class="inp" id="car-vin" placeholder="WBA3F3C50FF..." style="margin-bottom:8px;font-family:monospace;font-size:15px;letter-spacing:1px"
+        oninput="updateVinLink()">
+      <div id="vin-link-wrap" style="display:none">
+        <a id="vin-link" href="#" target="_blank"
+          style="display:inline-flex;align-items:center;gap:6px;background:var(--blue);color:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;text-decoration:none">
+          🔗 Tjek stelnummer på tjekbil.dk →
+        </a>
+      </div>
+    </div>
+    <!-- Nummerplade -->
     <div style="margin-bottom:14px">
       <label class="field-label" style="font-size:13px;color:var(--blue);margin-top:0">🔢 Nummerplade</label>
       <input class="inp" id="car-reg" placeholder="AA 12 345"
@@ -179,12 +216,11 @@
     <div class="grid2">
       <div><label class="field-label">🏷 Mærke</label><input class="inp" id="car-make" placeholder="BMW"></div>
       <div><label class="field-label">🔤 Model</label><input class="inp" id="car-model" placeholder="3-serie"></div>
-      <div><label class="field-label">🆔 VIN/Stelnr.</label><input class="inp" id="car-vin" placeholder="WBA..."></div>
       <div><label class="field-label">📅 Årgang</label><input class="inp" id="car-year" placeholder="2021"></div>
       <div><label class="field-label">🎨 Farve</label><input class="inp" id="car-color" placeholder="Sort"></div>
       <div><label class="field-label">📏 Kilometer</label><input class="inp" type="number" id="car-km" placeholder="45000"></div>
       <div><label class="field-label">📅 Modtagelse</label><input class="inp" type="date" id="car-received"></div>
-      <div><label class="field-label">⭐ Stand</label>
+      <div style="grid-column:span 2"><label class="field-label">⭐ Stand</label>
         <select class="inp" id="car-condition">
           <option value="">Vælg stand</option>
           <option>⭐⭐⭐⭐⭐ Meget god</option>
@@ -211,6 +247,11 @@
     <div id="photos-exterior"></div>
     <div class="section-title" style="color:var(--purple);border-color:rgba(124,58,237,0.2)">🏠 Interiør & Instrumenter</div>
     <div id="photos-interior"></div>
+    <div class="section-title" style="color:var(--purple);border-color:rgba(124,58,237,0.2)">🎬 Video</div>
+    <div class="banner" style="background:var(--purple-l);border-color:rgba(124,58,237,0.15);padding:10px 14px;margin-bottom:10px">
+      <div style="font-size:11px;color:var(--purple);font-weight:700">Videoer gemmes lokalt på enheden — ikke i rapporten</div>
+    </div>
+    <div id="video-slots"></div>
   </div>
 
   <!-- TAB 2: DÆK -->
@@ -223,91 +264,14 @@
     </div>
   </div>
 
-  <!-- TAB 3: SKADER -->
+  <!-- TAB 3: LAK -->
   <div class="tab-pane" data-tab="3">
-    <div id="damages-container">
-      <div id="no-damage-msg" style="text-align:center;padding:28px 0;color:var(--muted)">
-        <div style="font-size:40px;margin-bottom:8px">✅</div>
-        <div style="font-size:14px;font-weight:600">Ingen skader registreret</div>
-      </div>
-    </div>
-    <button onclick="addDamage()" style="background:var(--red-l);color:var(--red);border:1.5px solid rgba(220,38,38,0.3);border-radius:12px;padding:12px 20px;cursor:pointer;font-size:13px;font-weight:700;width:100%;margin-top:4px;font-family:inherit">💥 Tilføj skade / mangel</button>
-  </div>
-
-  <!-- TAB 4: DIVERSE -->
-  <div class="tab-pane" data-tab="4">
-    <div class="banner" style="background:linear-gradient(135deg,#CCFBF1,#E0FDF4);border-color:rgba(13,148,136,0.12)">
-      <div style="font-size:12px;color:var(--teal);font-weight:700" id="docs-count">✅ 0 punkter markeret</div>
-    </div>
-    <div class="section-title" style="color:var(--teal);border-color:rgba(13,148,136,0.2)">📦 Med bilen</div>
-    <div id="docs-med-bilen"></div>
-    <div class="mt-16">
-      <label class="field-label">🔑 Antal nøgler</label>
-      <input class="inp" type="number" id="doc-nogler" min="0" max="10" placeholder="2" style="width:120px">
-    </div>
-    <div class="section-title" style="color:var(--teal);border-color:rgba(13,148,136,0.2)">🗂 Til salgsmappen</div>
-    <div id="docs-salgsmappe"></div>
-  </div>
-
-  <!-- TAB 5: LEASING -->
-  <div class="tab-pane" data-tab="5">
-    <div class="banner" style="background:linear-gradient(135deg,#DCFCE7,#F0FDF4);border-color:rgba(22,163,74,0.12)">
-      <div style="font-size:11px;color:var(--green);font-weight:800;letter-spacing:1px;margin-bottom:2px">💰 LEASING BEREGNER</div>
-      <div style="font-size:12px;color:var(--muted)">Udfyld alle felter for at beregne</div>
-    </div>
-    <div class="grid2">
-      <div>
-        <label class="field-label">💵 Bilens værdi BAP <span id="err-BAP" style="color:var(--red);display:none">⚠️ Krævet</span></label>
-        <input class="inp" type="number" id="l-BAP" placeholder="350000">
-      </div>
-      <div>
-        <label class="field-label">📋 Afgift FA <span id="err-FA" style="color:var(--red);display:none">⚠️ Krævet</span></label>
-        <input class="inp" type="number" id="l-FA" placeholder="120000">
-      </div>
-      <div style="grid-column:1/-1">
-        <label class="field-label">📅 1. registreringsdato BFRD <span id="err-BFRD" style="color:var(--red);display:none">⚠️ Krævet</span></label>
-        <input class="inp" type="date" id="l-BFRD">
-      </div>
-      <div style="grid-column:1/-1">
-        <label class="field-label">⏳ Leasing periode LPM (måneder)</label>
-        <input class="inp" type="number" id="l-LPM" value="12">
-      </div>
-    </div>
-    <div class="mt-12">
-      <label class="field-label">📈 Finansieringsrente FIA: <strong id="fia-val" style="color:var(--green)">5%</strong></label>
-      <input type="range" id="l-FIA" min="3.5" max="10" step="0.1" value="5" oninput="document.getElementById('fia-val').textContent=this.value+'%'">
-      <div class="flex-row" style="justify-content:space-between;font-size:10px;color:var(--muted);margin-top:3px"><span>3,5%</span><span>10%</span></div>
-    </div>
-    <div class="mt-12">
-      <label class="field-label">💳 Udbetaling UD: <strong id="ud-val" style="color:var(--green)">15%</strong></label>
-      <input type="range" id="l-UD" min="5" max="30" step="1" value="15" oninput="document.getElementById('ud-val').textContent=this.value+'%'">
-      <div class="flex-row" style="justify-content:space-between;font-size:10px;color:var(--muted);margin-top:3px"><span>5%</span><span>30%</span></div>
-    </div>
-    <button onclick="calcLeasing()" style="margin-top:18px;background:linear-gradient(135deg,var(--green),#22C55E);color:#fff;border:none;border-radius:12px;padding:14px 24px;width:100%;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(22,163,74,0.35);font-family:inherit">🧮 Beregn Leasing</button>
-    <div id="leasing-error" class="error-msg" style="display:none">⚠️ Udfyld venligst alle markerede felter (BAP, FA og BFRD).</div>
-    <div id="leasing-result" style="display:none;margin-top:20px">
-      <div class="flex-row" style="background:#fff;border-radius:12px;padding:10px 14px;margin-bottom:14px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,0.05)">
-        <span style="font-size:12px;color:var(--text);font-weight:700;flex:1">💰 Leasing oversigt</span>
-        <span style="font-size:11px;font-weight:700" id="excl-label">Ekskl.</span>
-        <button class="toggle-switch" id="moms-toggle" onclick="toggleMoms()" style="background:var(--border)"><div class="toggle-knob" id="moms-knob"></div></button>
-        <span style="font-size:11px;font-weight:700" id="incl-label">Inkl. moms</span>
-      </div>
-      <div class="leasing-summary-grid" id="leasing-cards"></div>
-      <div id="moms-note" style="font-size:11px;color:var(--muted);margin-bottom:12px;text-align:center;display:none"></div>
-      <button onclick="toggleDetails()" id="details-toggle-btn" style="width:100%;background:#fff;color:var(--blue);border:1.5px solid rgba(37,99,235,0.25);border-radius:12px;padding:10px 16px;cursor:pointer;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;font-family:inherit">🔽 Vis beregningsdetaljer</button>
-      <div id="details-table" class="details-table" style="display:none"></div>
-    </div>
-  </div>
-
-  <!-- TAB 6: LAK -->
-  <div class="tab-pane" data-tab="6">
     <div class="banner" style="background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border-color:rgba(217,119,6,0.12)">
       <div style="font-size:11px;color:var(--yellow);font-weight:800;letter-spacing:1px;margin-bottom:2px">🎨 LAK MÅLING</div>
       <div style="font-size:12px;color:var(--muted)">Tast måleværdier i mikrometer (µm) — 4 cifre</div>
     </div>
     <div style="position:relative;margin:0 auto;max-width:340px">
       <img id="lak-car-img" src="" style="width:100%;display:block;border-radius:12px;opacity:0.92">
-      <!-- Målepunkter placeret over billedet -->
       <!-- FORAN: 2 punkter -->
       <div class="lak-point" style="top:7%;left:36%" data-key="front_l" title="Foran Venstre"></div>
       <div class="lak-point" style="top:7%;left:57%" data-key="front_r" title="Foran Højre"></div>
@@ -316,12 +280,12 @@
       <!-- BAGVED: 2 punkter -->
       <div class="lak-point" style="top:78%;left:36%" data-key="rear_l" title="Bag Venstre"></div>
       <div class="lak-point" style="top:78%;left:57%" data-key="rear_r" title="Bag Højre"></div>
-      <!-- VENSTRE SIDE: 4 punkter — forskærm og bagskærm yderst til venstre -->
+      <!-- VENSTRE SIDE: 4 punkter -->
       <div class="lak-point" style="top:24%;left:3%"  data-key="left_1" title="Venstre Forskærm"></div>
       <div class="lak-point" style="top:37%;left:8%"  data-key="left_2" title="Venstre Midt-Foran"></div>
       <div class="lak-point" style="top:54%;left:8%"  data-key="left_3" title="Venstre Midt-Bag"></div>
       <div class="lak-point" style="top:67%;left:3%"  data-key="left_4" title="Venstre Bagskærm"></div>
-      <!-- HØJRE SIDE: 4 punkter — forskærm og bagskærm yderst til højre -->
+      <!-- HØJRE SIDE: 4 punkter -->
       <div class="lak-point" style="top:24%;left:88%" data-key="right_1" title="Højre Forskærm"></div>
       <div class="lak-point" style="top:37%;left:83%" data-key="right_2" title="Højre Midt-Foran"></div>
       <div class="lak-point" style="top:54%;left:83%" data-key="right_3" title="Højre Midt-Bag"></div>
@@ -340,19 +304,182 @@
         </div>
       </div>
     </div>
-    <!-- Tabel oversigt -->
     <div style="margin-top:18px">
       <div class="section-title" style="color:var(--yellow);border-color:rgba(217,119,6,0.2)">📊 Måleværdier oversigt</div>
       <div id="lak-table"></div>
     </div>
   </div>
 
-  <!-- TAB 7: RAPPORT -->
-  <div class="tab-pane" data-tab="7">
+  <!-- TAB 4: SKADER -->
+  <div class="tab-pane" data-tab="4">
+    <!-- Skade diagram -->
+    <div style="background:#fff;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:800;color:var(--red);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">🗺 Skade Diagram — tryk på område for at tilføje</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <!-- Top view -->
+        <div style="position:relative">
+          <div style="font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:4px">🔼 Oppefra</div>
+          <svg viewBox="0 0 160 260" style="width:100%;max-width:200px;display:block;margin:0 auto" id="dmg-svg-top">
+            <!-- Car body top view -->
+            <ellipse cx="80" cy="130" rx="58" ry="110" fill="#F0F3FA" stroke="#A0AECF" stroke-width="2"/>
+            <ellipse cx="80" cy="130" rx="42" ry="80" fill="#E8ECF4" stroke="#A0AECF" stroke-width="1"/>
+            <!-- Hood -->
+            <path d="M50,40 Q80,20 110,40 L105,80 Q80,70 55,80 Z" fill="#D4DBF0" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="hood" data-label="Motorhjelm" style="cursor:pointer"/>
+            <!-- Roof -->
+            <path d="M55,90 Q80,82 105,90 L105,170 Q80,178 55,170 Z" fill="#C8D0EC" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="roof-top" data-label="Tag" style="cursor:pointer"/>
+            <!-- Trunk -->
+            <path d="M55,178 Q80,170 105,178 L110,218 Q80,238 50,218 Z" fill="#D4DBF0" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="trunk-top" data-label="Bagklap" style="cursor:pointer"/>
+            <!-- Left fender front -->
+            <path d="M50,40 L32,50 L28,90 L55,90 L55,80 Z" fill="#DCE3F5" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="fl-fender" data-label="Skærm FL" style="cursor:pointer"/>
+            <!-- Right fender front -->
+            <path d="M110,40 L128,50 L132,90 L105,90 L105,80 Z" fill="#DCE3F5" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="fr-fender" data-label="Skærm FR" style="cursor:pointer"/>
+            <!-- Left door -->
+            <path d="M28,90 L22,130 L28,170 L55,170 L55,90 Z" fill="#E4E9F7" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="door-left" data-label="Dør Venstre" style="cursor:pointer"/>
+            <!-- Right door -->
+            <path d="M132,90 L138,130 L132,170 L105,170 L105,90 Z" fill="#E4E9F7" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="door-right" data-label="Dør Højre" style="cursor:pointer"/>
+            <!-- Left rear fender -->
+            <path d="M28,170 L22,205 L50,218 L55,178 Z" fill="#DCE3F5" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="rl-fender" data-label="Skærm BL" style="cursor:pointer"/>
+            <!-- Right rear fender -->
+            <path d="M132,170 L138,205 L110,218 L105,178 Z" fill="#DCE3F5" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="rr-fender" data-label="Skærm BR" style="cursor:pointer"/>
+            <!-- Front bumper -->
+            <path d="M32,50 L22,62 L22,78 L28,90 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
+            <path d="M128,50 L138,62 L138,78 L132,90 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
+            <path d="M22,62 L22,78" stroke="#7B8FC7" stroke-width="0"/>
+            <!-- Rear bumper -->
+            <path d="M22,205 L22,220 L50,232 L50,218 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
+            <path d="M138,205 L138,220 L110,232 L110,218 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
+            <!-- Damage markers layer -->
+            <g id="dmg-markers-top"></g>
+          </svg>
+        </div>
+        <!-- Side views stacked -->
+        <div>
+          <div style="font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:4px">◀ Venstre side</div>
+          <svg viewBox="0 0 260 100" style="width:100%;display:block;margin-bottom:8px" id="dmg-svg-left">
+            <rect x="20" y="20" width="220" height="65" rx="12" fill="#E4E9F7" stroke="#7B8FC7" stroke-width="1.5"/>
+            <!-- Windows -->
+            <path d="M60,22 L90,22 L90,42 L60,42 Z" fill="#C8D4F0" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="window-fl" data-label="Rude FL" style="cursor:pointer"/>
+            <path d="M95,22 L155,22 L155,42 L95,42 Z" fill="#C8D4F0" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="window-rl" data-label="Rude BL" style="cursor:pointer"/>
+            <!-- Front bumper side -->
+            <path d="M20,35 L8,42 L8,60 L20,65 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
+            <!-- Rear bumper side -->
+            <path d="M240,35 L252,42 L252,60 L240,65 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
+            <!-- Wheels -->
+            <circle cx="65" cy="85" r="12" fill="#8899BB" stroke="#556"/><circle cx="65" cy="85" r="6" fill="#AAB"/>
+            <circle cx="195" cy="85" r="12" fill="#8899BB" stroke="#556"/><circle cx="195" cy="85" r="6" fill="#AAB"/>
+            <!-- Hood side -->
+            <path d="M20,30 L60,22 L60,30 Z" fill="#D4DBF0" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="hood" data-label="Motorhjelm" style="cursor:pointer"/>
+            <g id="dmg-markers-left"></g>
+          </svg>
+          <div style="font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:4px">▶ Højre side</div>
+          <svg viewBox="0 0 260 100" style="width:100%;display:block" id="dmg-svg-right">
+            <rect x="20" y="20" width="220" height="65" rx="12" fill="#E4E9F7" stroke="#7B8FC7" stroke-width="1.5"/>
+            <path d="M170,22 L200,22 L200,42 L170,42 Z" fill="#C8D4F0" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="window-fr" data-label="Rude FR" style="cursor:pointer"/>
+            <path d="M105,22 L165,22 L165,42 L105,42 Z" fill="#C8D4F0" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="window-rr" data-label="Rude BR" style="cursor:pointer"/>
+            <path d="M240,35 L252,42 L252,60 L240,65 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
+            <path d="M20,35 L8,42 L8,60 L20,65 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
+            <circle cx="195" cy="85" r="12" fill="#8899BB" stroke="#556"/><circle cx="195" cy="85" r="6" fill="#AAB"/>
+            <circle cx="65" cy="85" r="12" fill="#8899BB" stroke="#556"/><circle cx="65" cy="85" r="6" fill="#AAB"/>
+            <g id="dmg-markers-right"></g>
+          </svg>
+        </div>
+      </div>
+      <!-- Front + Rear views -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <div>
+          <div style="font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:4px">🔼 Forfra</div>
+          <svg viewBox="0 0 140 100" style="width:100%;display:block;margin:0 auto" id="dmg-svg-front">
+            <path d="M15,55 Q70,30 125,55 L125,80 Q70,90 15,80 Z" fill="#E4E9F7" stroke="#7B8FC7" stroke-width="1.5"/>
+            <path d="M35,55 Q70,42 105,55 L105,65 Q70,70 35,65 Z" fill="#C8D4F0" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="windshield-front" data-label="Forrude" style="cursor:pointer"/>
+            <path d="M15,55 L35,55 L35,65 Q15,62 15,55 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="fl-fender" data-label="Skærm FL" style="cursor:pointer"/>
+            <path d="M125,55 L105,55 L105,65 Q125,62 125,55 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="fr-fender" data-label="Skærm FR" style="cursor:pointer"/>
+            <path d="M15,55 Q70,30 125,55 L120,48 Q70,24 20,48 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-front" data-label="Kofanger For" style="cursor:pointer"/>
+            <circle cx="35" cy="83" r="10" fill="#8899BB" stroke="#556"/><circle cx="105" cy="83" r="10" fill="#8899BB" stroke="#556"/>
+            <g id="dmg-markers-front"></g>
+          </svg>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:4px">🔽 Bagfra</div>
+          <svg viewBox="0 0 140 100" style="width:100%;display:block;margin:0 auto" id="dmg-svg-rear">
+            <path d="M15,55 Q70,30 125,55 L125,80 Q70,90 15,80 Z" fill="#E4E9F7" stroke="#7B8FC7" stroke-width="1.5"/>
+            <path d="M35,55 Q70,42 105,55 L105,65 Q70,70 35,65 Z" fill="#C8D4F0" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="windshield-rear" data-label="Bagrude" style="cursor:pointer"/>
+            <path d="M15,55 L35,55 L35,65 Q15,62 15,55 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="rl-fender" data-label="Skærm BL" style="cursor:pointer"/>
+            <path d="M125,55 L105,55 L105,65 Q125,62 125,55 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1" class="dmg-zone" data-zone="rr-fender" data-label="Skærm BR" style="cursor:pointer"/>
+            <path d="M15,55 Q70,30 125,55 L120,48 Q70,24 20,48 Z" fill="#CBD3EE" stroke="#7B8FC7" stroke-width="1.5" class="dmg-zone" data-zone="bumper-rear" data-label="Kofanger Bag" style="cursor:pointer"/>
+            <circle cx="35" cy="83" r="10" fill="#8899BB" stroke="#556"/><circle cx="105" cy="83" r="10" fill="#8899BB" stroke="#556"/>
+            <g id="dmg-markers-rear"></g>
+          </svg>
+        </div>
+      </div>
+      <!-- Legend -->
+      <div style="background:#F8FAFF;border-radius:10px;padding:10px 12px;font-size:11px;display:flex;flex-wrap:wrap;gap:8px">
+        <span style="font-weight:800;color:var(--text);width:100%;margin-bottom:2px">Forklaring:</span>
+        <span style="background:#DC2626;color:#fff;border-radius:5px;padding:2px 7px;font-weight:700">D</span><span style="color:var(--muted)">Dent (Bule)</span>
+        <span style="background:#EA580C;color:#fff;border-radius:5px;padding:2px 7px;font-weight:700">S</span><span style="color:var(--muted)">Scratch (Skramme)</span>
+        <span style="background:#7C3AED;color:#fff;border-radius:5px;padding:2px 7px;font-weight:700">B</span><span style="color:var(--muted)">Broken (Knust)</span>
+        <span style="background:#2563EB;color:#fff;border-radius:5px;padding:2px 7px;font-weight:700">P</span><span style="color:var(--muted)">Paint damage (Lak)</span>
+        <span style="background:#D97706;color:#fff;border-radius:5px;padding:2px 7px;font-weight:700">C</span><span style="color:var(--muted)">Stonechip (Stenslag)</span>
+      </div>
+      <!-- Diagram damage modal -->
+      <div id="dmg-diag-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;align-items:center;justify-content:center">
+        <div style="background:#fff;border-radius:18px;padding:22px;width:290px;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+          <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px" id="dmg-diag-zone-title">Zone</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Vælg skadetype</div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px">
+            <button onclick="window._addDiagDmg('D')" style="background:#DC2626;color:#fff;border:none;border-radius:8px;padding:10px 0;font-size:16px;font-weight:900;cursor:pointer">D</button>
+            <button onclick="window._addDiagDmg('S')" style="background:#EA580C;color:#fff;border:none;border-radius:8px;padding:10px 0;font-size:16px;font-weight:900;cursor:pointer">S</button>
+            <button onclick="window._addDiagDmg('B')" style="background:#7C3AED;color:#fff;border:none;border-radius:8px;padding:10px 0;font-size:16px;font-weight:900;cursor:pointer">B</button>
+            <button onclick="window._addDiagDmg('P')" style="background:#2563EB;color:#fff;border:none;border-radius:8px;padding:10px 0;font-size:16px;font-weight:900;cursor:pointer">P</button>
+            <button onclick="window._addDiagDmg('C')" style="background:#D97706;color:#fff;border:none;border-radius:8px;padding:10px 0;font-size:16px;font-weight:900;cursor:pointer">C</button>
+          </div>
+          <button onclick="window._closeDiagModal()" style="width:100%;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Annuller</button>
+        </div>
+      </div>
+    </div>
+    <div id="damages-container">
+      <div id="no-damage-msg" style="text-align:center;padding:28px 0;color:var(--muted)">
+        <div style="font-size:40px;margin-bottom:8px">✅</div>
+        <div style="font-size:14px;font-weight:600">Ingen skader registreret</div>
+      </div>
+    </div>
+    <button onclick="addDamage()" style="background:var(--red-l);color:var(--red);border:1.5px solid rgba(220,38,38,0.3);border-radius:12px;padding:12px 20px;cursor:pointer;font-size:13px;font-weight:700;width:100%;margin-top:4px;font-family:inherit">💥 Tilføj skade / mangel</button>
+  </div>
+
+  <!-- TAB 5: CHECKLISTE -->
+  <div class="tab-pane" data-tab="5">
+    <div class="banner" style="background:linear-gradient(135deg,#CCFBF1,#E0FDF4);border-color:rgba(13,148,136,0.12)">
+      <div style="font-size:12px;color:var(--teal);font-weight:700" id="docs-count">✅ 0 punkter markeret</div>
+    </div>
+    <div class="section-title" style="color:var(--teal);border-color:rgba(13,148,136,0.2)">✅ Check</div>
+    <div id="docs-med-bilen"></div>
+    <div class="mt-16" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div>
+        <label class="field-label" style="margin-top:0">🔑 Antal nøgler</label>
+        <input class="inp" type="number" id="doc-nogler" min="0" max="10" placeholder="2" style="width:100px">
+      </div>
+      <div class="check-row" id="nogler-afproeved-row" style="margin-bottom:0;flex:1;min-width:160px"
+        onclick="window._toggleNoglerAfproeved()">
+        <div class="check-box" id="nogler-afproeved-box">○</div>
+        <span class="check-label" id="nogler-afproeved-label">Nøgle(r) afprøvet</span>
+      </div>
+    </div>
+    <div class="section-title" style="color:var(--teal);border-color:rgba(13,148,136,0.2)">🗂 Til salgsmappen</div>
+    <div id="docs-salgsmappe"></div>
+    <div class="section-title" style="color:var(--teal);border-color:rgba(13,148,136,0.2)">📝 Noter</div>
+    <div style="position:relative">
+      <textarea class="inp" id="doc-notes" placeholder="Generelle noter om bilen..." maxlength="300"
+        style="height:110px;resize:none;font-size:14px;line-height:1.5"
+        oninput="document.getElementById('notes-count').textContent=(300-this.value.length)+' tegn tilbage'"></textarea>
+      <div id="notes-count" style="font-size:10px;color:var(--muted);text-align:right;margin-top:3px">300 tegn tilbage</div>
+    </div>
+  </div>
+
+  <!-- TAB 6: RAPPORT -->
+  <div class="tab-pane" data-tab="6">
     <div style="text-align:center;padding:20px 0 10px">
       <div style="font-size:52px;margin-bottom:10px">📋</div>
       <div style="font-size:20px;font-weight:900;color:var(--text);margin-bottom:6px">Generer Rapport</div>
-      <div style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6">PDF-klar rapport med alle billeder, dæk, skader, dokumenter og leasing.</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6">PDF-klar rapport med alle billeder, dæk, skader, lak og dokumenter.</div>
       <!-- Sprog vælger -->
       <div style="display:flex;gap:10px;justify-content:center;margin-bottom:20px">
         <button id="lang-da" onclick="setLang('da')"
@@ -474,7 +601,7 @@ function setLoading(msg) {
 const S = {
   tab: 0,
   car: { make:"",model:"",regNumber:"",vin:"",year:"",color:"",km:"",
-         receivedDate:new Date().toISOString().split("T")[0],condition:"",
+         receivedDate:new Date().toISOString().split("T")[0],condition:"",inspector:"",seller:"",
          lastServiceDate:"",lastServiceKm:"",nextServiceDate:"",nextServiceKm:"" },
   // photos: { key: [{docId, dataUrl}, ...] }  — stored in Firestore "photos" collection
   photos: { wheel_fl:[],wheel_fr:[],wheel_rl:[],wheel_rr:[],
@@ -484,10 +611,12 @@ const S = {
   extraWheels: [],
   damages: [],  // damage.photos = [{docId, dataUrl}]
   docs: { serviceBog:false,regAttest1:false,regAttest2:false,coc:false,
-          proevekort:false,noegleAntal:"",ladekabel:false,
+          proevekort:false,noegleAntal:"",noglerAfproeved:false,ladekabel:false,
           carVertical:false,digitalService:false,udstyrsliste:false,leasingforslag:false },
   leasing: { BAP:"",FA:"",BFRD:"",LPM:12,FIA:5,UD:15 },
   lak: {}, // key → value in µm
+  notes: "",
+  diagDamages: [], // [{zone, label, type, view}]
   leasingResult: null,
   showMoms: false,
   showDetails: false,
@@ -497,14 +626,13 @@ const S = {
 
 // ─── Tab setup ────────────────────────────────────────────────────────────────
 const TABS = [
-  {label:"🚗 Bil",      color:"#2563EB"},
-  {label:"📷 Fotos",    color:"#7C3AED"},
-  {label:"🔧 Dæk",      color:"#EA580C"},
-  {label:"💥 Skader",   color:"#DC2626"},
-  {label:"📁 DIV",      color:"#0D9488"},
-  {label:"💰 Leasing",  color:"#16A34A"},
-  {label:"🎨 Lak",      color:"#D97706"},
-  {label:"📋 Rapport",  color:"#92400E"},
+  {label:"🚗 Bil",         color:"#2563EB"},
+  {label:"📷 Fotos",       color:"#7C3AED"},
+  {label:"🔧 Dæk",         color:"#EA580C"},
+  {label:"🎨 Lak",         color:"#D97706"},
+  {label:"💥 Skader",      color:"#DC2626"},
+  {label:"✅ Checkliste",  color:"#0D9488"},
+  {label:"📋 Rapport",     color:"#92400E"},
 ];
 
 function initTabs() {
@@ -526,8 +654,8 @@ function switchTab(i) {
   });
   document.querySelectorAll(".tab-pane").forEach((p,j) => p.classList.toggle("active", j===i));
   document.getElementById("tab-stripe").style.background = `linear-gradient(90deg,${TABS[i].color},${TABS[i].color}80)`;
-  if (i===7) renderRapportSummary();
-  if (i===6) renderLakTab();
+  if (i===6) renderRapportSummary();
+  if (i===3) renderLakTab();
 }
 
 // ─── Photo slots ──────────────────────────────────────────────────────────────
@@ -758,24 +886,49 @@ window._removeDamage = async (i) => {
 const DOCS_MED  = [["📒 Service bog","serviceBog"],["📄 Reg. attest del 1","regAttest1"],["📄 Reg. attest del 2","regAttest2"],["📜 COC","coc"],["🚗 Prøvekørt","proevekort"],["🔌 Lade kabler","ladekabel"]];
 const DOCS_SALG = [["📊 CarVertical report","carVertical"],["📱 Digital service rapport","digitalService"],["📋 Udstyrs liste","udstyrsliste"],["💰 Leasingforslag","leasingforslag"]];
 
+window._toggleNoglerAfproeved = () => {
+  S.docs.noglerAfproeved = !S.docs.noglerAfproeved;
+  const row = document.getElementById("nogler-afproeved-row");
+  const box = document.getElementById("nogler-afproeved-box");
+  const lbl = document.getElementById("nogler-afproeved-label");
+  if (row) row.classList.toggle("checked", S.docs.noglerAfproeved);
+  if (box) box.textContent = S.docs.noglerAfproeved ? "✓" : "○";
+  if (lbl) lbl.style.color = S.docs.noglerAfproeved ? "var(--green)" : "";
+  updateDocsCount();
+};
 function renderDocs() {
   renderDocGroup("docs-med-bilen", DOCS_MED);
   renderDocGroup("docs-salgsmappe", DOCS_SALG);
+  // Sync nøgler afprøvet
+  const row2=document.getElementById("nogler-afproeved-row");
+  const box2=document.getElementById("nogler-afproeved-box");
+  const lbl2=document.getElementById("nogler-afproeved-label");
+  if(row2) row2.classList.toggle("checked",!!S.docs.noglerAfproeved);
+  if(box2) box2.textContent=S.docs.noglerAfproeved?"✓":"○";
+  if(lbl2) lbl2.style.color=S.docs.noglerAfproeved?"var(--green)":"";
   updateDocsCount();
 }
 function renderDocGroup(cid, defs) {
-  const c=document.getElementById(cid); c.innerHTML="";
+  const c=document.getElementById(cid); if(!c) return; c.innerHTML="";
   defs.forEach(([label,key])=>{
+    const val = S.docs[key]; // true=green, false=red, null/undefined=neutral
     const row=document.createElement("div");
-    row.className="check-row"+(S.docs[key]?" checked":"");
-    row.innerHTML=`<div class="check-box">${S.docs[key]?"✓":"○"}</div><span class="check-label">${label}</span>${!S.docs[key]?`<span class="check-hint">tryk for at markere</span>`:""}`;
-    row.addEventListener("click",()=>{S.docs[key]=!S.docs[key]; renderDocGroup(cid,defs); updateDocsCount();});
+    row.style.cssText="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border:2px solid "+(val===true?"var(--green)":val===false?"var(--red)":"var(--inp-border)")+";border-radius:12px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,0.07)";
+    row.innerHTML=`
+      <span style="flex:1;font-size:14px;font-weight:600;color:${val===true?"var(--green)":val===false?"var(--red)":"var(--text)"}">${label}</span>
+      <button onclick="window._setDoc('${key}',true)" style="width:36px;height:36px;border-radius:9px;border:2px solid ${val===true?"var(--green)":"#ddd"};background:${val===true?"var(--green)":"#fff"};color:${val===true?"#fff":"#999"};font-size:18px;cursor:pointer;font-weight:900;font-family:inherit;transition:all 0.15s">✓</button>
+      <button onclick="window._setDoc('${key}',false)" style="width:36px;height:36px;border-radius:9px;border:2px solid ${val===false?"var(--red)":"#ddd"};background:${val===false?"var(--red)":"#fff"};color:${val===false?"#fff":"#999"};font-size:18px;cursor:pointer;font-weight:900;font-family:inherit;transition:all 0.15s">✕</button>`;
     c.appendChild(row);
   });
 }
+window._setDoc = (key, val) => {
+  S.docs[key] = (S.docs[key]===val) ? null : val; // toggle off if same
+  renderDocs();
+};
 function updateDocsCount() {
-  const n=Object.entries(S.docs).filter(([,v])=>v===true).length;
-  document.getElementById("docs-count").textContent=`✅ ${n} punkter markeret`;
+  const green=Object.entries(S.docs).filter(([,v])=>v===true).length;
+  const red=Object.entries(S.docs).filter(([,v])=>v===false).length;
+  document.getElementById("docs-count").textContent=`✅ ${green} OK  ❌ ${red} ikke OK`;
 }
 
 // ─── Leasing ──────────────────────────────────────────────────────────────────
@@ -895,12 +1048,13 @@ async function compressAllPhotosForPDF() {
 function renderRapportSummary() {
   const items=[
     {icon:"🚗",label:"Køretøj",val:[S.car.make,S.car.model,S.car.regNumber].filter(Boolean).join(" ")||"-",color:"var(--blue)"},
+    {icon:"👤",label:"Gennemgang",val:(S.car.inspector||"-")+(S.car.seller?" · Sælger: "+S.car.seller:""),color:"var(--blue)"},
     {icon:"📷",label:"Fotos",val:Object.values(S.photos).flat().length+" billeder uploadet",color:"var(--purple)"},
     {icon:"🔧",label:"Dæk",val:S.tires.filter(t=>t.size).length+"/4 dæk dokumenteret",color:"var(--orange)"},
-    {icon:"💥",label:"Skader",val:S.damages.length+" registreret",color:"var(--red)"},
-    {icon:"📁",label:"Diverse",val:Object.entries(S.docs).filter(([,v])=>v===true).length+" markeret",color:"var(--teal)"},
     {icon:"🎨",label:"Lak",val:Object.keys(S.lak||{}).length+" målepunkter udfyldt",color:"var(--yellow)"},
-    {icon:"💰",label:"Leasing",val:S.leasingResult?Math.round(S.leasingResult.MLY).toLocaleString("da-DK")+" kr./md.":"Ikke beregnet",color:"var(--green)"},
+    {icon:"💥",label:"Skader",val:S.damages.length+" registreret · "+S.diagDamages.length+" på diagram",color:"var(--red)"},
+    {icon:"✅",label:"Checkliste",val:Object.entries(S.docs).filter(([,v])=>v===true).length+" OK · "+Object.entries(S.docs).filter(([,v])=>v===false).length+" ikke OK",color:"var(--teal)"},
+    {icon:"📝",label:"Noter",val:S.notes?(S.notes.length+" tegn"):"Ingen noter",color:"var(--teal)"},
   ];
   document.getElementById("rapport-summary").innerHTML=items.map(it=>`
     <div class="rapport-item" style="border-color:${it.color}20">
@@ -1011,7 +1165,7 @@ window.generateReport = async () => {
 </style></head><body>
 
 <div class="cover">
-  <div class="cover-sub">🚗 AnkomstTjek &mdash; ${t.title}</div>
+  <div class="cover-sub">🚗 AnkomstTjek v1.02 &mdash; ${t.title}${c.inspector?' &middot; '+c.inspector:''}</div>
   <h1>${c.make||"-"} ${c.model||""}</h1>
   <h2>${c.regNumber||"-"} &middot; ${c.year||"-"} &middot; ${c.color||"-"}</h2>
   <div class="cover-meta">
@@ -1036,6 +1190,8 @@ window.generateReport = async () => {
     <div class="field"><div class="lbl">${t.cond}</div><div class="val">${c.condition||"-"}</div></div>
     <div class="field"><div class="lbl">${t.lastsvc}</div><div class="val">${c.lastServiceDate||"-"}${c.lastServiceKm?" &middot; "+parseInt(c.lastServiceKm).toLocaleString("da-DK")+" km":""}</div></div>
     <div class="field"><div class="lbl">${t.nextsvc}</div><div class="val">${c.nextServiceDate||"-"}${c.nextServiceKm?" &middot; "+parseInt(c.nextServiceKm).toLocaleString("da-DK")+" km":""}</div></div>
+    ${c.inspector?`<div class="field"><div class="lbl">${reportLang==='da'?'Gennemgang af':'Inspected by'}</div><div class="val" style="color:var(--blue);font-weight:700">${c.inspector}</div></div>`:''}
+    ${c.seller?`<div class="field"><div class="lbl">${reportLang==='da'?'Ansvarlig sælger':'Sales responsible'}</div><div class="val" style="color:var(--green);font-weight:700">${c.seller}</div></div>`:''}
   </div></div>
 </div>
 
@@ -1073,6 +1229,25 @@ ${S.damages.length>0?`
   </div>
 </div>`:""}
 
+${S.diagDamages?.length>0?`
+<div class="section">
+  <div class="sh" style="background:#FEE2E2;color:#DC2626">🗺 ${reportLang==='da'?'Skade Diagram':'Damage Diagram'}</div>
+  <div class="sb">
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <tr style="background:#F8F9FC"><th style="padding:7px 10px;text-align:left;border-bottom:1px solid #eee">${reportLang==='da'?'Zone':'Zone'}</th><th style="padding:7px 10px;text-align:left;border-bottom:1px solid #eee">${reportLang==='da'?'Skadetype':'Damage type'}</th></tr>
+      ${S.diagDamages.map(d=>`<tr><td style="padding:6px 10px;border-bottom:1px solid #f0f0f0">${d.label}</td><td style="padding:6px 10px;border-bottom:1px solid #f0f0f0"><span style="background:${DMG_TYPE_COLOR[d.type]||'#888'};color:#fff;padding:2px 8px;border-radius:4px;font-weight:700">${d.type}</span></td></tr>`).join('')}
+    </table>
+    <div style="margin-top:12px;padding:10px;background:#F8F9FC;border-radius:8px;font-size:10px;display:flex;gap:10px;flex-wrap:wrap">
+      <strong style="width:100%">Forklaring / Legend:</strong>
+      <span><b style="color:#DC2626">D</b> = Dent/Bule</span>
+      <span><b style="color:#EA580C">S</b> = Scratch/Skramme</span>
+      <span><b style="color:#7C3AED">B</b> = Broken/Knust</span>
+      <span><b style="color:#2563EB">P</b> = Paint damage/Lak</span>
+      <span><b style="color:#D97706">C</b> = Stonechip/Stenslag</span>
+    </div>
+  </div>
+</div>`:""}
+
 ${Object.keys(S.lak||{}).length>0?`
 <div class="section">
   <div class="sh" style="background:#FEF3C7;color:#D97706">🎨 ${reportLang==='da'?'Lak Måling':'Paint Thickness'}</div>
@@ -1091,9 +1266,9 @@ ${Object.keys(S.lak||{}).length>0?`
   <div class="sh" style="background:#CCFBF1;color:#0D9488">📁 ${t.docsSection}</div>
   <div class="sb">
     <div class="g2">
-      ${t.docsLabels.map(([l,k])=>`<div class="cr"><div class="dot ${S.docs[k]?"dy":"dn"}"></div>${l}: <strong>${S.docs[k]?t.yes:t.no}</strong></div>`).join("")}
+      ${t.docsLabels.map(([l,k])=>`<div class="cr"><div class="dot ${S.docs[k]===true?"dy":S.docs[k]===false?"" :"dn"}" style="${S.docs[k]===false?"background:#DC2626":""} width:12px;height:12px;border-radius:3px;display:inline-block;flex-shrink:0"></div>&nbsp;${l}: <strong style="color:${S.docs[k]===true?"#16A34A":S.docs[k]===false?"#DC2626":"#999"}">${S.docs[k]===true?t.yes:S.docs[k]===false?t.no:"–"}</strong></div>`).join("")}
     </div>
-    <div class="cr" style="margin-top:7px">🔑 <strong>${t.keys}:</strong>&nbsp;${S.docs.noegleAntal||"-"}</div>
+    <div class="cr" style="margin-top:7px">🔑 <strong>${t.keys}:</strong>&nbsp;${S.docs.noegleAntal||"-"} &nbsp; <div class="dot ${S.docs.noglerAfproeved?'dy':'dn'}" style="display:inline-block"></div> ${reportLang==='da'?'Nøgle(r) afprøvet':'Keys tested'}: <strong>${S.docs.noglerAfproeved?t.yes:t.no}</strong></div>
     <div style="margin-top:12px;padding-top:11px;border-top:1px solid #f0f4ff">
       <strong style="font-size:10px;color:#6B7A99;text-transform:uppercase;letter-spacing:.5px">${t.salgsmappe}</strong>
       <div class="g2" style="margin-top:7px">
@@ -1103,25 +1278,13 @@ ${Object.keys(S.lak||{}).length>0?`
   </div>
 </div>
 
-${lr?`
+${S.notes?`
 <div class="section">
-  <div class="sh" style="background:#DCFCE7;color:#16A34A">💰 ${t.leasingSection} ${S.showMoms?"("+t.incl+")":"("+t.excl+")"}</div>
-  <div class="sb"><div class="lb">
-    <div style="font-size:9px;color:rgba(255,255,255,.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">${t.leasingSection} &middot; ${S.showMoms?t.incl:t.excl}</div>
-    <div class="lm">
-      <div class="li"><div class="ll">MLY</div><div class="lv big">${Math.round(lr.MLY*moms).toLocaleString("da-DK")} kr.</div></div>
-      <div class="li"><div class="ll">UD</div><div class="lv">${Math.round(lr.Udbetaling*moms).toLocaleString("da-DK")} kr.</div></div>
-      <div class="li"><div class="ll">FIS</div><div class="lv">${Math.round(lr.FIS).toLocaleString("da-DK")} kr.</div></div>
-      <div class="li"><div class="ll">BAP</div><div class="lv">${Math.round(lr.BAP).toLocaleString("da-DK")} kr.</div></div>
-    </div>
-    <div style="margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,.15);font-size:10px;color:rgba(255,255,255,.5);line-height:1.9">
-      LPM: ${lr.LPM} mdr. &middot; FIA: ${lr.FIA}% &middot; UD: ${lr.UD}% &middot; AP: ${(lr.AP*100).toFixed(2)}% &middot; BAM: ${lr.BAM} mdr.<br>
-      APM: ${Math.round(lr.APM).toLocaleString("da-DK")} kr. &middot; FIS: ${Math.round(lr.FIS).toLocaleString("da-DK")} kr. &middot; MFS: ${Math.round(lr.MFS).toLocaleString("da-DK")} kr.
-    </div>
-  </div></div>
+  <div class="sh" style="background:#CCFBF1;color:#0D9488">📝 ${reportLang==='da'?'Noter':'Notes'}</div>
+  <div class="sb"><p style="font-size:13px;color:#1A2340;line-height:1.6;white-space:pre-wrap">${S.notes}</p></div>
 </div>`:""}
 
-<div class="footer">🚗 AnkomstTjek &middot; ${t.generated} ${new Date().toLocaleString(reportLang==='da'?'da-DK':'en-GB')} &middot; ${c.regNumber||""} ${c.make||""} ${c.model||""}</div>
+<div class="footer">🚗 AnkomstTjek v1.02 &middot; ${t.generated} ${new Date().toLocaleString(reportLang==='da'?'da-DK':'en-GB')} &middot; ${c.regNumber||""} ${c.make||""} ${c.model||""}</div>
 </body></html>`);
   win.document.close();
   setTimeout(()=>win.print(), 800);
@@ -1155,6 +1318,8 @@ async function saveData() {
       docs: S.docs,
       leasing: S.leasing,
       lak: S.lak||{},
+      notes: S.notes||"",
+      diagDamages: S.diagDamages||[],
       savedAt: Date.now(),
       label: buildLabel(),
     };
@@ -1213,6 +1378,8 @@ function applySnapshot(d) {
   if(d.docs) S.docs={...S.docs,...d.docs};
   if(d.leasing) S.leasing=d.leasing;
   if(d.lak) S.lak=d.lak||{};
+  if(d.notes!==undefined) S.notes=d.notes||"";
+  if(d.diagDamages) S.diagDamages=d.diagDamages||[];
   S.leasingResult=null;
   writeStateToForm();
   renderAll();
@@ -1229,11 +1396,14 @@ function readFormToState() {
   S.car.km=document.getElementById("car-km").value;
   S.car.receivedDate=document.getElementById("car-received").value;
   S.car.condition=document.getElementById("car-condition").value;
+  S.car.inspector=document.getElementById("car-inspector").value;
+  S.car.seller=document.getElementById("car-seller")?.value||"";
   S.car.lastServiceDate=document.getElementById("last-svc-date").value;
   S.car.lastServiceKm=document.getElementById("last-svc-km").value;
   S.car.nextServiceDate=document.getElementById("next-svc-date").value;
   S.car.nextServiceKm=document.getElementById("next-svc-km").value;
   S.docs.noegleAntal=document.getElementById("doc-nogler").value;
+  S.notes=document.getElementById("doc-notes").value||"";
   S.leasing.BAP=document.getElementById("l-BAP").value;
   S.leasing.FA=document.getElementById("l-FA").value;
   S.leasing.BFRD=document.getElementById("l-BFRD").value;
@@ -1253,11 +1423,15 @@ function writeStateToForm() {
   document.getElementById("car-km").value=S.car.km||"";
   document.getElementById("car-received").value=S.car.receivedDate||"";
   document.getElementById("car-condition").value=S.car.condition||"";
+  document.getElementById("car-inspector").value=S.car.inspector||"";
+  const sellerEl=document.getElementById("car-seller"); if(sellerEl) sellerEl.value=S.car.seller||"";
   document.getElementById("last-svc-date").value=S.car.lastServiceDate||"";
   document.getElementById("last-svc-km").value=S.car.lastServiceKm||"";
   document.getElementById("next-svc-date").value=S.car.nextServiceDate||"";
   document.getElementById("next-svc-km").value=S.car.nextServiceKm||"";
   document.getElementById("doc-nogler").value=S.docs.noegleAntal||"";
+  const notesEl=document.getElementById("doc-notes");
+  if(notesEl){ notesEl.value=S.notes||""; document.getElementById("notes-count").textContent=(300-(S.notes||"").length)+" tegn tilbage"; }
   document.getElementById("l-BAP").value=S.leasing.BAP||"";
   document.getElementById("l-FA").value=S.leasing.FA||"";
   document.getElementById("l-BFRD").value=S.leasing.BFRD||"";
@@ -1272,8 +1446,8 @@ window.newCar = () => {
   S.car={make:"",model:"",regNumber:"",vin:"",year:"",color:"",km:"",receivedDate:new Date().toISOString().split("T")[0],condition:"",lastServiceDate:"",lastServiceKm:"",nextServiceDate:"",nextServiceKm:""};
   S.photos={wheel_fl:[],wheel_fr:[],wheel_rl:[],wheel_rr:[],front:[],rear:[],left:[],right:[],odometer:[],dashboard:[],interior_front:[],interior_rear:[],trunk:[]};
   S.tires=[{},{},{},{}]; S.extraWheels=[]; S.damages=[];
-  S.docs={serviceBog:false,regAttest1:false,regAttest2:false,coc:false,proevekort:false,noegleAntal:"",ladekabel:false,carVertical:false,digitalService:false,udstyrsliste:false,leasingforslag:false};
-  S.leasing={BAP:"",FA:"",BFRD:"",LPM:12,FIA:5,UD:15}; S.leasingResult=null; S.lak={}; S.currentCarId=null;
+  S.docs={serviceBog:false,regAttest1:false,regAttest2:false,coc:false,proevekort:false,noegleAntal:"",noglerAfproeved:false,ladekabel:false,carVertical:false,digitalService:false,udstyrsliste:false,leasingforslag:false};
+  S.leasing={BAP:"",FA:"",BFRD:"",LPM:12,FIA:5,UD:15}; S.leasingResult=null; S.lak={}; S.notes=""; S.diagDamages=[]; S.currentCarId=null;
   writeStateToForm(); renderAll(); closeSearch(); switchTab(0); updateHeaderSub();
 };
 
@@ -1315,11 +1489,64 @@ function renderAll() {
   renderDamages();
   renderDocs();
   ALL_PHOTO_DEFS.forEach(([l,k,m])=>refreshPhotoSlot(k,l,m));
-  document.getElementById("leasing-result").style.display="none";
-  if (S.tab===6) renderLakTab();
+  renderVideoSlots();
+  renderDiagramMarkers();
+  document.getElementById("leasing-result")?.style && (document.getElementById("leasing-result").style.display="none");
+  if (S.tab===3) renderLakTab();
 }
 
-// ─── Lak måling ───────────────────────────────────────────────────────────────
+// ─── Video slots (local only — not saved to Firebase) ────────────────────────
+const VIDEO_COUNT = 5;
+// Videos stored in memory only: array of { objectUrl, name }
+let localVideos = [];
+
+function renderVideoSlots() {
+  const c = document.getElementById("video-slots");
+  if (!c) return;
+  c.innerHTML = "";
+  for (let i = 0; i < VIDEO_COUNT; i++) {
+    const v = localVideos[i];
+    const slot = document.createElement("div");
+    slot.style.cssText = "background:#fff;border:2px solid var(--inp-border);border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.07)";
+    if (v) {
+      slot.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span style="font-size:18px">🎬</span>
+          <span style="font-size:12px;font-weight:700;color:var(--purple);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${v.name}</span>
+          <button onclick="window._removeVideo(${i})" style="background:var(--red-l);color:var(--red);border:1px solid rgba(220,38,38,0.3);border-radius:8px;padding:4px 10px;cursor:pointer;font-size:11px;font-family:inherit">🗑</button>
+        </div>
+        <video src="${v.objectUrl}" controls style="width:100%;border-radius:8px;max-height:180px"></video>`;
+    } else {
+      slot.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:18px;color:var(--muted)">🎬</span>
+          <span style="font-size:12px;color:var(--muted);font-weight:600;flex:1">Video ${i+1} — ikke optaget</span>
+          <button onclick="document.getElementById('vid-fi-${i}').click()"
+            style="background:var(--purple-l);color:var(--purple);border:1.5px solid rgba(124,58,237,0.3);border-radius:9px;padding:7px 14px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit">
+            📹 Optag / Vælg
+          </button>
+        </div>
+        <input type="file" id="vid-fi-${i}" accept="video/*" capture="environment" style="display:none"
+          onchange="window._handleVideo(${i}, this)">`;
+    }
+    c.appendChild(slot);
+  }
+}
+
+window._handleVideo = (i, input) => {
+  const file = input.files[0];
+  if (!file) return;
+  if (localVideos[i]?.objectUrl) URL.revokeObjectURL(localVideos[i].objectUrl);
+  localVideos[i] = { objectUrl: URL.createObjectURL(file), name: file.name };
+  renderVideoSlots();
+  toast("🎬 Video tilføjet (gemmes lokalt)");
+};
+
+window._removeVideo = (i) => {
+  if (localVideos[i]?.objectUrl) URL.revokeObjectURL(localVideos[i].objectUrl);
+  localVideos[i] = null;
+  renderVideoSlots();
+};
 const LAK_LABELS = {
   front_l:"Foran Venstre", front_r:"Foran Højre",
   roof:"Tag (midt)",
@@ -1434,10 +1661,116 @@ window.deleteCar = async () => {
   setLoading(null);
 };
 
+// ─── VIN link ─────────────────────────────────────────────────────────────────
+window.updateVinLink = () => {
+  const vin = document.getElementById("car-vin")?.value?.trim()||"";
+  S.car.vin = vin;
+  const wrap = document.getElementById("vin-link-wrap");
+  const link = document.getElementById("vin-link");
+  if (wrap && link) {
+    if (vin.length >= 5) {
+      link.href = "https://www.tjekbil.dk/stelnummer/" + encodeURIComponent(vin);
+      link.textContent = "🔗 Tjek " + vin + " på tjekbil.dk →";
+      wrap.style.display = "block";
+    } else {
+      wrap.style.display = "none";
+    }
+  }
+};
+
+// ─── Diagram damages ──────────────────────────────────────────────────────────
+const DMG_TYPE_COLOR = {D:"#DC2626",S:"#EA580C",B:"#7C3AED",P:"#2563EB",C:"#D97706"};
+let _diagActiveZone = null;
+let _diagActiveLabel = null;
+let _diagActiveView = null;
+let _diagClickX = 50;
+let _diagClickY = 50;
+
+function initDiagram() {
+  const views = [
+    {id:"dmg-svg-top",   name:"top"},
+    {id:"dmg-svg-left",  name:"left"},
+    {id:"dmg-svg-right", name:"right"},
+    {id:"dmg-svg-front", name:"front"},
+    {id:"dmg-svg-rear",  name:"rear"},
+  ];
+  views.forEach(({id, name}) => {
+    const svg = document.getElementById(id);
+    if (!svg) return;
+    svg.querySelectorAll(".dmg-zone").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const rect = svg.getBoundingClientRect();
+        const svgEl = svg;
+        const viewBox = svgEl.viewBox.baseVal;
+        _diagClickX = ((e.clientX - rect.left) / rect.width) * viewBox.width;
+        _diagClickY = ((e.clientY - rect.top) / rect.height) * viewBox.height;
+        _diagActiveZone = el.dataset.zone;
+        _diagActiveLabel = el.dataset.label;
+        _diagActiveView = name;
+        document.getElementById("dmg-diag-zone-title").textContent = "📍 " + _diagActiveLabel;
+        const modal = document.getElementById("dmg-diag-modal");
+        modal.style.display = "flex";
+      });
+    });
+  });
+}
+
+window._addDiagDmg = (type) => {
+  S.diagDamages.push({
+    zone: _diagActiveZone,
+    label: _diagActiveLabel,
+    view: _diagActiveView,
+    type,
+    x: _diagClickX,
+    y: _diagClickY,
+    id: Date.now()
+  });
+  window._closeDiagModal();
+  renderDiagramMarkers();
+};
+
+window._closeDiagModal = () => {
+  document.getElementById("dmg-diag-modal").style.display = "none";
+};
+
+function renderDiagramMarkers() {
+  const viewMap = {
+    top:"dmg-markers-top", left:"dmg-markers-left", right:"dmg-markers-right",
+    front:"dmg-markers-front", rear:"dmg-markers-rear"
+  };
+  // Clear all marker groups
+  Object.values(viewMap).forEach(id => {
+    const g = document.getElementById(id);
+    if (g) g.innerHTML = "";
+  });
+  // Draw each damage
+  S.diagDamages.forEach((d, idx) => {
+    const g = document.getElementById(viewMap[d.view]);
+    if (!g) return;
+    const color = DMG_TYPE_COLOR[d.type]||"#888";
+    const marker = document.createElementNS("http://www.w3.org/2000/svg","g");
+    marker.innerHTML = `
+      <circle cx="${d.x}" cy="${d.y}" r="9" fill="${color}" opacity="0.9"/>
+      <text x="${d.x}" y="${d.y+4}" text-anchor="middle" fill="white" font-size="9" font-weight="bold" font-family="Arial">${d.type}</text>`;
+    marker.style.cursor = "pointer";
+    marker.title = `${d.label}: ${d.type} — klik for at slette`;
+    marker.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (confirm(`Slet skade: ${d.label} (${d.type})?`)) {
+        S.diagDamages.splice(idx, 1);
+        renderDiagramMarkers();
+      }
+    });
+    g.appendChild(marker);
+  });
+}
+
 // ─── Init ─────────────────────────────────────────────────────────────────────
 async function init() {
   initTabs();
   initPhotos();
+  initDiagram();
   renderAll();
   writeStateToForm();
   switchTab(0);
@@ -1461,15 +1794,16 @@ async function init() {
     });
   });
 
-  // Load car list from Firestore
+  // Load car list from Firestore — with 8 second timeout
   setLoading("Henter biler fra Firebase...");
   try {
-    const idxSnap=await getDoc(doc(db,"meta","car_index"));
+    const timeout = new Promise((_,reject) => setTimeout(()=>reject(new Error("Timeout — tjek internetforbindelse")), 8000));
+    const idxSnap = await Promise.race([getDoc(doc(db,"meta","car_index")), timeout]);
     if(idxSnap.exists()) {
       S.carList=idxSnap.data().cars||[];
       if(S.carList.length>0) {
         const latest=[...S.carList].sort((a,b)=>b.savedAt-a.savedAt)[0];
-        const carSnap=await getDoc(doc(db,"cars",latest.id));
+        const carSnap=await Promise.race([getDoc(doc(db,"cars",latest.id)), new Promise((_,r)=>setTimeout(()=>r(new Error("Timeout")),8000))]);
         if(carSnap.exists()) {
           const data = carSnap.data();
           setLoading("Henter billeder...");
@@ -1480,8 +1814,11 @@ async function init() {
         }
       }
     }
-  } catch(e) { toast("⚠️ Kunne ikke hente data: "+e.message, 5000); }
-  setLoading(null);
+  } catch(e) {
+    console.error("Firebase init error:", e);
+    toast("⚠️ Firebase: "+e.message+". Appen kører offline.", 6000);
+  }
+  setLoading(null); // Always hide loading — even on error
 }
 
 init();
